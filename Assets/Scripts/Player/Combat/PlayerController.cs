@@ -352,6 +352,8 @@ public class PlayerController : MonoBehaviour, IDamageable
         isJumping = true;
         rb.AddForce(ctx.jumpMultiplier * transform.up, ForceMode.Impulse);
         ctx.grounded = false;
+        if (AudioManager.Instance == null) return;
+        AudioManager.Instance.playJump(transform.position);
         JumpFeedback?.PlayFeedbacks();
     }
 
@@ -361,6 +363,8 @@ public class PlayerController : MonoBehaviour, IDamageable
         dashOnCD = true;
         dashTimer = ctx.dashLength;
         dashCDTimer = ctx.dashCD;
+        if (AudioManager.Instance == null) return;
+        AudioManager.Instance.playDash(transform.position);
         DashFeedback?.PlayFeedbacks();
     }
 

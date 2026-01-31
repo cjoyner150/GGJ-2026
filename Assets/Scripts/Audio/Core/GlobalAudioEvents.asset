@@ -61,6 +61,20 @@ MonoBehaviour:
       Data3: 931189888
       Data4: -1742387375
     Path: event:/Miss
+  playerJump:
+    Guid:
+      Data1: 1523175510
+      Data2: 1207299460
+      Data3: 404950672
+      Data4: 370211913
+    Path: event:/Jump
+  playerDash:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
   music:
     Guid:
       Data1: 1926003601
