@@ -1,6 +1,8 @@
+using MoreMountains.Feedbacks;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
@@ -20,8 +22,10 @@ public class PlayerConfigManager : MonoBehaviour
     private List<PlayerConfig> playerConfigs;
 
     public bool singleplayer = false;
-    
+   
     public static PlayerConfigManager Instance { get; private set; }
+
+    public MMF_Player FadeEffect;
 
     private void OnEnable()
     {
@@ -56,7 +60,7 @@ public class PlayerConfigManager : MonoBehaviour
         playerConfigs[index].PlayerColor = color;
     }
 
-    public void SetPlayerReady(int index)
+    public async void SetPlayerReady(int index)
     {
         playerConfigs[index].IsReady = true;
         if (AudioManager.Instance != null)
@@ -67,6 +71,10 @@ public class PlayerConfigManager : MonoBehaviour
         if (playerConfigs.Count >= currentMinPlayers && playerConfigs.All(p => p.IsReady == true))
         {
             inputManager.DisableJoining();
+            FadeEffect?.PlayFeedbacks();
+
+            await Task.Delay(1000);
+
             SceneManager.LoadScene(gameplaySceneIndex);
         }
     }
