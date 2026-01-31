@@ -30,25 +30,62 @@ public class PlayerController : MonoBehaviour
     
     private void FixedUpdate()
     {
-        rb.AddForce(ctx.acceleration * Time.fixedDeltaTime * ctx.moveDirection);
+        MovePlayer();
     }
 
     private void Update()
     {
         ctx.grounded = CheckGrounded();
 
+        HandleState();
+
+    }
+
+    void HandleState()
+    {
         if (!ctx.grounded)
         {
             EnterState(MoveState.Air);
         }
-        //else if ()
+        else if (ctx.moveDirection.magnitude > 0)
+        {
+            EnterState(MoveState.Walk);
+        }
+        else
+        {
+            EnterState(MoveState.Idle);
+        }
+    }
+
+    void MovePlayer()
+    {
+        switch (currentState)
+        {
+            case MoveState.Walk:
+
+                rb.AddForce(ctx.acceleration * Time.fixedDeltaTime * ctx.moveDirection);
+                break;
+
+            case MoveState.Idle:
+
+                break;
+
+            default:
+
+                break;
+
+        }
     }
 
     void EnterState(MoveState moveState)
     {
         currentState = moveState;
 
-
+        switch (currentState)
+        {
+            case MoveState.Idle:
+                break;
+        }
     }
 
     bool CheckGrounded()

@@ -36,7 +36,6 @@ public class PlayerInputHandler : MonoBehaviour
     {
         config = cfg;
 
-        Instantiate(config.MeshPrefab, transform);
         config.Input.onActionTriggered += OnActionTriggered;
 
         playerMover.playerIndex = config.PlayerIndex;
