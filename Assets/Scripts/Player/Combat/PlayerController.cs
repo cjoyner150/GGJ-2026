@@ -42,7 +42,8 @@ public class PlayerController : MonoBehaviour, IDamageable
     public MMF_Player LandingFeedback;
     public MMF_Player DamageFeedback;
     public MMF_Player DashFeedback;
-    public MMF_Player SlashFeedback;
+    public MMF_Player SlashFeedbackH;
+    public MMF_Player SlashFeedbackV;
 
 
     public enum MoveState
@@ -373,8 +374,17 @@ public class PlayerController : MonoBehaviour, IDamageable
         attackCDTimer = ctx.attackCD / ctx.attackSpeed;
         if (AudioManager.Instance == null) return;
         AudioManager.Instance.playAttack(transform.position);
-        SlashFeedback?.PlayFeedbacks(); 
-    }
+
+        if (ctx.grounded)
+        {
+            SlashFeedbackH?.PlayFeedbacks();
+        }
+        else
+        {
+            SlashFeedbackV?.PlayFeedbacks();
+        }
+
+        }
 
     void TakeKnockback(float speed, float length, Vector3 from)
     {
