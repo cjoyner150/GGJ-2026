@@ -37,7 +37,7 @@ public class PlayerController : MonoBehaviour
     {
         ctx.grounded = CheckGrounded();
 
-        if (!ctx.grounded && )
+        if (!ctx.grounded)
         {
 
         }
