@@ -8,9 +8,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Game Loop/Main Menu.unity
     guid: fa65a4eb8ca0ccf489000df45a4d22ee
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Game Loop/Gameplay Scene.unity
     guid: 5a319872fa5218c4589801f446438837
+  - enabled: 1
+    path: Assets/NicksLevelScene/NickLevelScene.unity
+    guid: 794944cf01ae03d4b84f77bc8f727c96
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
