@@ -166,7 +166,8 @@ MonoBehaviour:
   LandingFeedback: {fileID: 5601002725978045975}
   DamageFeedback: {fileID: 8003598798057953903}
   DashFeedback: {fileID: 3563793387107612120}
-  SlashFeedback: {fileID: 1198845817745528407}
+  SlashFeedbackH: {fileID: 1198845817745528407}
+  SlashFeedbackV: {fileID: 5065799236077336945}
   currentState: 0
 --- !u!114 &5623207455888612827
 MonoBehaviour:
