@@ -15,6 +15,12 @@ public class PlayerContext
 
     public float dashLength;
     public float dashSpeed;
+    public float dashCD;
+
+    public Transform attackLocation;
+    public float attackLength;
+    public float attackCD;
+    public float attackMoveSpeed;
 
     [Header("Input")]
     public Vector3 moveDirection;
