@@ -13,6 +13,7 @@ public class BiddingController : MonoBehaviour
     public List<Masks> availableMasks;
     [Header("Tarrot Cards Bidding Settings")]
     public int tarrotStartingBid = 15;
+    public int bidIncrement = 10;
     public List<TarrotCard> availableTarrotCards;
 
     private List<PlayerGold> players;
@@ -31,7 +32,7 @@ public class BiddingController : MonoBehaviour
         maskdeckIndex = 0;
         StartMaskBidding();
     }
-    private void StartMaskBidding()
+    void StartMaskBidding()
     {
         if (maskdeckIndex >= availableMasks.Count)
         {
@@ -47,13 +48,14 @@ public class BiddingController : MonoBehaviour
                 StartMaskBidding();
             };
     }
-    private void startTarrotBidding()
+    void startTarrotBidding()
     {
         isMaskbidding = false;
         isTarrotBidding = true;
+
         tarrotBidding = new NormalBidding(bidIncrement);
     }
-    private void PlayerBid(PlayerGold player){
+    public void PlayerBid(PlayerGold player){
         if (isMaskbidding)
         {
             maskBidding.TryBid(player, maskStartingBid);
@@ -63,13 +65,14 @@ public class BiddingController : MonoBehaviour
             tarrotBidding.Trybid(player);
         }
     }
-    private void endTarrotBidding()
+    public void endTarrotBidding()
     {
         isTarrotBidding = false;
         tarrotBidding.EndBidding();
     }
-    private void AssigntarrotToWinner(PlayerGold winner, TarrotCard card)
+    public void AssigntarrotToWinner(PlayerGold winner, TarrotCard card)
     {
         OnTarrotAssigned?.Invoke(winner, card);
     }
+    
 }
