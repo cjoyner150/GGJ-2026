@@ -25,7 +25,7 @@ MonoBehaviour:
   IsOneShot: 1
   Parameters: []
   MinDistance: 1
-  MaxDistance: 20
+  MaxDistance: 90
   Length: 857
 --- !u!114 &-5708216347997346315
 MonoBehaviour:
@@ -42,7 +42,7 @@ MonoBehaviour:
   Path: FMOD/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 639054651159380448
+  lastModified: 639054656712187887
   FileSizes: []
   Exists: 1
 --- !u!114 &-5360369996748889426
@@ -71,7 +71,7 @@ MonoBehaviour:
   Parameters:
   - {fileID: 6071204493141923578}
   MinDistance: 1
-  MaxDistance: 20
+  MaxDistance: 100
   Length: 0
 --- !u!114 &-5021012903976036965
 MonoBehaviour:
@@ -142,10 +142,10 @@ MonoBehaviour:
   Path: FMOD/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 639054651159400383
+  lastModified: 639054656712187887
   FileSizes:
   - Name: 
-    Value: 1264
+    Value: 1516
   Exists: 1
 --- !u!114 &-2646478660947114304
 MonoBehaviour:
@@ -229,13 +229,14 @@ MonoBehaviour:
   - {fileID: 1090870649669047442}
   - {fileID: -2646478660947114304}
   - {fileID: 8323849800202969946}
+  - {fileID: 8270409994331154570}
   EditorParameters: []
   MasterBanks:
   - {fileID: -5708216347997346315}
   StringsBanks:
   - {fileID: -4343147714829139624}
   cacheVersion: 131858
-  cacheTime: 639054651159551908
+  cacheTime: 639054656712347147
   SerializableEventsDict:
   - key: event:/UI/Click
     index: 0
@@ -255,6 +256,8 @@ MonoBehaviour:
     index: 7
   - key: event:/UI/Ready
     index: 8
+  - key: event:/Miss
+    index: 9
 --- !u!114 &138740475311300494
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -329,7 +332,7 @@ MonoBehaviour:
   Path: FMOD/Desktop/SFX.bank
   Name: SFX
   StudioPath: bank:/SFX
-  lastModified: 639054651159551908
+  lastModified: 639054656712347147
   FileSizes: []
   Exists: 1
 --- !u!114 &6071204493141923578
@@ -379,7 +382,7 @@ MonoBehaviour:
   Path: FMOD/Desktop/Music.bank
   Name: Music
   StudioPath: bank:/Music
-  lastModified: 639054651159430532
+  lastModified: 639054656712237191
   FileSizes: []
   Exists: 1
 --- !u!114 &7021433977946404265
@@ -407,7 +410,34 @@ MonoBehaviour:
   IsOneShot: 1
   Parameters: []
   MinDistance: 1
-  MaxDistance: 20
+  MaxDistance: 100
+  Length: 0
+--- !u!114 &8270409994331154570
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Miss
+  m_EditorClassIdentifier: FMODUnityEditor::FMODUnity.EditorEventRef
+  Path: event:/Miss
+  Guid:
+    Data1: 125035156
+    Data2: 1231612022
+    Data3: 931189888
+    Data4: -1742387375
+  Banks:
+  - {fileID: 2994338234778971138}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 95
   Length: 0
 --- !u!114 &8323849800202969946
 MonoBehaviour:

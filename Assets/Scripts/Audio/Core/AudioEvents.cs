@@ -15,6 +15,7 @@ public class AudioEvents : ScriptableObject
 
     [Header("Gameplay")]
     public EventReference playerPunch;
+    public EventReference playerAttack;
 
     [Header("Music")]
     public EventReference music;
