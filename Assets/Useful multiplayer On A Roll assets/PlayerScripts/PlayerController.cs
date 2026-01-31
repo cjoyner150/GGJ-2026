@@ -16,10 +16,16 @@ public class PlayerController : MonoBehaviour
     float jumpCD = .2f;
     float jumpTimer = 0;
     float dashTimer = 0;
+    float dashCDTimer = 0;
+    float attackTimer = 0;
+    float attackCDTimer = 0;
 
     bool isJumping = false;
     bool isDashing = false;
     bool isAttacking = false;
+
+    bool dashOnCD = false;
+    bool attackOnCD = false;
 
     public enum MoveState
     {
@@ -95,10 +101,15 @@ public class PlayerController : MonoBehaviour
             Jump();
             EnterState(MoveState.Air);
         }
-        else if (ctx.dashHasBeenPressed)
+        else if (ctx.dashHasBeenPressed && !dashOnCD)
         {
             Dash();
             EnterState(MoveState.Dash);
+        }
+        else if (ctx.attackHasBeenPressed && !attackOnCD)
+        {
+            Attack();
+            EnterState(MoveState.Attack);
         }
 
         ctx.jumpHasBeenPressed = false;
@@ -123,6 +134,11 @@ public class PlayerController : MonoBehaviour
             case MoveState.Dash:
 
                 rb.linearVelocity = modelTransform.forward * ctx.dashSpeed;
+                break;
+
+            case MoveState.Attack:
+
+                rb.linearVelocity = modelTransform.forward * ctx.attackMoveSpeed;
                 break;
 
             default:
@@ -156,6 +172,37 @@ public class PlayerController : MonoBehaviour
             }
         }
 
+        if (dashCDTimer > 0)
+        {
+            dashCDTimer -= Time.deltaTime;
+            
+            if (dashCDTimer <= 0)
+            {
+                dashOnCD = false;
+            }
+        }
+
+        if (attackCDTimer > 0)
+        {
+            attackCDTimer -= Time.deltaTime;
+
+            if (attackCDTimer <= 0)
+            {
+                attackOnCD = false;
+            }
+        }
+
+        if (attackTimer > 0)
+        {
+            attackTimer -= Time.deltaTime;
+
+            if (attackTimer <= 0)
+            {
+                ctx.attackHasBeenPressed = false;
+                isAttacking = false;
+            }
+        }
+
     }
 
     void HandleRotation()
@@ -177,19 +224,21 @@ public class PlayerController : MonoBehaviour
     void Dash()
     {
         isDashing = true;
+        dashOnCD = true;
         dashTimer = ctx.dashLength;
+        dashCDTimer = ctx.dashCD;
+    }
+    void Attack()
+    {
+        isAttacking = true;
+        attackOnCD = true;
+        attackTimer = ctx.attackLength;
+        attackCDTimer = ctx.attackCD;
     }
 
     void EnterState(MoveState moveState)
     {
         currentState = moveState;
-
-        switch (currentState)
-        {
-            case MoveState.Dash:
-                dashTimer = ctx.dashLength;
-                break;
-        }
     }
 
     bool CheckGrounded()

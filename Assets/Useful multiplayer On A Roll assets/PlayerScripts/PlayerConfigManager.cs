@@ -51,10 +51,9 @@ public class PlayerConfigManager : MonoBehaviour
     }
 
 
-    public void SetPlayerMesh(int index, GameObject mesh, string charName)
+    public void SetPlayerColor(int index, Color color)
     {
-        playerConfigs[index].MeshPrefab = mesh;
-        playerConfigs[index].CharacterName = charName;
+        playerConfigs[index].PlayerColor = color;
     }
 
     public void SetPlayerReady(int index)
@@ -130,5 +129,6 @@ public class PlayerConfig
     public GameObject MeshPrefab {  get; set; }
     public string CharacterName {  get; set; }
     public bool IsReady { get; set; }
+    public Color PlayerColor { get; set; }
 
 }

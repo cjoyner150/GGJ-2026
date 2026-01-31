@@ -40,6 +40,8 @@ public class PlayerInputHandler : MonoBehaviour
 
         playerMover.playerIndex = config.PlayerIndex;
         playerMover.ctx = ctx;
+
+        GetComponentInChildren<MeshRenderer>().material.color = config.PlayerColor;
     }
 
     public void OnActionTriggered(InputAction.CallbackContext context)
