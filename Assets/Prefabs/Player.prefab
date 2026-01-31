@@ -140,6 +140,7 @@ MonoBehaviour:
     whatIsJumpableGround:
       serializedVersion: 2
       m_Bits: 1
+    airMoveSpeed: 0
     dashLength: 0
     dashSpeed: 0
     dashCD: 0
@@ -189,6 +190,7 @@ MonoBehaviour:
     whatIsJumpableGround:
       serializedVersion: 2
       m_Bits: 1
+    airMoveSpeed: 15
     dashLength: 0.15
     dashSpeed: 30
     dashCD: 1
