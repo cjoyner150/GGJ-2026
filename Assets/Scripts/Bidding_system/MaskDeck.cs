@@ -1,39 +1,28 @@
-using NUnit.Framework;
-using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine;
 
-public class MaskDeck : MonoBehaviour
+public class MaskDeck
 {
-    public List<Masks> masks;
-    public int Index = 0;
+    private List<Mask> deck;
+    private int index;
 
-    public MaskDeck(List<Masks> masks)
+    public MaskDeck(List<Mask> masks)
     {
-        masks = new List<Masks>();
-        shuffleDeck();
+        deck = new List<Mask>(masks);
+        Shuffle();
     }
-    public Masks drawMask()
+
+    public Mask Draw()
     {
-        if (Index >= masks.Count)
-        {
-            Index = 0;
-            shuffleDeck();
-        }
-        Masks drawnMask = masks[Index];
-        Index++;
-        return drawnMask;
+        return deck[index++];
     }
-    
-    public void shuffleDeck()
+
+    private void Shuffle()
     {
-        System.Random rng = new System.Random();
-        int n = masks.Count;
-        while (n > 1)
+        for (int i = 0; i < deck.Count; i++)
         {
-            int k = rng.Next(n--);
-            Masks temp = masks[n];
-            masks[n] = masks[k];
-            masks[k] = temp;
+            int r = Random.Range(i, deck.Count);
+            (deck[i], deck[r]) = (deck[r], deck[i]);
         }
     }
 }

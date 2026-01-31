@@ -1,36 +1,40 @@
+using System;
 using System.Collections.Generic;
-using UnityEngine;
 
-public class BiddingSession : MonoBehaviour
+public class BiddingSession
 {
-    public event System.Action<PlayerGold> OnMaskWinner;
+    public event Action<PlayerGold> OnMaskWinner;
 
-    private List<PlayerGold> playerGolds;
-    private HashSet<PlayerGold> bidders = new();
+    private readonly List<PlayerGold> players;
+    private readonly HashSet<PlayerGold> bidders = new();
+    private readonly int bidCost;
 
-    public BiddingSession(List<PlayerGold> playerGoldArray)
+    public BiddingSession(List<PlayerGold> players, int bidCost)
     {
-        this.playerGolds = playerGoldArray;
+        this.players = players;
+        this.bidCost = bidCost;
     }
-    public void TryBid(PlayerGold bidder, int amount)
-    {
-        if (!bidder.HasEnoughGold(amount)) return;
-        if (bidders.Contains(bidder)) return;
 
-        bidder.SpendGold(amount);
-        bidders.Add(bidder);
-        if (bidders.Count == playerGolds.Count - 1)
+    public void TryBid(PlayerGold player)
+    {
+        if (!player.CanAfford(bidCost)) return;
+        if (bidders.Contains(player)) return;
+
+        if (player.TrySpend(bidCost))
         {
-            foreach (var player in playerGolds)
+            bidders.Add(player);
+
+            if (bidders.Count == players.Count - 1)
             {
-                if (!bidders.Contains(player))
+                foreach (var p in players)
                 {
-                    OnMaskWinner?.Invoke(player);
-                    break;
+                    if (!bidders.Contains(p))
+                    {
+                        OnMaskWinner?.Invoke(p);
+                        break;
+                    }
                 }
             }
         }
-
     }
-
 }
