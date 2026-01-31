@@ -24,10 +24,7 @@ public class StatsMediator
         while (node != null)
         {
             var modifier = node.Value;
-
-            // CJ this line was part of the tutorial, but im not sure if we need it? might be referring to the timer components we aren't including
-            //modifier.Update(deltaTime);
-
+            modifier.Update(deltaTime);
             node = node.Next;
         }
 
