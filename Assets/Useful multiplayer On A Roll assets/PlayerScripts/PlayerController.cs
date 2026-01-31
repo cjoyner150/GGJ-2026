@@ -41,7 +41,7 @@ public class PlayerController : MonoBehaviour
         {
             EnterState(MoveState.Air);
         }
-        else if ()
+        //else if ()
     }
 
     void EnterState(MoveState moveState)
