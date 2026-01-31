@@ -1,0 +1,404 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.InputSystem;
+
+public class PlayerController : MonoBehaviour, IDamageable
+{
+    [HideInInspector] public PlayerContext ctx;
+
+    [SerializeField] IntEventSO deathEvent;
+    [SerializeField] Transform modelTransform;
+    [SerializeField] Transform attackLocation;
+
+    public int playerIndex;
+    private Rigidbody rb;
+
+    float jumpCD = .2f;
+    float jumpTimer = 0;
+    float dashTimer = 0;
+    float dashCDTimer = 0;
+    float attackTimer = 0;
+    float attackCDTimer = 0;
+    float knockbackTimer = 0;
+    float invulnerableTimer = 0;
+
+    bool isJumping = false;
+    bool isDashing = false;
+    bool isAttacking = false;
+    bool isTakingKnockback = false;
+
+    bool dashOnCD = false;
+    bool attackOnCD = false;
+
+    float moveSpeed;
+    float desiredMoveSpeed;
+
+    int extraJumps;
+
+    public enum MoveState
+    {
+        Idle,
+        Walk,
+        Air,
+        Jump,
+        Dash,
+        Attack,
+        Knockback
+    }
+
+    public MoveState currentState = MoveState.Idle;
+
+    private void Start()
+    {
+        rb = GetComponent<Rigidbody>();
+    }
+    
+    private void FixedUpdate()
+    {
+        MovePlayer();
+    }
+
+    private void Update()
+    {
+        ctx.grounded = CheckGrounded();
+
+        if (ctx.grounded) extraJumps = ctx.jumps - 1;
+
+        HandleInput();
+        HandleCooldowns();
+        HandleState();
+        HandleRotation();
+        LimitPlayerSpeed();
+
+        rb.linearDamping = ctx.grounded ? ctx.groundDrag : 0;
+
+        if (moveSpeed > desiredMoveSpeed)
+        {
+            moveSpeed = Mathf.Lerp(moveSpeed, desiredMoveSpeed, Time.deltaTime * 2);
+        }
+        else moveSpeed = desiredMoveSpeed;
+    }
+
+    void HandleState()
+    {
+        if (!ctx.grounded && !isJumping)
+        {
+            if (currentState != MoveState.Air) EnterState(MoveState.Air);
+        }
+        else if (isTakingKnockback)
+        {
+            if (currentState != MoveState.Knockback) EnterState(MoveState.Knockback);
+        }
+        else if (isDashing)
+        {
+            if (currentState != MoveState.Dash) EnterState(MoveState.Dash);
+
+            desiredMoveSpeed = ctx.dashSpeed;
+        }
+        else if (isJumping)
+        {
+            if (currentState != MoveState.Jump) EnterState(MoveState.Jump);
+        }
+        else if (isAttacking)
+        {
+            if (currentState != MoveState.Attack) EnterState(MoveState.Attack);
+
+            desiredMoveSpeed = ctx.attackMoveSpeed;
+
+            Collider[] cols = Physics.OverlapSphere(attackLocation.position, .5f);
+
+            foreach (Collider col in cols) {
+                IDamageable damageable = col.GetComponent<IDamageable>();
+
+                if (damageable != null && (object)damageable != this) 
+                { 
+                    damageable.Hit(ctx.attackDamage, out IDamageable.HitCallbackContext callbackContext, modelTransform.position); 
+                    
+                    switch (callbackContext)
+                    {
+                        case IDamageable.HitCallbackContext.success:
+                            print("success");
+                            break;
+                        case IDamageable.HitCallbackContext.parried:
+                            if (!isTakingKnockback) TakeKnockback(20, .5f, ((PlayerController)damageable).modelTransform.position);
+                            print("parried");
+                            break;
+                        case IDamageable.HitCallbackContext.invulnerable:
+                            print("invulnerable");
+                            break;
+                    }
+                }
+            }
+        }
+        else if (ctx.moveDirection.magnitude > 0)
+        {
+            if (currentState != MoveState.Walk) EnterState(MoveState.Walk);
+
+            desiredMoveSpeed = ctx.walkMoveSpeed;
+        }
+        else
+        {
+            if (currentState != MoveState.Idle) EnterState(MoveState.Idle);
+        }
+    }
+
+    void HandleInput()
+    {
+        if ((!ctx.grounded && extraJumps < 1) 
+            || isJumping 
+            || isDashing 
+            || isAttacking
+            || isTakingKnockback) return;
+
+        if (ctx.jumpHasBeenPressed)
+        {
+            extraJumps--;
+            Jump();
+            EnterState(MoveState.Air);
+        }
+        else if (ctx.dashHasBeenPressed && !dashOnCD)
+        {
+            Dash();
+            EnterState(MoveState.Dash);
+        }
+        else if (ctx.attackHasBeenPressed && !attackOnCD)
+        {
+            Attack();
+            EnterState(MoveState.Attack);
+        }
+
+        ctx.jumpHasBeenPressed = false;
+        ctx.dashHasBeenPressed = false;
+        ctx.attackHasBeenPressed = false;
+    }
+
+    void MovePlayer()
+    {
+        switch (currentState)
+        {
+            case MoveState.Walk:
+
+                rb.AddForce(ctx.walkForce * Time.fixedDeltaTime * ctx.moveDirection * 100, ForceMode.Force);
+                break;
+
+            case MoveState.Air:
+
+                rb.AddForce(ctx.walkForce * Time.fixedDeltaTime * ctx.moveDirection * 40, ForceMode.Force);
+                break;
+
+            case MoveState.Dash:
+
+                rb.linearVelocity = modelTransform.forward * ctx.dashSpeed;
+                break;
+
+            case MoveState.Attack:
+
+                rb.linearVelocity = modelTransform.forward * ctx.attackMoveSpeed;
+                break;
+
+            default:
+
+                break;
+
+        }
+    }
+
+    void LimitPlayerSpeed()
+    {
+        switch (currentState)
+        {
+            case MoveState.Walk:
+
+                if (rb.linearVelocity.magnitude > moveSpeed)
+                {
+                    rb.linearVelocity = rb.linearVelocity.normalized * moveSpeed;
+                }
+
+                break;
+
+            default:
+
+                break;
+
+        }
+    }
+
+    void HandleCooldowns()
+    {
+        if (jumpTimer > 0)
+        {
+            jumpTimer -= Time.deltaTime;
+
+            if (jumpTimer <= 0)
+            {
+                ctx.jumpHasBeenPressed = false;
+                isJumping = false;
+            }
+        }
+        
+        if (dashTimer > 0)
+        {
+            dashTimer -= Time.deltaTime;
+
+            if (dashTimer <= 0)
+            {
+                ctx.dashHasBeenPressed = false;
+                isDashing = false;
+            }
+        }
+
+        if (dashCDTimer > 0)
+        {
+            dashCDTimer -= Time.deltaTime;
+            
+            if (dashCDTimer <= 0)
+            {
+                dashOnCD = false;
+            }
+        }
+
+        if (attackCDTimer > 0)
+        {
+            attackCDTimer -= Time.deltaTime;
+
+            if (attackCDTimer <= 0)
+            {
+                attackOnCD = false;
+            }
+        }
+
+        if (attackTimer > 0)
+        {
+            attackTimer -= Time.deltaTime;
+
+            if (attackTimer <= 0)
+            {
+                ctx.attackHasBeenPressed = false;
+                isAttacking = false;
+            }
+        }
+
+        if (knockbackTimer > 0)
+        {
+            knockbackTimer -= Time.deltaTime;
+
+            if (knockbackTimer <= 0)
+            {
+                isTakingKnockback = false;
+            }
+        }
+
+        if (invulnerableTimer > 0)
+        {
+            invulnerableTimer -= Time.deltaTime;
+
+            if (invulnerableTimer <= 0)
+            {
+                ctx.invulnerable = false;
+            }
+        }
+    }
+
+    void HandleRotation()
+    {
+        if (ctx.moveDirection.magnitude > 0)
+        {
+            modelTransform.forward = Vector3.Slerp(modelTransform.forward, ctx.moveDirection, Time.deltaTime * 10);
+        }
+    }
+
+    void Jump()
+    {
+        jumpTimer = jumpCD;
+        isJumping = true;
+        rb.AddForce(ctx.jumpMultiplier * transform.up, ForceMode.Impulse);
+        ctx.grounded = false;
+    }
+
+    void Dash()
+    {
+        isDashing = true;
+        dashOnCD = true;
+        dashTimer = ctx.dashLength;
+        dashCDTimer = ctx.dashCD;
+    }
+    void Attack()
+    {
+        ctx.anim.SetFloat("Attack Speed", ctx.attackSpeed);
+        ctx.anim.SetTrigger("Attack");
+
+        isAttacking = true;
+        attackOnCD = true;
+        attackTimer = ctx.attackLength / ctx.attackSpeed;
+        attackCDTimer = ctx.attackCD / ctx.attackSpeed;
+    }
+
+    void TakeKnockback(float speed, float length, Vector3 from)
+    {
+        isTakingKnockback = true;
+        knockbackTimer = length;
+
+        rb.linearVelocity = (new Vector3(modelTransform.position.x, 0, modelTransform.position.z) - new Vector3(from.x, 0, from.z)).normalized * speed;
+    }
+
+    public void Hit(float damage, out IDamageable.HitCallbackContext callbackContext, Vector3 fromPosition)
+    {
+        if (ctx.invulnerable)
+        {
+            callbackContext = IDamageable.HitCallbackContext.invulnerable;
+            return;
+        }
+        else
+        {
+            ctx.invulnerable = true;
+            invulnerableTimer = ctx.invulnerableTime;
+        }
+        
+        if (isAttacking)
+        {
+            callbackContext = IDamageable.HitCallbackContext.parried;
+            if (!isTakingKnockback) TakeKnockback(20, .5f, fromPosition);
+            return;
+        }
+
+        callbackContext = IDamageable.HitCallbackContext.success;
+        ctx.currentHealth -= damage;
+
+        if (ctx.currentHealth <= 0)
+        {
+            Die();
+            return;
+        }
+
+        TakeKnockback(30, .5f, fromPosition);
+
+    }
+
+    void EnterState(MoveState moveState)
+    {
+        currentState = moveState;
+    }
+
+    bool CheckGrounded()
+    {
+        Physics.Raycast(transform.position + (transform.up * .25f), -transform.up, out RaycastHit hit, .5f, ctx.whatIsJumpableGround);
+
+        return (hit.collider != null);
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Debug.DrawLine(transform.position + (transform.up * .25f), transform.position + (-transform.up * .5f), Color.green);
+        Gizmos.color = Color.green;
+        Gizmos.DrawSphere(attackLocation.position, .5f);
+    }
+
+    private void Die()
+    {
+        deathEvent.RaiseEvent(playerIndex);
+
+        Destroy(gameObject);
+    }
+
+}
