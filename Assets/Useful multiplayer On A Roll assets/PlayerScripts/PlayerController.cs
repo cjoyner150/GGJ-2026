@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour, IDamageable
 {
     [HideInInspector] public PlayerContext ctx;
 
     [SerializeField] IntEventSO deathEvent;
     [SerializeField] Transform modelTransform;
+    [SerializeField] Transform attackLocation;
 
     public int playerIndex;
     private Rigidbody rb;
@@ -19,13 +20,21 @@ public class PlayerController : MonoBehaviour
     float dashCDTimer = 0;
     float attackTimer = 0;
     float attackCDTimer = 0;
+    float knockbackTimer = 0;
+    float invulnerableTimer = 0;
 
     bool isJumping = false;
     bool isDashing = false;
     bool isAttacking = false;
+    bool isTakingKnockback = false;
 
     bool dashOnCD = false;
     bool attackOnCD = false;
+
+    float moveSpeed;
+    float desiredMoveSpeed;
+
+    int extraJumps;
 
     public enum MoveState
     {
@@ -34,7 +43,8 @@ public class PlayerController : MonoBehaviour
         Air,
         Jump,
         Dash,
-        Attack
+        Attack,
+        Knockback
     }
 
     public MoveState currentState = MoveState.Idle;
@@ -53,12 +63,21 @@ public class PlayerController : MonoBehaviour
     {
         ctx.grounded = CheckGrounded();
 
+        if (ctx.grounded) extraJumps = ctx.jumps - 1;
+
         HandleInput();
         HandleCooldowns();
         HandleState();
         HandleRotation();
+        LimitPlayerSpeed();
 
         rb.linearDamping = ctx.grounded ? ctx.groundDrag : 0;
+
+        if (moveSpeed > desiredMoveSpeed)
+        {
+            moveSpeed = Mathf.Lerp(moveSpeed, desiredMoveSpeed, Time.deltaTime * 2);
+        }
+        else moveSpeed = desiredMoveSpeed;
     }
 
     void HandleState()
@@ -67,9 +86,15 @@ public class PlayerController : MonoBehaviour
         {
             if (currentState != MoveState.Air) EnterState(MoveState.Air);
         }
+        else if (isTakingKnockback)
+        {
+            if (currentState != MoveState.Knockback) EnterState(MoveState.Knockback);
+        }
         else if (isDashing)
         {
             if (currentState != MoveState.Dash) EnterState(MoveState.Dash);
+
+            desiredMoveSpeed = ctx.dashSpeed;
         }
         else if (isJumping)
         {
@@ -78,10 +103,39 @@ public class PlayerController : MonoBehaviour
         else if (isAttacking)
         {
             if (currentState != MoveState.Attack) EnterState(MoveState.Attack);
+
+            desiredMoveSpeed = ctx.attackMoveSpeed;
+
+            Collider[] cols = Physics.OverlapSphere(attackLocation.position, .5f);
+
+            foreach (Collider col in cols) {
+                IDamageable damageable = col.GetComponent<IDamageable>();
+
+                if (damageable != null && (object)damageable != this) 
+                { 
+                    damageable.Hit(ctx.attackDamage, out IDamageable.HitCallbackContext callbackContext, modelTransform.position); 
+                    
+                    switch (callbackContext)
+                    {
+                        case IDamageable.HitCallbackContext.success:
+                            print("success");
+                            break;
+                        case IDamageable.HitCallbackContext.parried:
+                            if (!isTakingKnockback) TakeKnockback(20, .5f, ((PlayerController)damageable).modelTransform.position);
+                            print("parried");
+                            break;
+                        case IDamageable.HitCallbackContext.invulnerable:
+                            print("invulnerable");
+                            break;
+                    }
+                }
+            }
         }
         else if (ctx.moveDirection.magnitude > 0)
         {
             if (currentState != MoveState.Walk) EnterState(MoveState.Walk);
+
+            desiredMoveSpeed = ctx.walkMoveSpeed;
         }
         else
         {
@@ -91,13 +145,15 @@ public class PlayerController : MonoBehaviour
 
     void HandleInput()
     {
-        if (!ctx.grounded 
+        if ((!ctx.grounded && extraJumps < 1) 
             || isJumping 
             || isDashing 
-            || isAttacking) return;
+            || isAttacking
+            || isTakingKnockback) return;
 
         if (ctx.jumpHasBeenPressed)
         {
+            extraJumps--;
             Jump();
             EnterState(MoveState.Air);
         }
@@ -139,6 +195,26 @@ public class PlayerController : MonoBehaviour
             case MoveState.Attack:
 
                 rb.linearVelocity = modelTransform.forward * ctx.attackMoveSpeed;
+                break;
+
+            default:
+
+                break;
+
+        }
+    }
+
+    void LimitPlayerSpeed()
+    {
+        switch (currentState)
+        {
+            case MoveState.Walk:
+
+                if (rb.linearVelocity.magnitude > moveSpeed)
+                {
+                    rb.linearVelocity = rb.linearVelocity.normalized * moveSpeed;
+                }
+
                 break;
 
             default:
@@ -203,6 +279,25 @@ public class PlayerController : MonoBehaviour
             }
         }
 
+        if (knockbackTimer > 0)
+        {
+            knockbackTimer -= Time.deltaTime;
+
+            if (knockbackTimer <= 0)
+            {
+                isTakingKnockback = false;
+            }
+        }
+
+        if (invulnerableTimer > 0)
+        {
+            invulnerableTimer -= Time.deltaTime;
+
+            if (invulnerableTimer <= 0)
+            {
+                ctx.invulnerable = false;
+            }
+        }
     }
 
     void HandleRotation()
@@ -230,10 +325,47 @@ public class PlayerController : MonoBehaviour
     }
     void Attack()
     {
+        ctx.anim.SetFloat("Attack Speed", ctx.attackSpeed);
+        ctx.anim.SetTrigger("Attack");
+
         isAttacking = true;
         attackOnCD = true;
-        attackTimer = ctx.attackLength;
-        attackCDTimer = ctx.attackCD;
+        attackTimer = ctx.attackLength / ctx.attackSpeed;
+        attackCDTimer = ctx.attackCD / ctx.attackSpeed;
+    }
+
+    void TakeKnockback(float speed, float length, Vector3 from)
+    {
+        isTakingKnockback = true;
+        knockbackTimer = length;
+
+        rb.linearVelocity = (new Vector3(modelTransform.position.x, 0, modelTransform.position.z) - new Vector3(from.x, 0, from.z)).normalized * speed;
+    }
+
+    public void Hit(float damage, out IDamageable.HitCallbackContext callbackContext, Vector3 fromPosition)
+    {
+        if (ctx.invulnerable)
+        {
+            callbackContext = IDamageable.HitCallbackContext.invulnerable;
+            return;
+        }
+        else
+        {
+            ctx.invulnerable = true;
+            invulnerableTimer = ctx.invulnerableTime;
+        }
+        
+        if (isAttacking)
+        {
+            callbackContext = IDamageable.HitCallbackContext.parried;
+            if (!isTakingKnockback) TakeKnockback(20, .5f, fromPosition);
+            return;
+        }
+
+        callbackContext = IDamageable.HitCallbackContext.success;
+        ctx.currentHealth -= damage;
+        TakeKnockback(30, .5f, fromPosition);
+
     }
 
     void EnterState(MoveState moveState)
@@ -251,6 +383,8 @@ public class PlayerController : MonoBehaviour
     private void OnDrawGizmosSelected()
     {
         Debug.DrawLine(transform.position + (transform.up * .25f), transform.position + (-transform.up * .5f), Color.green);
+        Gizmos.color = Color.green;
+        Gizmos.DrawSphere(attackLocation.position, .5f);
     }
 
     private void Die()
