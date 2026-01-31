@@ -91,7 +91,7 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     void HandleState()
     {
-        if (!ctx.grounded && !isJumping)
+        if (!ctx.grounded && !isJumping && !isAttacking && !isDashing)
         {
             if (currentState != MoveState.Air) EnterState(MoveState.Air);
         }
@@ -115,9 +115,13 @@ public class PlayerController : MonoBehaviour, IDamageable
 
             desiredMoveSpeed = ctx.attackMoveSpeed;
 
-            Collider[] cols = Physics.OverlapSphere(attackLocation.position, .5f);
+            RaycastHit[] hits = Physics.SphereCastAll(attackLocation.position, .75f, modelTransform.forward, 1f);
 
-            foreach (Collider col in cols) {
+            foreach (RaycastHit hit in hits) {
+                Collider col = hit.collider;
+
+                if (col == null) continue;
+
                 IDamageable damageable = col.GetComponent<IDamageable>();
 
                 if (damageable != null && (object)damageable != this) 
@@ -154,15 +158,15 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     void HandleInput()
     {
-        if ((!ctx.grounded && extraJumps < 1) 
-            || isJumping 
+        if ( isJumping 
             || isDashing 
             || isAttacking
             || isTakingKnockback) return;
 
-        if (ctx.jumpHasBeenPressed)
+        if (ctx.jumpHasBeenPressed && (ctx.grounded || extraJumps > 0))
         {
-            extraJumps--;
+            if (!ctx.grounded) extraJumps--;
+
             Jump();
             EnterState(MoveState.Air);
         }
@@ -328,16 +332,35 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     void Dash()
     {
+        if (currentState == MoveState.Air) 
+        {
+            ctx.anim.SetTrigger("Jump Dash");
+        }
+        else
+        {
+            ctx.anim.SetTrigger("Dash");
+        }
+
         isDashing = true;
         dashOnCD = true;
         dashTimer = ctx.dashLength;
         dashCDTimer = ctx.dashCD;
         DashFeedback?.PlayFeedbacks();
     }
+
     void Attack()
     {
         ctx.anim.SetFloat("Attack Speed", ctx.attackSpeed);
-        ctx.anim.SetTrigger("Attack");
+
+        if (currentState == MoveState.Air)
+        {
+            ctx.anim.SetTrigger("Jump Attack");
+        }
+        else 
+        { 
+            ctx.anim.SetTrigger("Attack"); 
+        }
+
 
         isAttacking = true;
         attackOnCD = true;

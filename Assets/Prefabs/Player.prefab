@@ -726,7 +726,7 @@ PrefabInstance:
     - target: {fileID: 8222117973510623485, guid: b2e8a9f61c960a3458e83cf0b326aaa5, type: 3}
       propertyPath: managedReferences[2696573858450243826].TargetShaker
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 8766619136534929080}
     - target: {fileID: 8222117973510623485, guid: b2e8a9f61c960a3458e83cf0b326aaa5, type: 3}
       propertyPath: managedReferences[2696573858450243825].BoundRenderer
       value: 
