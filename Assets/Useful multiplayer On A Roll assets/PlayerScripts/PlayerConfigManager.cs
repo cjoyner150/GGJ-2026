@@ -10,7 +10,7 @@ public class PlayerConfigManager : MonoBehaviour
 {
     [SerializeField] private int minPlayers = 2;
     [SerializeField] private int maxPlayers = 4;
-    [SerializeField] PlayerInputManager InputManager;
+    [SerializeField] PlayerInputManager inputManager;
     [SerializeField] VoidEventSO gameEnd;
     [SerializeField] int gameplaySceneIndex = 1;
 
@@ -47,7 +47,7 @@ public class PlayerConfigManager : MonoBehaviour
 
         currentMaxPlayers = maxPlayers;
         currentMinPlayers = minPlayers;
-        InputManager.DisableJoining();
+        inputManager.DisableJoining();
     }
 
 
@@ -63,13 +63,14 @@ public class PlayerConfigManager : MonoBehaviour
 
         if (playerConfigs.Count >= currentMinPlayers && playerConfigs.All(p => p.IsReady == true))
         {
-            InputManager.DisableJoining();
+            inputManager.DisableJoining();
             SceneManager.LoadScene(gameplaySceneIndex);
         }
     }
 
     public void OnPlayerJoined(PlayerInput inp)
     {
+
         if (playerConfigs == null) return;
 
         if (!playerConfigs.Any(p => p.Input == inp))
@@ -80,7 +81,7 @@ public class PlayerConfigManager : MonoBehaviour
 
             if (playerConfigs.Count >= currentMaxPlayers)
             {
-                InputManager.DisableJoining();
+                inputManager.DisableJoining();
             }
         }
     }
@@ -92,7 +93,7 @@ public class PlayerConfigManager : MonoBehaviour
 
         singleplayer = true;
 
-        InputManager.EnableJoining();
+        inputManager.EnableJoining();
     }
 
     public void ConfigureMultiplayer()
@@ -102,7 +103,7 @@ public class PlayerConfigManager : MonoBehaviour
 
         singleplayer = false;
 
-        InputManager.EnableJoining();
+        inputManager.EnableJoining();
     }
 
     public List<PlayerConfig> GetPlayerConfigs()

@@ -39,6 +39,7 @@ public class PlayerInputHandler : MonoBehaviour
         config.Input.onActionTriggered += OnActionTriggered;
 
         playerMover.playerIndex = config.PlayerIndex;
+        playerMover.ctx = ctx;
     }
 
     public void OnActionTriggered(InputAction.CallbackContext context)
@@ -55,22 +56,33 @@ public class PlayerInputHandler : MonoBehaviour
     public void OnMove(InputAction.CallbackContext context)
     {
         var moveVector = context.ReadValue<Vector2>();
+
+        print(moveVector.x + " " + moveVector.y);
         ctx.moveDirection = new Vector3(moveVector.x, 0, moveVector.y);
     }
 
     public void OnJump(InputAction.CallbackContext context)
     {
-        ctx.jumpHasBeenPressed = true;
+        if (playerMover.currentState == PlayerController.MoveState.Idle || playerMover.currentState == PlayerController.MoveState.Walk)
+        {
+            ctx.jumpHasBeenPressed = true;
+        }
     }
 
     public void OnDash(InputAction.CallbackContext context)
     {
-        ctx.dashHasBeenPressed = true;
+        if (playerMover.currentState == PlayerController.MoveState.Idle || playerMover.currentState == PlayerController.MoveState.Walk)
+        {
+            ctx.dashHasBeenPressed = true;
+        }
     }
 
     public void OnAttack(InputAction.CallbackContext context)
     {
-        ctx.attackHasBeenPressed = true;
+        if (playerMover.currentState == PlayerController.MoveState.Idle || playerMover.currentState == PlayerController.MoveState.Walk)
+        {
+            ctx.attackHasBeenPressed = true;
+        }
     }
 
     private void OnDestroy()
