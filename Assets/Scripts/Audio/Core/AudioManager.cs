@@ -78,6 +78,7 @@ public class AudioManager : MonoBehaviour
     // Gameplay
     public void playFootstep(Vector3 pos) => PlayAt(events.playerFootstep, pos);
     public void playPunch(Vector3 pos) => PlayAt(events.playerPunch, pos);
+    public void playAttack(Vector3 pos) => PlayAt(events.playerAttack, pos);
 
 
 

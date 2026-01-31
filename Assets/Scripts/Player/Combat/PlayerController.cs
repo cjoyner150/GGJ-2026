@@ -343,6 +343,8 @@ public class PlayerController : MonoBehaviour, IDamageable
         attackOnCD = true;
         attackTimer = ctx.attackLength / ctx.attackSpeed;
         attackCDTimer = ctx.attackCD / ctx.attackSpeed;
+        if (AudioManager.Instance == null) return;
+        AudioManager.Instance.playAttack(transform.position);
         SlashFeedback?.PlayFeedbacks(); 
     }
 
@@ -375,6 +377,11 @@ public class PlayerController : MonoBehaviour, IDamageable
         }
 
         callbackContext = IDamageable.HitCallbackContext.success;
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.playPunch(transform.position);
+            AudioManager.Instance.voiceFight(transform.position);
+        }
         ctx.currentHealth -= damage;
 
         if (ctx.currentHealth <= 0)

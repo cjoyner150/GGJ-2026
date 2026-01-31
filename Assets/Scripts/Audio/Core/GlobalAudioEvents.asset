@@ -54,6 +54,13 @@ MonoBehaviour:
       Data3: -1846793317
       Data4: 352421475
     Path: event:/Punch
+  playerAttack:
+    Guid:
+      Data1: 125035156
+      Data2: 1231612022
+      Data3: 931189888
+      Data4: -1742387375
+    Path: event:/Miss
   music:
     Guid:
       Data1: 1926003601
