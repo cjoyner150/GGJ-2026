@@ -18,25 +18,25 @@ MonoBehaviour:
       Data2: 1122290238
       Data3: -534630473
       Data4: -41129645
-    Path: event:/CardFlip
+    Path: event:/CardPickup
   music:
     Guid:
       Data1: -1273586950
       Data2: 1122290238
       Data3: -534630473
       Data4: -41129645
-    Path: event:/CardFlip
+    Path: event:/CardPickup
   ambient:
     Guid:
       Data1: -1273586950
       Data2: 1122290238
       Data3: -534630473
       Data4: -41129645
-    Path: event:/CardFlip
+    Path: event:/CardPickup
   cardPickup:
     Guid:
       Data1: -1273586950
       Data2: 1122290238
       Data3: -534630473
       Data4: -41129645
-    Path: event:/CardFlip
+    Path: event:/CardPickup
