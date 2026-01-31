@@ -1,3 +1,4 @@
+using MoreMountains.Feedbacks;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -35,6 +36,14 @@ public class PlayerController : MonoBehaviour, IDamageable
     float desiredMoveSpeed;
 
     int extraJumps;
+
+    [Header("Feedbacks")]
+    public MMF_Player JumpFeedback;
+    public MMF_Player LandingFeedback;
+    public MMF_Player DamageFeedback;
+    public MMF_Player DashFeedback;
+    public MMF_Player SlashFeedback;
+
 
     public enum MoveState
     {
@@ -314,6 +323,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         isJumping = true;
         rb.AddForce(ctx.jumpMultiplier * transform.up, ForceMode.Impulse);
         ctx.grounded = false;
+        JumpFeedback?.PlayFeedbacks();
     }
 
     void Dash()
@@ -322,6 +332,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         dashOnCD = true;
         dashTimer = ctx.dashLength;
         dashCDTimer = ctx.dashCD;
+        DashFeedback?.PlayFeedbacks();
     }
     void Attack()
     {
@@ -332,6 +343,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         attackOnCD = true;
         attackTimer = ctx.attackLength / ctx.attackSpeed;
         attackCDTimer = ctx.attackCD / ctx.attackSpeed;
+        SlashFeedback?.PlayFeedbacks(); 
     }
 
     void TakeKnockback(float speed, float length, Vector3 from)
@@ -372,7 +384,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         }
 
         TakeKnockback(30, .5f, fromPosition);
-
+        DamageFeedback?.PlayFeedbacks();
     }
 
     void EnterState(MoveState moveState)
