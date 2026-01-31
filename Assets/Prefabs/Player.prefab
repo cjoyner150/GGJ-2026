@@ -44,6 +44,7 @@ GameObject:
   - component: {fileID: 1669602434419556885}
   - component: {fileID: 6558358289595904245}
   - component: {fileID: 5623207455888612827}
+  - component: {fileID: 187955362140876361}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -101,7 +102,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1454249107705364219}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 03f81955a30905042b668f00952d6acc, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -130,23 +131,35 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ctx:
-    moveSpeed: 5
+    walkMoveSpeed: 0
     walkForce: 10
     grounded: 0
     groundDrag: 0
     jumpMultiplier: 10
+    jumps: 1
     whatIsJumpableGround:
       serializedVersion: 2
       m_Bits: 1
     dashLength: 0
     dashSpeed: 0
     dashCD: 0
+    attackLength: 0
+    attackCD: 0
+    attackMoveSpeed: 0
+    attackDamage: 0
+    attackSpeed: 0
+    anim: {fileID: 0}
     moveDirection: {x: 0, y: 0, z: 0}
     jumpHasBeenPressed: 0
     dashHasBeenPressed: 0
     attackHasBeenPressed: 0
+    maxHealth: 0
+    currentHealth: 0
+    invulnerable: 0
+    invulnerableTime: 0
   deathEvent: {fileID: 11400000, guid: 46b6a4991943e254ab06b7cb9c79e860, type: 2}
   modelTransform: {fileID: 3303293069357232486}
+  attackLocation: {fileID: 4177136104500174062}
   playerIndex: 0
   currentState: 0
 --- !u!114 &5623207455888612827
@@ -162,22 +175,55 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ctx:
-    moveSpeed: 10
-    walkForce: 10
+    walkMoveSpeed: 10
+    walkForce: 20
     grounded: 0
     groundDrag: 3
     jumpMultiplier: 7
+    jumps: 1
     whatIsJumpableGround:
       serializedVersion: 2
       m_Bits: 1
     dashLength: 0.15
     dashSpeed: 30
     dashCD: 1
+    attackLength: 0.5
+    attackCD: 1
+    attackMoveSpeed: 1
+    attackDamage: 10
+    attackSpeed: 1.2
+    anim: {fileID: 187955362140876361}
     moveDirection: {x: 0, y: 0, z: 0}
     jumpHasBeenPressed: 0
     dashHasBeenPressed: 0
     attackHasBeenPressed: 0
+    maxHealth: 100
+    currentHealth: 0
+    invulnerable: 0
+    invulnerableTime: 1
   delayInputForSeconds: 1
+--- !u!95 &187955362140876361
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1454249107705364219}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 99bcdcd2f19a3b447b0fe611e9655e56, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &2568354321982377807
 GameObject:
   m_ObjectHideFlags: 0

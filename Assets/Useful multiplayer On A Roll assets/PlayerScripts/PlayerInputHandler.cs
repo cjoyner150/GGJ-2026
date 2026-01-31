@@ -40,6 +40,7 @@ public class PlayerInputHandler : MonoBehaviour
 
         playerMover.playerIndex = config.PlayerIndex;
         playerMover.ctx = ctx;
+        ctx.currentHealth = ctx.maxHealth;
 
         GetComponentInChildren<MeshRenderer>().material.color = config.PlayerColor;
     }
@@ -59,13 +60,12 @@ public class PlayerInputHandler : MonoBehaviour
     {
         var moveVector = context.ReadValue<Vector2>();
 
-        print(moveVector.x + " " + moveVector.y);
         ctx.moveDirection = new Vector3(moveVector.x, 0, moveVector.y);
     }
 
     public void OnJump(InputAction.CallbackContext context)
     {
-        if (playerMover.currentState == PlayerController.MoveState.Idle || playerMover.currentState == PlayerController.MoveState.Walk)
+        if (playerMover.currentState == PlayerController.MoveState.Idle || playerMover.currentState == PlayerController.MoveState.Walk || playerMover.currentState == PlayerController.MoveState.Air)
         {
             ctx.jumpHasBeenPressed = true;
         }
