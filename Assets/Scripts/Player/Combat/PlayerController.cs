@@ -364,6 +364,13 @@ public class PlayerController : MonoBehaviour, IDamageable
 
         callbackContext = IDamageable.HitCallbackContext.success;
         ctx.currentHealth -= damage;
+
+        if (ctx.currentHealth <= 0)
+        {
+            Die();
+            return;
+        }
+
         TakeKnockback(30, .5f, fromPosition);
 
     }
