@@ -120,9 +120,6 @@ public class PlayerController : MonoBehaviour, IDamageable
 
             RaycastHit[] hits = Physics.SphereCastAll(attackLocation.position, .75f, modelTransform.forward, 1f);
 
-            Gizmos.color = Color.green;
-            Gizmos.DrawSphere(attackLocation.position, .75f);
-
             foreach (RaycastHit hit in hits) {
                 Collider col = hit.collider;
 
@@ -441,7 +438,7 @@ public class PlayerController : MonoBehaviour, IDamageable
     {
         Debug.DrawLine(transform.position + (transform.up * .25f), transform.position + (-transform.up * .5f), Color.green);
         Gizmos.color = Color.green;
-        Gizmos.DrawSphere(attackLocation.position, .5f);
+        Gizmos.DrawSphere(attackLocation.position, .75f);
     }
 
     private void Die()
