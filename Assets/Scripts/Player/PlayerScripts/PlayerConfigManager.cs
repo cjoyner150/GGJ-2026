@@ -146,5 +146,6 @@ public class PlayerConfig
     public string CharacterName {  get; set; }
     public bool IsReady { get; set; }
     public Color PlayerColor { get; set; }
+    public int RoundsWon { get; set; }
 
 }
