@@ -5,14 +5,13 @@ public class PlayerGold : MonoBehaviour
 {
     public int goldAmount;
 
-    public bool SpendGold(int amount)
+    public bool HasEnoughGold(int amount)
     {
-        if (amount > goldAmount)
-        {
-            return false; // Not enough gold
-        }
+        return goldAmount >= amount;
+    }
+    public void SpendGold(int amount)
+    {
         goldAmount -= amount;
-        return true; // Successfully spent gold
     }
 
     public void AddGold(int amount)
