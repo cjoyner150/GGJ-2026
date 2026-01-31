@@ -72,6 +72,6 @@ public class Stats
     }
 
     //debugging
-    public override string ToString() => $"Attack: {Attack}, Defense: {Defense}, Health: {Health}, Power: {Power}, AttackSpeed: {AttackSpeed}, MoveSpeed: {MoveSpeed}, Scale: {Scale}";
+    public override string ToString() => $"Health: {Health}, Power: {Power}, AttackSpeed: {AttackSpeed}, MoveSpeed: {MoveSpeed}, Scale: {Scale}";
 
 }
