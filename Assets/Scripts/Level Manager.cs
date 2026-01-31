@@ -1,3 +1,4 @@
+using MoreMountains.Feedbacks;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,6 +7,8 @@ public class LevelManager : MonoBehaviour
 {
     [SerializeField] IntEventSO playerDiedEvent;
     [SerializeField] IntEventSO roundWonEvent;
+
+    public MMF_Player fader;
 
     List<PlayerConfig> configs;
 
@@ -24,6 +27,7 @@ public class LevelManager : MonoBehaviour
     void Start()
     {
         configs = PlayerConfigManager.Instance.GetPlayerConfigs();
+        fader?.PlayFeedbacks();
     }
 
     void OnPlayerDied(int playerIndex)
