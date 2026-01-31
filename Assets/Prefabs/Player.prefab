@@ -192,7 +192,7 @@ MonoBehaviour:
       m_Bits: 1
     airMoveSpeed: 10
     dashLength: 0.15
-    dashSpeed: 30
+    dashSpeed: 25
     dashCD: 1
     attackLength: 0.5
     attackCD: 1

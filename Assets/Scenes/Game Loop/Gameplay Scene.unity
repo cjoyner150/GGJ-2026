@@ -3583,16 +3583,16 @@ MonoBehaviour:
   Targets:
   - Object: {fileID: 0}
     Weight: 1
-    Radius: 2
+    Radius: 3
   - Object: {fileID: 0}
     Weight: 1
-    Radius: 2
+    Radius: 3
   - Object: {fileID: 0}
     Weight: 1
-    Radius: 2
+    Radius: 3
   - Object: {fileID: 0}
     Weight: 1
-    Radius: 2
+    Radius: 3
   m_LegacyTargets: []
 --- !u!4 &1973810864
 Transform:

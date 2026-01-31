@@ -85,7 +85,7 @@ public class PlayerController : MonoBehaviour, IDamageable
 
         if (moveSpeed > desiredMoveSpeed)
         {
-            moveSpeed = Mathf.Lerp(moveSpeed, desiredMoveSpeed, Time.deltaTime * 2);
+            moveSpeed = Mathf.Lerp(moveSpeed, desiredMoveSpeed, Time.deltaTime * 4);
         }
         else moveSpeed = desiredMoveSpeed;
     }
