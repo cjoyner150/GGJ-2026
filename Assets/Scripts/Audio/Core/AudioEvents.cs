@@ -7,6 +7,8 @@ public class AudioEvents : ScriptableObject
     [Header("UI")]
     public EventReference uiClick;
     public EventReference cardPickup;
+    public EventReference uiJoin;
+    public EventReference uiReady;
 
     [Header("Player - Movement")]
     public EventReference playerFootstep;

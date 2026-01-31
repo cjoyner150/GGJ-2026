@@ -26,6 +26,20 @@ MonoBehaviour:
       Data3: -534630473
       Data4: -41129645
     Path: event:/UI/CardPickup
+  uiJoin:
+    Guid:
+      Data1: -1993097929
+      Data2: 1135685128
+      Data3: -1302958955
+      Data4: -1425376957
+    Path: event:/UI/Join
+  uiReady:
+    Guid:
+      Data1: -1350262647
+      Data2: 1286438834
+      Data3: 964280465
+      Data4: 1144550041
+    Path: event:/UI/Ready
   playerFootstep:
     Guid:
       Data1: 283272385

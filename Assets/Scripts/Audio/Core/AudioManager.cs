@@ -68,6 +68,8 @@ public class AudioManager : MonoBehaviour
     // UI
     public void cardPickup() => PlayUI(events.cardPickup);
     public void uiClick() => PlayUI(events.uiClick);
+    public void uiJoin() => PlayUI(events.uiJoin);
+    public void uiReady() => PlayUI(events.uiReady);
 
     // Voice
     public void voiceEnd() => PlayUI(events.voiceEnd);
@@ -78,7 +80,6 @@ public class AudioManager : MonoBehaviour
     public void playPunch(Vector3 pos) => PlayAt(events.playerPunch, pos);
 
 
-    
 
     // ---------------------------
     // Music

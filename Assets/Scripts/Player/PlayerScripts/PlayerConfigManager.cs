@@ -59,6 +59,10 @@ public class PlayerConfigManager : MonoBehaviour
     public void SetPlayerReady(int index)
     {
         playerConfigs[index].IsReady = true;
+        if (AudioManager.Instance != null)
+        { 
+            AudioManager.Instance.uiReady();
+        }
 
         if (playerConfigs.Count >= currentMinPlayers && playerConfigs.All(p => p.IsReady == true))
         {
@@ -71,6 +75,10 @@ public class PlayerConfigManager : MonoBehaviour
     {
 
         if (playerConfigs == null) return;
+        if (AudioManager.Instance != null)
+        { 
+            AudioManager.Instance.uiJoin();
+        }
 
         if (!playerConfigs.Any(p => p.Input == inp))
         {
