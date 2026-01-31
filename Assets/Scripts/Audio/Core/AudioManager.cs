@@ -65,7 +65,19 @@ public class AudioManager : MonoBehaviour
 
     // Wrapper using AudioEvents
 
+    // UI
     public void cardPickup() => PlayUI(events.cardPickup);
+    public void uiClick() => PlayUI(events.uiClick);
+
+    // Voice
+    public void voiceEnd() => PlayUI(events.voiceEnd);
+    public void voiceFight(Vector3 pos) => PlayAt(events.voiceFight, pos);
+
+    // Gameplay
+    public void playFootstep(Vector3 pos) => PlayAt(events.playerFootstep, pos);
+    public void playPunch(Vector3 pos) => PlayAt(events.playerPunch, pos);
+
+
     
 
     // ---------------------------
