@@ -78,6 +78,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         HandleCooldowns();
         HandleState();
         HandleRotation();
+        HandleAnimations();
         LimitPlayerSpeed();
 
         rb.linearDamping = ctx.grounded ? ctx.groundDrag : 0;
@@ -94,6 +95,8 @@ public class PlayerController : MonoBehaviour, IDamageable
         if (!ctx.grounded && !isJumping && !isAttacking && !isDashing)
         {
             if (currentState != MoveState.Air) EnterState(MoveState.Air);
+
+            desiredMoveSpeed = ctx.airMoveSpeed;
         }
         else if (isTakingKnockback)
         {
@@ -217,6 +220,14 @@ public class PlayerController : MonoBehaviour, IDamageable
         }
     }
 
+    void HandleAnimations()
+    {
+        ctx.anim.SetBool("Grounded", ctx.grounded);
+        ctx.anim.SetBool("Dashing", isDashing);
+        ctx.anim.SetBool("Attacking", isAttacking);
+        ctx.anim.SetBool("Jumping", isJumping);
+    }
+
     void LimitPlayerSpeed()
     {
         switch (currentState)
@@ -226,6 +237,19 @@ public class PlayerController : MonoBehaviour, IDamageable
                 if (rb.linearVelocity.magnitude > moveSpeed)
                 {
                     rb.linearVelocity = rb.linearVelocity.normalized * moveSpeed;
+                }
+
+                break;
+
+            case MoveState.Air:
+
+                Vector3 vel = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
+
+                if (vel.magnitude > moveSpeed)
+                {
+                    vel = vel.normalized * moveSpeed;
+
+                    rb.linearVelocity = new Vector3(vel.x, rb.linearVelocity.y, vel.z);
                 }
 
                 break;
@@ -332,15 +356,6 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     void Dash()
     {
-        if (currentState == MoveState.Air) 
-        {
-            ctx.anim.SetTrigger("Jump Dash");
-        }
-        else
-        {
-            ctx.anim.SetTrigger("Dash");
-        }
-
         isDashing = true;
         dashOnCD = true;
         dashTimer = ctx.dashLength;
@@ -351,16 +366,6 @@ public class PlayerController : MonoBehaviour, IDamageable
     void Attack()
     {
         ctx.anim.SetFloat("Attack Speed", ctx.attackSpeed);
-
-        if (currentState == MoveState.Air)
-        {
-            ctx.anim.SetTrigger("Jump Attack");
-        }
-        else 
-        { 
-            ctx.anim.SetTrigger("Attack"); 
-        }
-
 
         isAttacking = true;
         attackOnCD = true;
@@ -433,7 +438,7 @@ public class PlayerController : MonoBehaviour, IDamageable
     {
         Debug.DrawLine(transform.position + (transform.up * .25f), transform.position + (-transform.up * .5f), Color.green);
         Gizmos.color = Color.green;
-        Gizmos.DrawSphere(attackLocation.position, .5f);
+        Gizmos.DrawSphere(attackLocation.position, .75f);
     }
 
     private void Die()
