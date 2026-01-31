@@ -39,8 +39,16 @@ public class PlayerController : MonoBehaviour
 
         if (!ctx.grounded)
         {
-
+            EnterState(MoveState.Air);
         }
+        else if ()
+    }
+
+    void EnterState(MoveState moveState)
+    {
+        currentState = moveState;
+
+
     }
 
     bool CheckGrounded()
