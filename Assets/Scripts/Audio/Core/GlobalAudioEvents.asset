@@ -40,6 +40,27 @@ MonoBehaviour:
       Data3: 964280465
       Data4: 1144550041
     Path: event:/UI/Ready
+  uiTickUp:
+    Guid:
+      Data1: -878044269
+      Data2: 1108127209
+      Data3: 77535420
+      Data4: 910259500
+    Path: event:/TickUp
+  uiTickDown:
+    Guid:
+      Data1: 32110904
+      Data2: 1289401356
+      Data3: 813760402
+      Data4: -1738386174
+    Path: event:/TickDown
+  uiBet:
+    Guid:
+      Data1: -1349030330
+      Data2: 1104536002
+      Data3: 1601689485
+      Data4: 536384397
+    Path: event:/UI/Bet
   playerFootstep:
     Guid:
       Data1: 283272385

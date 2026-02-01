@@ -74,6 +74,7 @@ public class BiddingInputHandler : MonoBehaviour
         }
         {
             TicDownEffect?.PlayFeedbacks();
+            AudioManager.Instance.uiTickDown();
         }
 
     }
@@ -90,6 +91,7 @@ public class BiddingInputHandler : MonoBehaviour
         else
         {
             TicUpEffect?.PlayFeedbacks();
+            AudioManager.Instance.uiTickUp();
         }
     }
 
@@ -97,6 +99,7 @@ public class BiddingInputHandler : MonoBehaviour
     {
         canInputTimer = canInputCD;
         SMEffect?.PlayFeedbacks();
+        AudioManager.Instance.uiBet();
         EndTurn(false, currentlyBidding);
     }
 
@@ -104,6 +107,7 @@ public class BiddingInputHandler : MonoBehaviour
     {
         canInputTimer = canInputCD;
         BMEffect?.PlayFeedbacks();
+        AudioManager.Instance.uiTake();
         EndTurn(true, currentlyBidding);
     }
 
@@ -131,7 +135,7 @@ public class BiddingInputHandler : MonoBehaviour
         bidNumberTMP.text = $"{currentlyBidding}";
 
         turnIndicator.SetActive(IsTurn);
-        
+
     }
 
     private void Update()
@@ -149,7 +153,7 @@ public class TurnContext
     public int acornBidAmount;
     public BiddingInputHandler player;
 
-    public TurnContext(bool passedTurn, int acornBidAmount , BiddingInputHandler player)
+    public TurnContext(bool passedTurn, int acornBidAmount, BiddingInputHandler player)
     {
         this.passedTurn = passedTurn;
         this.acornBidAmount = acornBidAmount;
