@@ -16,3 +16,4 @@ MonoBehaviour:
   maskPrefab: {fileID: 2686955572923395045, guid: a1bb09fa34ce24943809498fb22c822f, type: 3}
   maskDescription: Reduces player size and health
   maskDoom: 2
+  type: 6

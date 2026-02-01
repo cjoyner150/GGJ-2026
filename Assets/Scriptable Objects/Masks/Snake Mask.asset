@@ -16,3 +16,4 @@ MonoBehaviour:
   maskPrefab: {fileID: 2686955572923395045, guid: c42ed695d59f6a24fb257429fc962f3b, type: 3}
   maskDescription: No jumping
   maskDoom: 1
+  type: 7

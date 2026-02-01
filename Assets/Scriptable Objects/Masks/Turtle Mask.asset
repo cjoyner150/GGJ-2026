@@ -16,3 +16,4 @@ MonoBehaviour:
   maskPrefab: {fileID: 2686955572923395045, guid: 3173f40f28a2f7e44964ac6a9d02a0d6, type: 3}
   maskDescription: Significantly cuts movement speed
   maskDoom: 3
+  type: 8

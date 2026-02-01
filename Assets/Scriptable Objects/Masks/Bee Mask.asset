@@ -16,3 +16,4 @@ MonoBehaviour:
   maskPrefab: {fileID: 1676501669943858497, guid: 825940ae1deb2ee4cb87358702746425, type: 3}
   maskDescription: All other players gets stat buffs
   maskDoom: 2
+  type: 2

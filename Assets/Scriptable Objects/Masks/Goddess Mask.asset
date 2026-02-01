@@ -16,3 +16,4 @@ MonoBehaviour:
   maskPrefab: {fileID: 2686955572923395045, guid: d9338477aa28bad498a7e1d507b12ff2, type: 3}
   maskDescription: A blessing
   maskDoom: 0
+  type: 8

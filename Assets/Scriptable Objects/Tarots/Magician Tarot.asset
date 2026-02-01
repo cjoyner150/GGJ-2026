@@ -16,3 +16,4 @@ MonoBehaviour:
   tarotPrefab: {fileID: 1034757793665291975, guid: b9f3e2a7456fc6948a776781605e200f, type: 3}
   description: Player gets an additional jump
   UIAsset: {fileID: 21300000, guid: 875a1d5fdf5484942a4f1c8ac442fad9, type: 3}
+  type: 6

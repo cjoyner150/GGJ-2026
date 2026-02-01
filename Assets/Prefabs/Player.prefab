@@ -134,6 +134,7 @@ MonoBehaviour:
     walkForce: 10
     grounded: 0
     groundDrag: 0
+    knockbackMultiplier: 1
     jumpMultiplier: 10
     jumps: 1
     whatIsJumpableGround:
@@ -148,6 +149,8 @@ MonoBehaviour:
     attackMoveSpeed: 0
     attackDamage: 0
     attackSpeed: 0
+    scale: 0
+    man: 0
     anim: {fileID: 0}
     moveDirection: {x: 0, y: 0, z: 0}
     jumpHasBeenPressed: 0
@@ -168,6 +171,10 @@ MonoBehaviour:
   SlashFeedbackH: {fileID: 1198845817745528407}
   SlashFeedbackV: {fileID: 5065799236077336945}
   ParryFeedback: {fileID: 5583011094781767428}
+  minStepSpeed: 0.6
+  stepDistanceWalk: 1.7
+  stepDistanceRun: 2.6
+  runSpeedThreshold: 5
   currentState: 0
 --- !u!114 &5623207455888612827
 MonoBehaviour:
@@ -186,6 +193,7 @@ MonoBehaviour:
     walkForce: 20
     grounded: 0
     groundDrag: 3
+    knockbackMultiplier: 1
     jumpMultiplier: 7
     jumps: 1
     whatIsJumpableGround:
@@ -200,6 +208,8 @@ MonoBehaviour:
     attackMoveSpeed: 1
     attackDamage: 10
     attackSpeed: 1.2
+    scale: 0
+    man: 0
     anim: {fileID: 3645445398476296485}
     moveDirection: {x: 0, y: 0, z: 0}
     jumpHasBeenPressed: 0

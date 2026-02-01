@@ -7,4 +7,5 @@ public class TarotSO : ScriptableObject
     public GameObject tarotPrefab;
     public string description;
     public Sprite UIAsset;
+    public TarotObject.cardType type;
 }
