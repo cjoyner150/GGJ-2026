@@ -147,7 +147,6 @@ public class PlayerConfig
     public bool IsReady { get; set; }
     public Color PlayerColor { get; set; }
     public int RoundsWon { get; set; }
-
     public int Acorns { get; set; }
 
 }
