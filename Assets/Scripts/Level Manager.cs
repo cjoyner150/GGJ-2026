@@ -1,6 +1,7 @@
 using MoreMountains.Feedbacks;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 
@@ -11,6 +12,9 @@ public class LevelManager : MonoBehaviour
 
     [SerializeField] GameObject roundWinTimeline;
     [SerializeField] TextMeshProUGUI winTMP;
+
+    [SerializeField] GameObject gameplayCanvas;
+    [SerializeField] SkinnedMeshRenderer playerWinRenderer;
 
     public MMF_Player fader;
 
@@ -30,7 +34,7 @@ public class LevelManager : MonoBehaviour
 
     void Start()
     {
-        configs = PlayerConfigManager.Instance.GetPlayerConfigs();
+        configs = PlayerConfigManager.Instance.GetPlayerConfigs().ToArray().ToList();
         fader?.PlayFeedbacks();
     }
 
@@ -46,11 +50,16 @@ public class LevelManager : MonoBehaviour
 
     void OnRoundWin(int playerIndex)
     {
-        PlayerConfigManager.Instance.GetPlayerConfigs()[playerIndex].RoundsWon++;
+        PlayerConfig cfg = PlayerConfigManager.Instance.GetPlayerConfigs()[playerIndex];
+
+        cfg.RoundsWon++;
 
         winTMP.text = $"Player {playerIndex + 1} won the round! " +
-            $"\nPlayer {playerIndex + 1} has {PlayerConfigManager.Instance.GetPlayerConfigs()[playerIndex].RoundsWon} wins.";
+            $"\nPlayer {playerIndex + 1} has {cfg.RoundsWon} wins.";
         roundWinTimeline.SetActive(true);
+        gameplayCanvas.SetActive(false);
+
+        playerWinRenderer.material.color = cfg.PlayerColor;
     }
 
 }

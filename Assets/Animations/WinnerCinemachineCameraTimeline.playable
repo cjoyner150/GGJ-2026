@@ -183,7 +183,7 @@ MonoBehaviour:
   m_OpenClipOffsetRotation: {x: 0, y: 0, z: 0, w: 1}
   m_Rotation: {x: 0, y: 0, z: 0, w: 1}
   m_ApplyOffsets: 0
---- !u!114 &5609386211723658010
+--- !u!114 &6475038647204987562
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
@@ -197,7 +197,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineShot
   DisplayName: 
   VirtualCamera:
-    exposedName: 52b4c12df57dee447a019c99e95e6176
+    exposedName: 8a9bad989f076194f901857d2571ba32
     defaultValue: {fileID: 0}
 --- !u!114 &6837959780369110473
 MonoBehaviour:
@@ -221,10 +221,10 @@ MonoBehaviour:
   m_Children: []
   m_Clips:
   - m_Version: 1
-    m_Start: 0.000003333333332022903
+    m_Start: 0
     m_ClipIn: 0
-    m_Asset: {fileID: 5609386211723658010}
-    m_Duration: 5.999996666666668
+    m_Asset: {fileID: 6475038647204987562}
+    m_Duration: 5
     m_TimeScale: 1
     m_ParentTrack: {fileID: 6837959780369110473}
     m_EaseInDuration: 0
