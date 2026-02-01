@@ -2288,9 +2288,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Mask Name
-
-'
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 1493c7a4844a61343a5ab8b8232bc7d1, type: 2}
   m_sharedMaterial: {fileID: 3086538305463101287, guid: 1493c7a4844a61343a5ab8b8232bc7d1, type: 2}
@@ -2317,7 +2315,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 35.65
+  m_fontSize: 36
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -4726,7 +4724,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: gewiuogbwe9ugbe9uwhg9iewbguiewbgv9uwebguivebw9upgbepiugbwep9ugbp9uwb
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 1493c7a4844a61343a5ab8b8232bc7d1, type: 2}
   m_sharedMaterial: {fileID: 3086538305463101287, guid: 1493c7a4844a61343a5ab8b8232bc7d1, type: 2}
@@ -4753,7 +4751,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 18.1
+  m_fontSize: 36
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -13415,7 +13413,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Doom: 2'
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 1493c7a4844a61343a5ab8b8232bc7d1, type: 2}
   m_sharedMaterial: {fileID: 3086538305463101287, guid: 1493c7a4844a61343a5ab8b8232bc7d1, type: 2}
@@ -13442,7 +13440,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 31.95
+  m_fontSize: 36
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
