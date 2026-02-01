@@ -422,6 +422,7 @@ public class PlayerController : MonoBehaviour, IDamageable
             if (!isTakingKnockback)
             {
                 TakeKnockback(20, .5f, fromPosition);
+                AudioManager.Instance?.playParry(transform.position);
                 ParryFeedback?.PlayFeedbacks();
             }
             return;
