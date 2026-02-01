@@ -16,3 +16,4 @@ MonoBehaviour:
   maskPrefab: {fileID: 2686955572923395045, guid: 51b431635cb232045bd698283bdb10b9, type: 3}
   maskDescription: Player explodes and dies after a specific amount of time
   maskDoom: 3
+  type: 5

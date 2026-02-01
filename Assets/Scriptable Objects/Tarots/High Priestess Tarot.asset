@@ -16,3 +16,4 @@ MonoBehaviour:
   tarotPrefab: {fileID: 1034757793665291975, guid: 2d3b11587f1b34f4e9621ca5953ff9b1, type: 3}
   description: Players gains additional health
   UIAsset: {fileID: 21300000, guid: 8e8d8cfd840fee04b9492e725c169bc6, type: 3}
+  type: 2

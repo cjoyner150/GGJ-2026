@@ -75,6 +75,47 @@ public class PlayerController : MonoBehaviour, IDamageable
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
+        //modelTransform.localScale = new Vector3(ctx.scale, ctx.scale, ctx.scale);
+
+        if (ctx.man) Invoke(nameof(ManDie), 30f);
+    }
+
+    void ManDie()
+    {
+        ctx.currentHealth = 0;
+
+        RaycastHit[] hits = Physics.SphereCastAll(attackLocation.position, .75f, modelTransform.forward, 1f);
+
+        foreach (RaycastHit hit in hits)
+        {
+            Collider col = hit.collider;
+
+            if (col == null) continue;
+
+            IDamageable damageable = col.GetComponent<IDamageable>();
+
+            if (damageable != null && (object)damageable != this)
+            {
+                damageable.Hit(100, out IDamageable.HitCallbackContext callbackContext, modelTransform.position);
+
+                switch (callbackContext)
+                {
+                    case IDamageable.HitCallbackContext.success:
+                        print("success");
+                        break;
+                    case IDamageable.HitCallbackContext.parried:
+                        print("parried");
+                        break;
+                    case IDamageable.HitCallbackContext.invulnerable:
+                        print("invulnerable");
+                        break;
+                }
+            }
+        }
+
+        // max implement explosion here
+
+        Die();
     }
 
     private void FixedUpdate()
@@ -191,6 +232,8 @@ public class PlayerController : MonoBehaviour, IDamageable
         if (ctx.jumpHasBeenPressed && (ctx.grounded || extraJumps > 0))
         {
             if (!ctx.grounded) extraJumps--;
+
+            if (ctx.jumps == 0) return;
 
             Jump();
             EnterState(MoveState.Air);
@@ -416,7 +459,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         isTakingKnockback = true;
         knockbackTimer = length;
 
-        rb.linearVelocity = (new Vector3(modelTransform.position.x, 0, modelTransform.position.z) - new Vector3(from.x, 0, from.z)).normalized * speed;
+        rb.linearVelocity = (new Vector3(modelTransform.position.x, 0, modelTransform.position.z) - new Vector3(from.x, 0, from.z)).normalized * speed * ctx.knockbackMultiplier;
     }
 
     public void Hit(float damage, out IDamageable.HitCallbackContext callbackContext, Vector3 fromPosition)

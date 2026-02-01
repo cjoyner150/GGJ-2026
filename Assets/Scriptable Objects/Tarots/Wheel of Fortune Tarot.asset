@@ -16,3 +16,4 @@ MonoBehaviour:
   tarotPrefab: {fileID: 1034757793665291975, guid: 0f889fc79b9ee8d4c838e2d295f54768, type: 3}
   description: Get two random tarot buffs
   UIAsset: {fileID: 21300000, guid: 012d0a262930eeb439c64f3085958661, type: 3}
+  type: 7
