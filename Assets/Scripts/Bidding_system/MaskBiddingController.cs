@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Collections;
 
 public class MaskBiddingController : MonoBehaviour
 {
-    // Events for UI updates
+    // Consolidated events
     public event Action<PlayerGold, Mask> OnMaskAssigned;
     public event Action<PlayerGold, TarotCard> OnTarotAssigned;
     public event Action<int> OnPotUpdated;
@@ -12,24 +13,31 @@ public class MaskBiddingController : MonoBehaviour
     public event Action<Mask> OnMaskDrawn;
     public event Action<TarotCard> OnTarotDrawn;
     public event Action<PlayerGold> OnPlayerBidPlaced;
-    public event Action OnBiddingFinished;
     public event Action OnMaskPhaseStarted;
     public event Action OnTarotPhaseStarted;
+    public event Action<int> OnCurrentBidAmountChanged;
+    public event Action<PlayerGold> OnPlayerKickedFromRound;
+    public event Action OnBiddingFinished;
 
     [Header("Mask Bidding")]
     public int maskBidCost = 10;
     public List<Mask> masks;
-    public int maskBidTimer = 5; // Seconds per turn
+    public int maskBidTimer = 10;
 
     [Header("Tarot Bidding")]
     public int tarotBidIncrement = 10;
     public List<TarotCard> tarotCards;
-    public int tarotBidTimer = 5; // Seconds per turn
+    public int tarotBidTimer = 10;
+    private int tarotsDrawnThisRound = 0;
+    public int tarotsPerRound = 3;
 
     [Header("Game Rules")]
     public int startingPot = 0;
     public bool autoDrawNextMask = true;
     public float maskDrawDelay = 1f;
+
+    [Header("Player Setup")]
+    public List<PlayerGold> players = new List<PlayerGold>();
 
     // Internal state
     private MaskDeck maskDeck;
@@ -39,20 +47,23 @@ public class MaskBiddingController : MonoBehaviour
     private float currentTimer = 0f;
     private int maskIndex = 0;
     private bool isTimerRunning = false;
-    private Coroutine maskDrawCoroutine;
+    private TarotCard lastDrawnTarot;
 
     // Public properties
     public bool IsMaskPhase { get; private set; }
     public bool IsTarotPhase { get; private set; }
     public int CurrentPot => currentPot;
-    public float CurrentTimer => currentTimer;
     public Mask CurrentMask { get; private set; }
     public TarotCard CurrentTarot { get; private set; }
+    public int CurrentBidAmount => IsMaskPhase ? 
+        (maskSession?.CurrentBidAmount ?? maskBidCost) : 
+        (tarotSession?.CurrentBidAmount ?? tarotBidIncrement);
 
     void Start()
     {
-        InitializeDeck();
+        if (masks?.Count > 0) maskDeck = new MaskDeck(masks);
         currentPot = startingPot;
+        if (players.Count == 0) players = new List<PlayerGold>(FindObjectsOfType<PlayerGold>());
     }
 
     void Update()
@@ -61,122 +72,92 @@ public class MaskBiddingController : MonoBehaviour
         {
             currentTimer -= Time.deltaTime;
             OnTimerUpdated?.Invoke(currentTimer);
-
-            if (currentTimer <= 0)
-            {
-                OnTimerExpired();
-            }
-        }
-    }
-
-    void InitializeDeck()
-    {
-        if (masks != null && masks.Count > 0)
-        {
-            maskDeck = new MaskDeck(masks);
-        }
-        else
-        {
-            Debug.LogWarning("No masks assigned to MaskBiddingController!");
+            if (currentTimer <= 0) OnTimerExpired();
         }
     }
 
     public void BeginMaskPhase()
     {
-        if (masks == null || masks.Count == 0)
+        if (IsMaskPhase)
         {
-            Debug.LogError("Cannot begin mask phase: No masks assigned!");
+            Debug.LogWarning("Already in mask phase! Ignoring duplicate start.");
+            return;
+        }
+        
+        if (masks?.Count == 0 || players?.Count == 0)
+        {
+            Debug.LogError("Cannot begin mask phase: Missing masks or players!");
             return;
         }
 
         IsMaskPhase = true;
         IsTarotPhase = false;
         maskIndex = 0;
-
         OnMaskPhaseStarted?.Invoke();
         StartNextMask();
     }
-
     public void BeginTarotPhase()
     {
         IsMaskPhase = false;
         IsTarotPhase = true;
-
+        tarotsDrawnThisRound = 0;
         OnTarotPhaseStarted?.Invoke();
-        Debug.Log("Tarot phase started");
     }
 
     void StartNextMask()
     {
         if (maskIndex >= masks.Count)
         {
-            Debug.Log("All masks have been assigned");
-            OnBiddingFinished?.Invoke();
-            return;
-        }
-
-        if (maskDeck == null)
-        {
-            Debug.LogError("Mask deck not initialized!");
+            Debug.Log("All masks assigned - switching to tarot phase");
+            IsMaskPhase = false;
+            
+            // Clear mask session to prevent further mask actions
+            maskSession = null;
+            
+            StartCoroutine(DelayedTarotStart(2f));
             return;
         }
 
         CurrentMask = maskDeck.Draw();
         maskIndex++;
 
-        OnMaskDrawn?.Invoke(CurrentMask);
-        StartTimer(maskBidTimer);
-
-        Debug.Log($"Drawing mask {maskIndex}/{masks.Count}: {CurrentMask.description}");
-    }
-
-    public void PlayerBid(PlayerGold player)
-    {
-        if (player == null) return;
-
-        int bidAmount = IsMaskPhase ? maskBidCost : tarotBidIncrement;
-
-        if (player.TrySpend(bidAmount))
+        if (maskSession == null)
         {
-            // Update pot
-            currentPot += bidAmount;
-            OnPotUpdated?.Invoke(currentPot);
-
-            // Notify listeners
-            OnPlayerBidPlaced?.Invoke(player);
-
-            // Handle mask phase logic
-            if (IsMaskPhase)
-            {
-                if (maskSession == null)
-                {
-                    Debug.LogError("Mask session not initialized!");
-                    return;
-                }
-
-                maskSession.TryBid(player);
-
-                // Check if we should draw next mask
-                if (autoDrawNextMask)
-                {
-                    RestartTimer();
-                }
-            }
-            // Handle tarot phase logic
-            else if (IsTarotPhase)
-            {
-                if (tarotSession == null)
-                {
-                    tarotSession = new NormalBiddingSession(tarotBidIncrement);
-                }
-
-                tarotSession.TryBid(player);
-                RestartTimer();
-            }
+            maskSession = new BiddingSession(players, maskBidCost);
+            maskSession.OnMaskAssigned += (player, isBlessed) => AssignMaskToPlayer(player, isBlessed);
+            maskSession.OnCurrentBidAmountChanged += amount => OnCurrentBidAmountChanged?.Invoke(amount);
         }
         else
         {
-            Debug.Log($"Player {player.PlayerIndex} cannot afford {bidAmount} gold");
+            maskSession.ResetForNewMask();
+        }
+
+        OnMaskDrawn?.Invoke(CurrentMask);
+        OnCurrentBidAmountChanged?.Invoke(maskBidCost);
+        StartTimer(maskBidTimer);
+        Debug.Log($"Drew mask {maskIndex}/{masks.Count}: {CurrentMask?.description}");
+    }
+
+    public void PlayerBid(PlayerGold player, int bidAmount)
+    {
+        if (player == null) return;
+
+        bool success = false;
+        if (IsMaskPhase && maskSession != null)
+        {
+            success = maskSession.TryBid(player, bidAmount);
+        }
+        else if (IsTarotPhase && tarotSession != null)
+        {
+            success = tarotSession.TryBid(player, bidAmount);
+        }
+
+        if (success)
+        {
+            currentPot += bidAmount;
+            OnPotUpdated?.Invoke(currentPot);
+            OnPlayerBidPlaced?.Invoke(player);
+            if (autoDrawNextMask) RestartTimer();
         }
     }
 
@@ -187,137 +168,193 @@ public class MaskBiddingController : MonoBehaviour
         OnTimerUpdated?.Invoke(currentTimer);
     }
 
-    void RestartTimer()
-    {
-        int timerLength = IsMaskPhase ? maskBidTimer : tarotBidTimer;
-        StartTimer(timerLength);
-    }
+    void RestartTimer() => StartTimer(IsMaskPhase ? maskBidTimer : tarotBidTimer);
 
     void OnTimerExpired()
     {
         isTimerRunning = false;
-        currentTimer = 0f;
-        OnTimerUpdated?.Invoke(0f);
 
-        Debug.Log("Bidding timer expired!");
-
-        // In a real game, you might auto-pass or auto-bid here
-        // For now, just notify
-        if (IsMaskPhase && autoDrawNextMask)
+        if (IsMaskPhase && maskSession != null)
         {
-            // Auto-draw next mask after delay
-            if (maskDrawCoroutine != null)
-                StopCoroutine(maskDrawCoroutine);
-            
-            maskDrawCoroutine = StartCoroutine(DrawNextMaskAfterDelay());
+            if (CurrentMask != null)
+            {
+                maskSession.ForceLowestBidderToTakeMask();
+            }
         }
-    }
-
-    System.Collections.IEnumerator DrawNextMaskAfterDelay()
-    {
-        yield return new WaitForSeconds(maskDrawDelay);
-        StartNextMask();
-    }
-
-    public void AssignMaskToPlayer(PlayerGold player)
-    {
-        if (CurrentMask == null)
-        {
-            Debug.LogError("No current mask to assign!");
-            return;
-        }
-
-        OnMaskAssigned?.Invoke(player, CurrentMask);
-        Debug.Log($"Assigned mask to Player {player.PlayerIndex}: {CurrentMask.description}");
-
-        // Draw next mask
-        if (autoDrawNextMask)
-        {
-            StartNextMask();
-        }
-    }
-
-    public void DrawRandomTarot()
-    {
-        if (tarotCards == null || tarotCards.Count == 0)
-        {
-            Debug.LogError("No tarot cards available!");
-            return;
-        }
-
-        int randomIndex = UnityEngine.Random.Range(0, tarotCards.Count);
-        CurrentTarot = tarotCards[randomIndex];
-
-        OnTarotDrawn?.Invoke(CurrentTarot);
-        StartTimer(tarotBidTimer);
-
-        Debug.Log($"Drawn tarot card: {CurrentTarot.name}");
-    }
-
-    public void AssignTarotToWinner(PlayerGold winner)
-    {
-        if (CurrentTarot == null)
-        {
-            Debug.LogError("No current tarot card to assign!");
-            return;
-        }
-
-        OnTarotAssigned?.Invoke(winner, CurrentTarot);
-        Debug.Log($"Assigned tarot card to Player {winner.PlayerIndex}: {CurrentTarot.name}");
-    }
-
-    public void EndTarotBidding()
-    {
-        if (tarotSession != null)
+        else if (IsTarotPhase && tarotSession != null)
         {
             tarotSession.EndBidding();
         }
     }
 
-    public void AddToPot(int amount)
+    void AssignMaskToPlayer(PlayerGold player, bool isBlessed = false)
     {
-        currentPot += amount;
-        OnPotUpdated?.Invoke(currentPot);
+        if (CurrentMask == null) return;
+
+        OnMaskAssigned?.Invoke(player, CurrentMask);
+        AwardPotToPlayer(player);
+        Debug.Log($"Player {player.PlayerIndex} {(isBlessed ? "BLESSED" : "")} mask assigned ({maskIndex}/{masks.Count})");
+
+        if (autoDrawNextMask)
+        {
+            StopAllCoroutines();
+            
+            if (maskIndex < masks.Count)
+            {
+                StartCoroutine(DrawNextMaskAfterDelay());
+            }
+            else
+            {
+                Debug.Log("No more masks - auto-switching to tarot phase");
+                StartCoroutine(DelayedTarotStart(maskDrawDelay));
+            }
+        }
     }
 
-    public void ResetPot()
+    IEnumerator DrawNextMaskAfterDelay()
     {
+        yield return new WaitForSeconds(maskDrawDelay);
+        
+        if (maskIndex < masks.Count)
+        {
+            StartNextMask();
+        }
+        else
+        {
+            Debug.Log("No more masks to draw - phase complete");
+        }
+    }
+
+    IEnumerator DelayedTarotStart(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        BeginTarotPhase();
+        DrawRandomTarot();
+    }
+
+    public void DrawRandomTarot()
+    {
+        // Check if we've drawn all tarots for this round
+        if (tarotsDrawnThisRound >= tarotsPerRound)
+        {
+            Debug.Log($"All {tarotsPerRound} tarots drawn - bidding phase complete!");
+            OnBiddingFinished?.Invoke(); // You'll need to add this event
+            return;
+        }
+        
+        if (tarotCards?.Count == 0)
+        {
+            Debug.LogError("No tarot cards!");
+            return;
+        }
+
+        // Avoid repeating last tarot if possible
+        int attempts = 0;
+        do
+        {
+            CurrentTarot = tarotCards[UnityEngine.Random.Range(0, tarotCards.Count)];
+            attempts++;
+        } while (CurrentTarot == lastDrawnTarot && attempts < 10 && tarotCards.Count > 1);
+        
+        lastDrawnTarot = CurrentTarot;
+        tarotsDrawnThisRound++; // Increment counter
+
+        if (tarotSession == null)
+        {
+            tarotSession = new NormalBiddingSession(players, tarotBidIncrement);
+            tarotSession.OnBidWinner += winner => 
+            {
+                OnTarotAssigned?.Invoke(winner, CurrentTarot);
+                Debug.Log($"Tarot assigned to Player {winner.PlayerIndex} ({tarotsDrawnThisRound}/{tarotsPerRound})");
+                
+                // Auto-draw next tarot after delay
+                if (IsTarotPhase)
+                {
+                    StartCoroutine(DrawNextTarotAfterDelay(1f));
+                }
+            };
+            tarotSession.OnCurrentBidAmountChanged += amount => OnCurrentBidAmountChanged?.Invoke(amount);
+        }
+        else
+        {
+            tarotSession.ResetForNewTarot();
+        }
+
+        OnTarotDrawn?.Invoke(CurrentTarot);
+        OnCurrentBidAmountChanged?.Invoke(tarotBidIncrement);
+        StartTimer(tarotBidTimer);
+        
+        Debug.Log($"Drew tarot {tarotsDrawnThisRound}/{tarotsPerRound}: {CurrentTarot.name}");
+    }
+
+
+    IEnumerator DrawNextTarotAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        DrawRandomTarot();
+    }
+
+    public void PassOnCurrentItem(int playerIndex)
+    {
+        PlayerGold player = FindPlayerByIndex(playerIndex);
+        if (player == null) return;
+
+        if (IsTarotPhase && tarotSession != null)
+        {
+            // FIX: Stop timer when player passes
+            isTimerRunning = false;
+            
+            tarotSession.PlayerPasses(player);
+            OnPlayerKickedFromRound?.Invoke(player);
+            Debug.Log($"Player {playerIndex} passed on tarot");
+            
+            // FIX: If tarot ends due to pass, draw next one automatically
+            if (!tarotSession.HasActiveBidding()) // You'll need to add this method
+            {
+                StartCoroutine(DrawNextTarotAfterDelay(1f));
+            }
+        }
+        else if (IsMaskPhase)
+        {
+            AssignMaskToPlayer(player);
+            Debug.Log($"Player {playerIndex} passed and took mask");
+        }
+    }
+
+    public void TakeMaskWithoutBid(int playerIndex)
+    {
+        PlayerGold player = FindPlayerByIndex(playerIndex);
+        if (player != null && CurrentMask != null)
+        {
+            AssignMaskToPlayer(player);
+            RestartTimer();
+            Debug.Log($"Player {playerIndex} took mask without bidding");
+        }
+    }
+
+    public void EndTarotBidding() => tarotSession?.EndBidding();
+
+    void AwardPotToPlayer(PlayerGold player)
+    {
+        if (player == null) return;
+        player.Add(currentPot);
         currentPot = startingPot;
         OnPotUpdated?.Invoke(currentPot);
     }
 
-    public void SetBidCost(int newCost, bool isMaskPhase = true)
+    // Utility methods
+    public bool HasPlayerWonTarot(int playerIndex)
     {
-        if (isMaskPhase)
-        {
-            maskBidCost = Mathf.Max(10, newCost);
-        }
-        else
-        {
-            tarotBidIncrement = Mathf.Max(10, newCost);
-        }
+        PlayerGold player = FindPlayerByIndex(playerIndex);
+        return player != null && tarotSession?.HasPlayerWonTarot(player) == true;
     }
 
-    // Test methods
-    public void TestDrawMask()
+    public void SubmitBid(int playerIndex, int bidAmount)
     {
-        if (masks.Count > 0)
-        {
-            BeginMaskPhase();
-        }
+        PlayerGold player = FindPlayerByIndex(playerIndex);
+        if (player != null) PlayerBid(player, bidAmount);
     }
 
-    public void TestDrawTarot()
-    {
-        if (tarotCards.Count > 0)
-        {
-            BeginTarotPhase();
-            DrawRandomTarot();
-        }
-    }
-
-    public void ForceTimerExpire()
-    {
-        OnTimerExpired();
-    }
+    private PlayerGold FindPlayerByIndex(int playerIndex) => 
+        players.Find(p => p.PlayerIndex == playerIndex);
 }

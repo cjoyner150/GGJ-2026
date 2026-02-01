@@ -9,32 +9,21 @@ public class PlayerGold : MonoBehaviour
     
     public event Action<int> OnGoldChanged;
     
+    private static readonly Color[] PLAYER_COLORS = {
+        new Color(1f, 0.3f, 0.3f),    // Red
+        new Color(0.3f, 0.3f, 1f),    // Blue
+        new Color(0.3f, 0.8f, 0.3f),  // Green
+        new Color(1f, 0.8f, 0.3f),    // Yellow
+        new Color(1f, 0.3f, 1f),      // Purple
+        new Color(0.3f, 1f, 1f)       // Cyan
+    };
+
     void Start()
     {
-        if (TryGetComponent<PlayerIdentifier>(out var identifier))
-        {
-            PlayerIndex = identifier.Index;
-            PlayerColor = GetColorFromIndex(PlayerIndex);
-        }
-        else
-        {
-            PlayerIndex = transform.GetSiblingIndex();
-            PlayerColor = GetColorFromIndex(PlayerIndex);
-        }
-    }
-    
-    private Color GetColorFromIndex(int index)
-    {
-        Color[] colors = {
-            new Color(1f, 0.3f, 0.3f),    // Red
-            new Color(0.3f, 0.3f, 1f),    // Blue
-            new Color(0.3f, 0.8f, 0.3f),  // Green
-            new Color(1f, 0.8f, 0.3f),    // Yellow
-            new Color(1f, 0.3f, 1f),      // Purple
-            new Color(0.3f, 1f, 1f),      // Cyan
-        };
-        
-        return index < colors.Length ? colors[index] : Color.white;
+        PlayerIndex = TryGetComponent<PlayerIdentifier>(out var identifier) 
+            ? identifier.Index 
+            : transform.GetSiblingIndex();
+        PlayerColor = PlayerIndex < PLAYER_COLORS.Length ? PLAYER_COLORS[PlayerIndex] : Color.white;
     }
     
     public bool CanAfford(int amount) => Gold >= amount;

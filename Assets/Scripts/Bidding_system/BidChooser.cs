@@ -1,3 +1,4 @@
+
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -6,29 +7,30 @@ using System.Collections;
 
 public class BidChooser : MonoBehaviour
 {
-    [Header("Controller Reference")]
-    public MaskBiddingController biddingController;
+    [Header("Controller")]
+    public MaskBiddingController controller;
 
-    [Header("UI References")]
+    [Header("UI Elements")]
     public RectTransform playerBidPanel;
     public TMP_Text playerIndexText;
     public TMP_Text currentBidText;
-    public TMP_Text incrementText;
     public TMP_Text timerText;
     public TMP_Text potText;
+    public TMP_Text minimumBidText;
     public Image playerColorIndicator;
     public GameObject phaseIndicator;
 
     [Header("Player Positions")]
     public RectTransform[] playerPositions;
 
-    [Header("Bid Adjustment")]
+    [Header("Controls")]
     public Button increaseButton;
     public Button decreaseButton;
     public Button confirmButton;
+    public Button passButton;
     public int minBidIncrement = 10;
 
-    [Header("Animation Settings")]
+    [Header("Animation")]
     public GameObject maskDisplayPrefab;
     public GameObject tarotDisplayPrefab;
     public Transform maskSpawnPoint;
@@ -40,286 +42,695 @@ public class BidChooser : MonoBehaviour
 
     [Header("Floating Text")]
     public GameObject floatingTextPrefab;
+    public GameObject kickedTextPrefab;
     public Transform potDisplayPosition;
 
-    [Header("Runtime State")]
+    [Header("Runtime")]
     public List<PlayerGold> players;
-    public bool enableTestControls = true;
 
-    private int currentBidAmount = 10;
+    private int currentBidAmount;
+    private int currentMinimumBid;
     private int currentPlayerIndex = 0;
     private bool isActive = false;
-    
-    // Smooth movement variables
-    private Coroutine panelMoveCoroutine;
-    private Vector3 panelTargetPosition;
+    private Vector3 panelTargetPos;
     private bool isPanelMoving = false;
+    
+    // Player tracking
+    private HashSet<int> playersWithMasks = new HashSet<int>();
+    private HashSet<int> playersWithTarots = new HashSet<int>();
+    private HashSet<int> kickedPlayers = new HashSet<int>();
 
     void Start()
     {
-        // Setup UI
-        increaseButton.onClick.AddListener(IncreaseBid);
-        decreaseButton.onClick.AddListener(DecreaseBid);
-        confirmButton.onClick.AddListener(ConfirmBid);
-
-        // Subscribe to events if controller exists
-        if (biddingController != null)
+        SetupButtons();
+        
+        // Try to find controller if not set
+        if (controller == null)
+        {
+            controller = FindObjectOfType<MaskBiddingController>();
+            Debug.Log($"Found controller: {controller != null}");
+        }
+        
+        // Try to find players if not set
+        if (players == null || players.Count == 0)
+        {
+            PlayerGold[] allPlayers = FindObjectsOfType<PlayerGold>();
+            players = new List<PlayerGold>(allPlayers);
+            Debug.Log($"Found {players.Count} players");
+        }
+        
+        if (controller != null)
         {
             SubscribeToEvents();
+            if (controller.IsMaskPhase)
+            {
+                isActive = true;
+                OnMaskPhaseStarted();
+            }
+            else if (controller.IsTarotPhase)
+            {
+                isActive = true;
+                OnTarotPhaseStarted();
+            }
         }
+        else
+        {
+            Debug.LogError("No MaskBiddingController found! Please assign one in the inspector.");
+        }
+    }
+
+    IEnumerator DelayedStart(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        controller.BeginMaskPhase();
     }
 
     void Update()
     {
         if (!isActive) return;
 
-        // Smooth panel movement update
         if (isPanelMoving)
         {
             playerBidPanel.position = Vector3.Lerp(
                 playerBidPanel.position, 
-                panelTargetPosition, 
-                Time.deltaTime * (1f / panelMoveDuration)
+                panelTargetPos, 
+                Time.deltaTime / panelMoveDuration
             );
             
-            // Check if close enough to target
-            if (Vector3.Distance(playerBidPanel.position, panelTargetPosition) < 1f)
+            if (Vector3.Distance(playerBidPanel.position, panelTargetPos) < 1f)
             {
-                playerBidPanel.position = panelTargetPosition;
+                playerBidPanel.position = panelTargetPos;
                 isPanelMoving = false;
             }
         }
+        
+        // Smooth font size back to normal
+        if (currentBidText.fontSize > 32)
+            currentBidText.fontSize = Mathf.Lerp(currentBidText.fontSize, 32, Time.deltaTime * 5f);
     }
 
-    public void SubscribeToEvents()
+    void SetupButtons()
     {
-        if (biddingController == null) return;
-
-        biddingController.OnPotUpdated += UpdatePotDisplay;
-        biddingController.OnTimerUpdated += UpdateTimerDisplay;
-        biddingController.OnMaskDrawn += OnMaskDrawn;
-        biddingController.OnTarotDrawn += OnTarotDrawn;
-        biddingController.OnMaskPhaseStarted += OnMaskPhaseStarted;
-        biddingController.OnTarotPhaseStarted += OnTarotPhaseStarted;
-        biddingController.OnPlayerBidPlaced += OnPlayerBidPlaced;
+        increaseButton.onClick.AddListener(() => AdjustBid(minBidIncrement));
+        decreaseButton.onClick.AddListener(() => AdjustBid(-minBidIncrement));
+        confirmButton.onClick.AddListener(ConfirmBid);
+        
+        if (passButton != null)
+            passButton.onClick.AddListener(PassBid);
+        else
+            Debug.LogWarning("Pass button not assigned!");
     }
 
-    public void Initialize()
+    void PassBid()
     {
-        if (players == null || players.Count == 0)
+        if (!isActive) return;
+        
+        PlayerGold player = GetCurrentPlayer();
+        if (player == null)
         {
-            Debug.LogError("No players assigned to BidChooser!");
+            Debug.LogError("No current player to pass!");
             return;
         }
 
-        currentPlayerIndex = 0;
-        isActive = true;
+        Debug.Log($"=== PASS BID ===");
+        Debug.Log($"Player {player.PlayerIndex} passing in {(controller.IsMaskPhase ? "MASK" : "TAROT")} phase");
 
-        // Initial UI setup
-        MovePanelToPlayer(currentPlayerIndex);
-        UpdateCurrentBid();
-        UpdateUI();
-
-        Debug.Log($"BidChooser initialized with {players.Count} players");
-    }
-
-    // Smooth panel movement with lerp
-    public void MovePanelToPlayer(int playerIndex)
-    {
-        if (playerPositions.Length == 0 || playerIndex >= playerPositions.Length)
+        if (controller == null)
+        {
+            Debug.LogError("No bidding controller!");
             return;
-
-        if (playerPositions[playerIndex] != null)
-        {
-            panelTargetPosition = playerPositions[playerIndex].position;
-            isPanelMoving = true;
-            
-            // Stop any existing coroutine
-            if (panelMoveCoroutine != null)
-                StopCoroutine(panelMoveCoroutine);
-            
-            // Start smooth movement
-            panelMoveCoroutine = StartCoroutine(SmoothMovePanel(panelTargetPosition));
         }
 
-        if (playerIndex < players.Count)
+        if (controller.IsMaskPhase)
         {
-            PlayerGold player = players[playerIndex];
-            playerIndexText.text = $"P{player.PlayerIndex + 1}";
-
-            if (playerColorIndicator != null)
+            Debug.Log($"Player {player.PlayerIndex} passed - taking mask!");
+            ShowFloatingText("PASS + MASK", Color.red);
+            controller.TakeMaskWithoutBid(player.PlayerIndex);
+            
+        }
+        else if (controller.IsTarotPhase)
+        {
+            Debug.Log($"Player {player.PlayerIndex} passed on tarot");
+            ShowFloatingText("PASSED", Color.gray);
+            controller.PassOnCurrentItem(player.PlayerIndex);
+            
+            // Track as kicked from current tarot
+            if (!kickedPlayers.Contains(player.PlayerIndex))
             {
-                playerColorIndicator.color = player.PlayerColor;
+                kickedPlayers.Add(player.PlayerIndex);
+                ShowFloatingText($"P{player.PlayerIndex + 1} OUT", Color.red);
             }
-        }
-    }
-    
-    IEnumerator SmoothMovePanel(Vector3 targetPosition)
-    {
-        Vector3 startPosition = playerBidPanel.position;
-        float elapsed = 0f;
-        
-        while (elapsed < panelMoveDuration)
-        {
-            float t = elapsed / panelMoveDuration;
-            // Smooth easing function
-            t = t * t * (3f - 2f * t); // Smoothstep
             
-            playerBidPanel.position = Vector3.Lerp(startPosition, targetPosition, t);
-            
-            elapsed += Time.deltaTime;
-            yield return null;
+            StartCoroutine(DelayedMoveToNextPlayer(0.5f));
         }
-        
-        playerBidPanel.position = targetPosition;
-        isPanelMoving = false;
-    }
-
-    public void MoveToNextPlayer()
-    {
-        if (players == null || players.Count == 0) return;
-
-        currentPlayerIndex = (currentPlayerIndex + 1) % players.Count;
-        MovePanelToPlayer(currentPlayerIndex);
-        UpdateCurrentBid();
-        UpdateUI();
-    }
-
-    void UpdateCurrentBid()
-    {
-        if (biddingController == null) return;
-
-        if (biddingController.IsMaskPhase)
-            currentBidAmount = Mathf.Max(biddingController.maskBidCost, minBidIncrement);
-        else if (biddingController.IsTarotPhase)
-            currentBidAmount = Mathf.Max(biddingController.tarotBidIncrement, minBidIncrement);
-    }
-
-    void UpdateUI()
-    {
-        currentBidText.text = $"{currentBidAmount}G";
-
-        if (biddingController != null)
+        else
         {
-            string phase = biddingController.IsMaskPhase ? "MASK" : 
-                          biddingController.IsTarotPhase ? "TAROT" : "IDLE";
-            incrementText.text = $"{phase}: {currentBidAmount}G";
-
-            // Update phase indicator
-            if (phaseIndicator != null)
-            {
-                phaseIndicator.SetActive(true);
-                TMP_Text phaseText = phaseIndicator.GetComponentInChildren<TMP_Text>();
-                if (phaseText != null)
-                {
-                    phaseText.text = phase;
-                    phaseText.color = biddingController.IsMaskPhase ? Color.red : Color.blue;
-                }
-            }
+            Debug.LogWarning("Pass called but no active phase!");
+            return;
         }
+    }
 
-        potText.text = $"{biddingController?.CurrentPot ?? 0}G";
-        decreaseButton.interactable = currentBidAmount > minBidIncrement;
+    IEnumerator DelayedMoveToNextPlayer(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        MoveToNextPlayer();
+    }
+
+    void SubscribeToEvents()
+    {
+        if (controller == null) return;
+        
+        Debug.Log("Subscribing to controller events");
+        
+        controller.OnPotUpdated += UpdatePotDisplay;
+        controller.OnTimerUpdated += UpdateTimerDisplay;
+        controller.OnMaskDrawn += OnMaskDrawn;
+        controller.OnTarotDrawn += OnTarotDrawn;
+        controller.OnMaskPhaseStarted += OnMaskPhaseStarted;
+        controller.OnTarotPhaseStarted += OnTarotPhaseStarted;
+        controller.OnPlayerBidPlaced += OnPlayerBidPlaced;
+        controller.OnPlayerKickedFromRound += OnPlayerKickedFromRound;
+        controller.OnMaskAssigned += OnMaskAssigned;
+        controller.OnCurrentBidAmountChanged += OnCurrentBidAmountChanged;
+        controller.OnTarotAssigned += OnTarotAssigned;
+        controller.OnBiddingFinished += OnBiddingFinished;
     }
 
     void UpdatePotDisplay(int potAmount)
     {
-        int currentPot = int.Parse(potText.text.Replace("G", ""));
-        StartCoroutine(AnimateNumberCounter(potText, currentPot, potAmount, 0.5f));
+        if (potText) 
+        {
+            potText.text = $"Pot: {potAmount}G";
+            Debug.Log($"Pot updated: {potAmount}G");
+        }
+    }
+    void OnBiddingFinished()
+    {
+        Debug.Log("BidChooser: Bidding finished!");
+        isActive = false;
+        ShowFloatingText("BIDDING COMPLETE!", Color.green, true);
     }
 
-    void UpdateTimerDisplay(float timeRemaining)
+    void UpdateTimerDisplay(float time)
     {
-        timerText.text = timeRemaining.ToString("F1");
+        if (!timerText) return;
         
-        // Visual feedback
-        if (timeRemaining < 3f)
-        {
-            timerText.color = Color.Lerp(Color.red, Color.yellow, timeRemaining / 3f);
-        }
+        timerText.text = time.ToString("F1") + "s";
+        
+        // Color feedback
+        if (time < 3f)
+            timerText.color = Color.Lerp(Color.red, Color.yellow, time / 3f);
         else
-        {
             timerText.color = Color.green;
-        }
     }
 
-    public void IncreaseBid()
+    void OnMaskDrawn(Mask mask)
     {
-        currentBidAmount += minBidIncrement;
+        Debug.Log($"BidChooser: New mask drawn - {mask.description}");
+        
+        // Reset bid to minimum for new mask
+        currentMinimumBid = controller.maskBidCost;
+        currentBidAmount = currentMinimumBid;
+        
+        // Start with first valid player
+        if (ShouldSkipPlayer(currentPlayerIndex))
+            MoveToNextPlayer();
+        else
+            UpdateUI();
+        
+        // Animate mask display
+        if (maskDisplayPrefab)
+            StartCoroutine(AnimateMaskCard(mask));
+    }
+
+    void OnTarotDrawn(TarotCard tarot)
+    {
+        Debug.Log($"BidChooser: New tarot drawn - {tarot.name}");
+        
+        ResetForNewTarot();  // <-- USE THE METHOD
+        
+        // Animate tarot display
+        if (tarotDisplayPrefab)
+            StartCoroutine(AnimateTarotCard(tarot));
+    }
+
+    void OnTarotPhaseStarted()
+    {
+        Debug.Log("BidChooser: Tarot phase started");
+        
+        playersWithTarots.Clear();
+        ResetForNewTarot();  // <-- USE THE METHOD
+        isActive = true;
+        
+        UpdateUI();
+        UpdatePhaseIndicator();
+    }
+
+    void OnPlayerBidPlaced(PlayerGold player)
+    {
+        Debug.Log($"BidChooser: Player {player.PlayerIndex} placed bid");
+        
+        // Auto-move to next player after bid
+        StartCoroutine(DelayedMoveToNextPlayer(0.3f));
+    }
+
+    void OnPlayerKickedFromRound(PlayerGold player)
+    {
+        Debug.Log($"BidChooser: Player {player.PlayerIndex} kicked from round");
+        
+        ShowKickedNotification(player);
+    }
+
+    void OnMaskAssigned(PlayerGold player, Mask mask)
+    {
+        Debug.Log($"BidChooser: Mask assigned to Player {player.PlayerIndex}");
+        OnItemAssigned(player, true);
+    }
+
+    void OnTarotAssigned(PlayerGold player, TarotCard tarot)
+    {
+        Debug.Log($"BidChooser: Tarot assigned to Player {player.PlayerIndex}");
+        
+        OnItemAssigned(player, false);
+    }
+
+    void OnCurrentBidAmountChanged(int amount)
+    {
+        Debug.Log($"BidChooser: Minimum bid changed to {amount}G");
+        currentMinimumBid = amount;
+        currentBidAmount = Mathf.Max(currentBidAmount, amount);
         UpdateUI();
     }
 
-    public void DecreaseBid()
+    public void Initialize(int baseBid)
     {
-        if (currentBidAmount > minBidIncrement)
+        currentPlayerIndex = 0;
+        currentMinimumBid = baseBid;
+        currentBidAmount = baseBid;
+        isActive = true;
+        MovePanelToPlayer(0);
+        UpdateUI();
+        UpdatePhaseIndicator();
+    }
+
+    public void Initialize()
+    {
+        currentPlayerIndex = 0;
+        isActive = false;
+    }
+
+    public void SetCurrentBid(int amount)
+    {
+        currentBidAmount = Mathf.Max(currentMinimumBid, amount);
+        UpdateUI();
+    }
+
+    void MovePanelToPlayer(int index)
+    {
+        if (index < 0 || index >= players.Count)
         {
-            currentBidAmount -= minBidIncrement;
+            Debug.LogError($"Invalid player index: {index}");
+            return;
+        }
+
+        if (playerPositions.Length > index && playerPositions[index] != null)
+        {
+            panelTargetPos = playerPositions[index].position;
+            isPanelMoving = true;
+        }
+
+        PlayerGold player = players[index];
+        playerIndexText.text = $"P{player.PlayerIndex + 1}";
+        if (playerColorIndicator) 
+            playerColorIndicator.color = player.PlayerColor;
+
+        currentPlayerIndex = index;
+        Debug.Log($"Moved panel to Player {currentPlayerIndex}");
+        
+        UpdateUI();
+    }
+
+    void AdjustBid(int delta)
+    {
+        int newBid = currentBidAmount + delta;
+        if (newBid >= currentMinimumBid)
+        {
+            currentBidAmount = newBid;
+            UpdateUI();
+            
+            // Visual feedback
+            currentBidText.fontSize = 40;
+            
+            // Show floating text
+            if (floatingTextPrefab)
+            {
+                string text = delta > 0 ? $"+{delta}G" : $"{delta}G";
+                Color color = delta > 0 ? Color.green : Color.red;
+                ShowFloatingText(text, color, false);
+            }
+        }
+        else
+        {
+            Debug.Log($"Cannot decrease bid below minimum {currentMinimumBid}");
+        }
+    }
+
+    void ConfirmBid()
+    {
+        if (!isActive) 
+        {
+            Debug.LogWarning("BidChooser not active!");
+            return;
+        }
+        
+        PlayerGold player = GetCurrentPlayer();
+        if (player == null)
+        {
+            Debug.LogError("No current player!");
+            return;
+        }
+
+        Debug.Log($"=== CONFIRM BID ===");
+        Debug.Log($"Player {player.PlayerIndex} attempting bid: {currentBidAmount}G (minimum: {currentMinimumBid}G)");
+        Debug.Log($"Player gold: {player.Gold}G");
+
+        // Validate bid
+        if (!player.CanAfford(currentBidAmount))
+        {
+            Debug.LogError($"Player {player.PlayerIndex} cannot afford {currentBidAmount}!");
+            ShowErrorText("Not enough gold!", Color.red);
+            return;
+        }
+
+        if (currentBidAmount < currentMinimumBid)
+        {
+            Debug.LogError($"Bid {currentBidAmount} is below minimum {currentMinimumBid}!");
+            ShowErrorText($"Must bid at least {currentMinimumBid}G!", Color.red);
+            return;
+        }
+
+        // Submit bid through controller
+        if (controller != null)
+        {
+            controller.PlayerBid(player, currentBidAmount);
+            Debug.Log($"Bid submitted for Player {player.PlayerIndex}: {currentBidAmount}G");
+            
+            // Visual feedback for raise
+            if (currentBidAmount > currentMinimumBid)
+            {
+                Debug.Log($"Player {player.PlayerIndex} RAISED to {currentBidAmount}G!");
+                ShowRaiseNotification(currentBidAmount, player.PlayerColor);
+                currentMinimumBid = currentBidAmount; // Update minimum for next players
+            }
+            
+            ShowFloatingText($"{currentBidAmount}G", player.PlayerColor, currentBidAmount > currentMinimumBid);
+        }
+        else
+        {
+            Debug.LogError("Controller is null!");
+        }
+    }
+
+    void ShowRaiseNotification(int amount, Color color)
+    {
+        if (!floatingTextPrefab) return;
+
+        GameObject raiseText = Instantiate(floatingTextPrefab, playerBidPanel.position, Quaternion.identity, transform);
+        if (raiseText.TryGetComponent<TMP_Text>(out var text))
+        {
+            text.text = $"RAISE!\nNew min: {amount}G";
+            text.color = Color.yellow;
+            text.fontSize = 40;
+            StartCoroutine(AnimateAndDestroy(raiseText.transform, 1.5f));
+        }
+    }
+
+    void MoveToNextPlayer()
+    {
+        if (players.Count == 0)
+        {
+            Debug.LogError("No players in list!");
+            return;
+        }
+
+        int originalIndex = currentPlayerIndex;
+        int attempts = 0;
+        int maxAttempts = players.Count * 2;
+        
+        do
+        {
+            currentPlayerIndex = (currentPlayerIndex + 1) % players.Count;
+            attempts++;
+            
+            if (attempts > maxAttempts)
+            {
+                Debug.LogError("Couldn't find valid player! All players might be skipped.");
+                currentPlayerIndex = originalIndex;
+                break;
+            }
+        } 
+        while (ShouldSkipPlayer(currentPlayerIndex));
+        
+        // Only move if we found a different player
+        if (currentPlayerIndex != originalIndex)
+        {
+            MovePanelToPlayer(currentPlayerIndex);
+            currentBidAmount = currentMinimumBid;
+            UpdateUI();
+            
+            Debug.Log($"Moved from Player {originalIndex} to Player {currentPlayerIndex}, bid reset to {currentMinimumBid}G");
+        }
+        else
+        {
+            Debug.LogWarning("No valid players found to move to!");
+        }
+    }
+
+    bool ShouldSkipPlayer(int index)
+    {
+        if (index >= players.Count) return true;
+        
+        PlayerGold player = players[index];
+        if (player == null) return true;
+        
+        // Can't afford current minimum bid
+        if (!player.CanAfford(currentMinimumBid))
+        {
+            Debug.Log($"Player {player.PlayerIndex} can't afford {currentMinimumBid}G (has {player.Gold}G)");
+            
+            // In mask phase, auto-assign mask to bankrupt player
+            if (controller.IsMaskPhase && !playersWithMasks.Contains(player.PlayerIndex))
+            {
+                Debug.Log($"Player {player.PlayerIndex} bankrupt - auto-assigning mask!");
+                controller.TakeMaskWithoutBid(player.PlayerIndex);
+            }
+            return true;
+        }
+        
+        // Mask phase: skip if already has ANY mask from this phase
+        if (controller.IsMaskPhase && playersWithMasks.Contains(player.PlayerIndex))
+        {
+            Debug.Log($"Player {player.PlayerIndex} already has mask from this phase - skipping");
+            return true;
+        }
+        
+        // Tarot phase: skip if already won a tarot in THIS ROUND
+        if (controller.IsTarotPhase && playersWithTarots.Contains(player.PlayerIndex))
+        {
+            Debug.Log($"Player {player.PlayerIndex} already won tarot this round - skipping");
+            return true;
+        }
+        
+        // Tarot phase: skip if kicked from CURRENT tarot only
+        if (controller.IsTarotPhase && kickedPlayers.Contains(player.PlayerIndex))
+        {
+            Debug.Log($"Player {player.PlayerIndex} kicked from current tarot - skipping");
+            return true;
+        }
+        
+        return false;
+    }
+
+    void UpdateUI()
+    {
+        PlayerGold player = GetCurrentPlayer();
+        if (player == null) 
+        {
+            Debug.LogWarning("No current player for UI update");
+            return;
+        }
+
+        Debug.Log($"Updating UI for Player {player.PlayerIndex}: Bid={currentBidAmount}G, Min={currentMinimumBid}G, Gold={player.Gold}G");
+
+        // Update bid displays
+        currentBidText.text = $"{currentBidAmount}G";
+        minimumBidText.text = $"Min: {currentMinimumBid}G";
+        
+        // Color code current bid
+        if (currentBidAmount > currentMinimumBid)
+            currentBidText.color = Color.yellow;
+        else if (player.CanAfford(currentBidAmount))
+            currentBidText.color = Color.white;
+        else
+            currentBidText.color = Color.red;
+        
+        // Update minimum bid text color
+        minimumBidText.color = currentBidAmount > currentMinimumBid ? Color.yellow : Color.white;
+        
+        // Update pot display
+        if (potText && controller != null) 
+            potText.text = $"Pot: {controller.CurrentPot}G";
+        
+        // Enable/disable buttons
+        decreaseButton.interactable = currentBidAmount > currentMinimumBid;
+        confirmButton.interactable = player.CanAfford(currentBidAmount);
+        
+        if (passButton != null)
+            passButton.interactable = player.CanAfford(currentMinimumBid);
+        
+        UpdatePhaseIndicator();
+    }
+    void OnMaskPhaseStarted()
+    {
+        Debug.Log("BidChooser: Mask phase started");
+        
+        // Clear all tracking
+        playersWithMasks.Clear();
+        playersWithTarots.Clear();
+        kickedPlayers.Clear();
+        
+        // Reset to Player 0 for first mask
+        currentPlayerIndex = 0;
+        currentMinimumBid = controller.maskBidCost;
+        currentBidAmount = currentMinimumBid;
+        isActive = true;
+        
+        // Start with first valid player
+        if (ShouldSkipPlayer(currentPlayerIndex))
+            MoveToNextPlayer();
+        else
+            MovePanelToPlayer(currentPlayerIndex);
+        
+        UpdateUI();
+        UpdatePhaseIndicator();
+    }
+
+    void UpdatePhaseIndicator()
+    {
+        if (phaseIndicator == null || controller == null) return;
+        
+        phaseIndicator.SetActive(true);
+        TMP_Text phaseText = phaseIndicator.GetComponentInChildren<TMP_Text>();
+        if (phaseText != null)
+        {
+            string phase = controller.IsMaskPhase ? "MASK" : 
+                          controller.IsTarotPhase ? "TAROT" : "IDLE";
+            phaseText.text = phase;
+            phaseText.color = controller.IsMaskPhase ? Color.red : Color.blue;
+        }
+    }
+
+    PlayerGold GetCurrentPlayer() => 
+        currentPlayerIndex < players.Count ? players[currentPlayerIndex] : null;
+
+    void OnItemAssigned(PlayerGold player, bool isMask)
+    {
+        Debug.Log($"BidChooser: Item assigned to Player {player.PlayerIndex} (isMask: {isMask})");
+        
+        if (isMask)
+        {
+            // Track mask assignment
+            if (!playersWithMasks.Contains(player.PlayerIndex))
+            {
+                playersWithMasks.Add(player.PlayerIndex);
+                Debug.Log($"Player {player.PlayerIndex} received mask - OUT for remaining masks");
+            }
+        }
+        else
+        {
+            if (!playersWithTarots.Contains(player.PlayerIndex))
+            {
+                playersWithTarots.Add(player.PlayerIndex);
+            }
+            
+            Debug.Log($"Tarot assigned - kickedPlayers will reset on next tarot draw");
+        }
+        
+        string itemType = isMask ? "mask" : "tarot";
+        ShowFloatingText($"P{player.PlayerIndex + 1} gets {itemType}!", player.PlayerColor, false);
+        
+        PlayerGold currentPlayer = GetCurrentPlayer();
+        if (currentPlayer != null && currentPlayer.PlayerIndex == player.PlayerIndex)
+        {
+            Debug.Log($"Current player got {itemType} - moving to next player");
+            StartCoroutine(DelayedMoveToNextPlayer(0.3f));
+        }
+        else
+        {
+            currentBidAmount = currentMinimumBid;
             UpdateUI();
         }
     }
 
-    public void ConfirmBid()
+    void ShowKickedNotification(PlayerGold player)
     {
-        if (!isActive || players == null || currentPlayerIndex >= players.Count)
-            return;
-
-        PlayerGold currentPlayer = players[currentPlayerIndex];
-
-        // Update controller's bid cost if we're bidding higher
-        if (biddingController.IsMaskPhase && currentBidAmount > biddingController.maskBidCost)
+        // Track that this player was kicked from current tarot
+        if (controller != null && controller.IsTarotPhase && !kickedPlayers.Contains(player.PlayerIndex))
         {
-            biddingController.SetBidCost(currentBidAmount, true);
+            kickedPlayers.Add(player.PlayerIndex);
+            Debug.Log($"BidChooser: Tracked Player {player.PlayerIndex} kicked from current tarot");
         }
-        else if (biddingController.IsTarotPhase && currentBidAmount > biddingController.tarotBidIncrement)
+        
+        GameObject prefab = kickedTextPrefab ?? floatingTextPrefab;
+        if (!prefab) return;
+
+        GameObject obj = Instantiate(prefab, playerBidPanel.position, Quaternion.identity, transform);
+        if (obj.TryGetComponent<TMP_Text>(out var text))
         {
-            biddingController.SetBidCost(currentBidAmount, false);
-        }
-
-        // Process the bid through controller
-        biddingController.PlayerBid(currentPlayer);
-
-        // Show floating text
-        ShowFloatingText(currentBidAmount, currentPlayer.PlayerColor);
-
-        // Move to next player
-        MoveToNextPlayer();
-    }
-
-    void ShowFloatingText(int amount, Color color)
-    {
-        if (floatingTextPrefab == null) return;
-
-        GameObject floatingText = Instantiate(floatingTextPrefab, playerBidPanel.position, Quaternion.identity, transform);
-        TMP_Text textComponent = floatingText.GetComponent<TMP_Text>();
-
-        if (textComponent != null)
-        {
-            textComponent.text = $"+{amount}";
-            textComponent.color = color;
-            StartCoroutine(AnimateFloatingText(floatingText.transform));
+            text.text = $"P{player.PlayerIndex + 1} KICKED!";
+            text.color = Color.red;
+            text.fontSize = 48;
+            StartCoroutine(AnimateKickedText(obj.transform));
         }
     }
 
-    IEnumerator AnimateFloatingText(Transform floatingText)
+    void ShowFloatingText(string message, Color color, bool isRaising = false)
+    {
+        if (!floatingTextPrefab) return;
+
+        GameObject obj = Instantiate(floatingTextPrefab, playerBidPanel.position, 
+                                    Quaternion.identity, transform);
+        if (obj.TryGetComponent<TMP_Text>(out var text))
+        {
+            text.text = message;
+            text.color = color;
+            text.fontSize = isRaising ? 48 : 36;
+            StartCoroutine(AnimateFloatingText(obj.transform, isRaising));
+        }
+    }
+
+    void ShowErrorText(string message, Color color) => ShowFloatingText(message, color, false);
+
+    IEnumerator AnimateFloatingText(Transform floatingText, bool isRaising)
     {
         Vector3 startPos = floatingText.position;
         Vector3 endPos = potDisplayPosition != null ? potDisplayPosition.position : transform.position;
         float elapsed = 0f;
+        float duration = isRaising ? animationDuration * 1.5f : animationDuration;
 
-        while (elapsed < animationDuration)
+        while (elapsed < duration)
         {
-            float t = elapsed / animationDuration;
+            float t = elapsed / duration;
             
-            // Smooth arc movement with lerp
+            // Smooth arc movement
             Vector3 currentPos = Vector3.Lerp(startPos, endPos, t);
-            // Add arc height (parabolic curve)
-            float arcHeight = Mathf.Sin(t * Mathf.PI) * 100f;
+            float arcHeight = Mathf.Sin(t * Mathf.PI) * (isRaising ? 150f : 100f);
             currentPos.y += arcHeight;
-            
             floatingText.position = currentPos;
 
             // Scale animation
-            float scale = 1f + Mathf.Sin(t * Mathf.PI) * 0.3f;
+            float maxScale = isRaising ? 1.5f : 1.3f;
+            float scale = 1f + Mathf.Sin(t * Mathf.PI) * (maxScale - 1f);
             floatingText.localScale = Vector3.one * scale;
 
             // Fade out
@@ -337,92 +748,114 @@ public class BidChooser : MonoBehaviour
 
         Destroy(floatingText.gameObject);
     }
-
-    IEnumerator PulseText(Transform target)
+    void ResetForNewTarot()
     {
-        Vector3 originalScale = target.localScale;
-        float duration = 0.3f;
+        Debug.Log("=== RESET FOR NEW TAROT ===");
+        Debug.Log($"Before: kickedPlayers has {kickedPlayers.Count} players");
+        
+        kickedPlayers.Clear();
+        currentPlayerIndex = 0;
+        currentMinimumBid = controller.tarotBidIncrement;
+        currentBidAmount = currentMinimumBid;
+        
+        Debug.Log($"After: kickedPlayers cleared");
+        
+        // Move to first valid player
+        if (ShouldSkipPlayer(currentPlayerIndex))
+            MoveToNextPlayer();
+        else
+            MovePanelToPlayer(currentPlayerIndex);
+    }
+
+    IEnumerator AnimateKickedText(Transform kickedText)
+    {
+        Vector3 startPos = kickedText.position;
+        float elapsed = 0f;
+        float duration = 2f;
+
+        while (elapsed < duration)
+        {
+            float t = elapsed / duration;
+            
+            // Shake effect
+            float shake = Mathf.Sin(t * 20f) * 10f * (1f - t);
+            Vector3 offset = new Vector3(shake, 0, 0);
+            kickedText.position = startPos + offset;
+
+            // Scale pulse
+            float scale = 1f + Mathf.Sin(t * Mathf.PI * 4f) * 0.2f;
+            kickedText.localScale = Vector3.one * scale;
+
+            // Fade out
+            var text = kickedText.GetComponent<TMP_Text>();
+            if (text != null)
+            {
+                Color c = text.color;
+                c.a = 1f - t;
+                text.color = c;
+            }
+
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        Destroy(kickedText.gameObject);
+    }
+
+    IEnumerator AnimateAndDestroy(Transform obj, float duration, bool shake = false)
+    {
+        Vector3 startPos = obj.position;
         float elapsed = 0f;
 
         while (elapsed < duration)
         {
             float t = elapsed / duration;
-            // Smooth lerp with bounce
-            float scale = 1f + Mathf.Sin(t * Mathf.PI) * 0.3f;
-            target.localScale = Vector3.Lerp(originalScale, originalScale * scale, t);
+            
+            if (shake)
+            {
+                float shakeAmount = Mathf.Sin(t * 20f) * 10f * (1f - t);
+                obj.position = startPos + new Vector3(shakeAmount, 0, 0);
+            }
+            else
+            {
+                obj.position = startPos + Vector3.up * (t * 50f);
+            }
+
+            // Fade out
+            if (obj.TryGetComponent<TMP_Text>(out var text))
+            {
+                Color c = text.color;
+                c.a = 1f - t;
+                text.color = c;
+            }
+
             elapsed += Time.deltaTime;
             yield return null;
         }
 
-        target.localScale = originalScale;
-    }
-
-    // Event Handlers
-    void OnMaskDrawn(Mask mask)
-    {
-        Debug.Log($"UI: Mask drawn - {mask.description}");
-        
-        // Animate mask display with lerp
-        if (maskDisplayPrefab != null)
-        {
-            StartCoroutine(AnimateMaskCard(mask));
-        }
-    }
-
-    void OnTarotDrawn(TarotCard tarot)
-    {
-        Debug.Log($"UI: Tarot drawn - {tarot.name}");
-        
-        // Animate tarot display with lerp
-        if (tarotDisplayPrefab != null)
-        {
-            StartCoroutine(AnimateTarotCard(tarot));
-        }
-    }
-
-    void OnMaskPhaseStarted()
-    {
-        Debug.Log("UI: Mask phase started");
-        currentBidAmount = biddingController.maskBidCost;
-        UpdateUI();
-    }
-
-    void OnTarotPhaseStarted()
-    {
-        Debug.Log("UI: Tarot phase started");
-        currentBidAmount = biddingController.tarotBidIncrement;
-        UpdateUI();
-    }
-
-    void OnPlayerBidPlaced(PlayerGold player)
-    {
-        Debug.Log($"UI: Player {player.PlayerIndex} placed a bid");
+        Destroy(obj.gameObject);
     }
 
     IEnumerator AnimateMaskCard(Mask mask)
     {
-        if (maskDisplayPrefab == null || maskSpawnPoint == null) yield break;
+        if (!maskDisplayPrefab || !maskSpawnPoint) yield break;
 
-        GameObject maskObj = Instantiate(maskDisplayPrefab, maskSpawnPoint.position, Quaternion.identity, transform);
-        var display = maskObj.GetComponent<MaskDisplay>();
-        if (display != null) display.SetMask(mask);
+        GameObject obj = Instantiate(maskDisplayPrefab, maskSpawnPoint.position, Quaternion.identity, transform);
+        if (obj.TryGetComponent<MaskDisplay>(out var display)) display.SetMask(mask);
 
-        yield return StartCoroutine(AnimateCardToTarget(maskObj.transform, maskTargetPoint.position));
-        
-        Destroy(maskObj, 2f);
+        yield return AnimateCardToTarget(obj.transform, maskTargetPoint.position);
+        Destroy(obj, 2f);
     }
 
     IEnumerator AnimateTarotCard(TarotCard tarot)
     {
-        if (tarotDisplayPrefab == null || tarotSpawnPoint == null) yield break;
+        if (!tarotDisplayPrefab || !tarotSpawnPoint) yield break;
 
-        GameObject tarotObj = Instantiate(tarotDisplayPrefab, tarotSpawnPoint.position, Quaternion.identity, transform);
-        var display = tarotObj.GetComponent<TarotDisplay>();
-        if (display != null) display.SetTarot(tarot);
+        GameObject obj = Instantiate(tarotDisplayPrefab, tarotSpawnPoint.position, Quaternion.identity, transform);
+        if (obj.TryGetComponent<TarotDisplay>(out var display)) display.SetTarot(tarot);
 
-        yield return StartCoroutine(AnimateCardToTarget(tarotObj.transform, tarotTargetPoint.position));
-        
-        Destroy(tarotObj, 2f);
+        yield return AnimateCardToTarget(obj.transform, tarotTargetPoint.position);
+        Destroy(obj, 2f);
     }
 
     IEnumerator AnimateCardToTarget(Transform card, Vector3 targetPos)
@@ -435,12 +868,12 @@ public class BidChooser : MonoBehaviour
         {
             float t = elapsed / animationDuration;
             
-            // Smooth position lerp with bounce
+            // Smooth position with bounce
             Vector3 position = Vector3.Lerp(startPos, targetPos, t);
             position.y += Mathf.Sin(t * Mathf.PI) * 50f;
             card.position = position;
 
-            // Smooth rotation lerp with wobble
+            // Smooth rotation with wobble
             float wobble = Mathf.Sin(t * Mathf.PI * 2f) * 5f;
             Quaternion targetRotation = Quaternion.Euler(0, 0, wobble);
             card.rotation = Quaternion.Slerp(startRot, targetRotation, t);
@@ -456,53 +889,57 @@ public class BidChooser : MonoBehaviour
         card.position = targetPos;
         card.rotation = Quaternion.identity;
         card.localScale = Vector3.one;
-        
-        // Final bounce effect
-        elapsed = 0f;
-        float bounceDuration = 0.2f;
-        Vector3 finalScale = Vector3.one;
-        
-        while (elapsed < bounceDuration)
-        {
-            float t = elapsed / bounceDuration;
-            float bounce = Mathf.Sin(t * Mathf.PI) * 0.1f;
-            card.localScale = finalScale * (1f + bounce);
-            elapsed += Time.deltaTime;
-            yield return null;
-        }
-        
-        card.localScale = finalScale;
-    }
-
-    // Animate number counter
-    IEnumerator AnimateNumberCounter(TMP_Text textElement, int startValue, int endValue, float duration)
-    {
-        float elapsed = 0f;
-        
-        while (elapsed < duration)
-        {
-            float t = elapsed / duration;
-            int currentValue = Mathf.RoundToInt(Mathf.Lerp(startValue, endValue, t));
-            textElement.text = $"{currentValue}G";
-            elapsed += Time.deltaTime;
-            yield return null;
-        }
-        
-        textElement.text = $"{endValue}G";
     }
 
     void OnDestroy()
     {
-        // Clean up event subscriptions
-        if (biddingController != null)
+        if (controller != null)
         {
-            biddingController.OnPotUpdated -= UpdatePotDisplay;
-            biddingController.OnTimerUpdated -= UpdateTimerDisplay;
-            biddingController.OnMaskDrawn -= OnMaskDrawn;
-            biddingController.OnTarotDrawn -= OnTarotDrawn;
-            biddingController.OnMaskPhaseStarted -= OnMaskPhaseStarted;
-            biddingController.OnTarotPhaseStarted -= OnTarotPhaseStarted;
-            biddingController.OnPlayerBidPlaced -= OnPlayerBidPlaced;
+            controller.OnPotUpdated -= UpdatePotDisplay;
+            controller.OnTimerUpdated -= UpdateTimerDisplay;
+            controller.OnMaskDrawn -= OnMaskDrawn;
+            controller.OnTarotDrawn -= OnTarotDrawn;
+            controller.OnMaskPhaseStarted -= OnMaskPhaseStarted;
+            controller.OnTarotPhaseStarted -= OnTarotPhaseStarted;
+            controller.OnPlayerBidPlaced -= OnPlayerBidPlaced;
+            controller.OnPlayerKickedFromRound -= OnPlayerKickedFromRound;
+            controller.OnMaskAssigned -= OnMaskAssigned;
+            controller.OnCurrentBidAmountChanged -= OnCurrentBidAmountChanged;
+            controller.OnTarotAssigned -= OnTarotAssigned;
         }
+    }
+
+    // Public methods for debugging
+    public void DebugStartMaskPhase()
+    {
+        if (controller != null)
+        {
+            controller.BeginMaskPhase();
+            Debug.Log("Debug: Started mask phase");
+        }
+    }
+
+    public void DebugStartTarotPhase()
+    {
+        if (controller != null)
+        {
+            controller.BeginTarotPhase();
+            Debug.Log("Debug: Started tarot phase");
+        }
+    }
+
+    public void DebugDrawTarot()
+    {
+        if (controller != null)
+        {
+            controller.DrawRandomTarot();
+            Debug.Log("Debug: Drew random tarot");
+        }
+    }
+
+    public void DebugForceNextPlayer()
+    {
+        MoveToNextPlayer();
+        Debug.Log($"Debug: Forced move to Player {currentPlayerIndex}");
     }
 }

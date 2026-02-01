@@ -1,89 +1,163 @@
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
 
 public class TarotDisplay : MonoBehaviour
 {
-    [Header("UI Elements")]
-    public Image cardBack;
-    public Image cardFront;
-    public TMP_Text cardNameText;
-    public TMP_Text cardDescriptionText;
+    [Header("Model References")]
+    public Transform modelHolder; // Where to spawn the model
+    private GameObject currentModel; // Currently spawned model
+    
+    [Header("UI References (Optional)")]
+    public TMP_Text nameText; // Card name
+    public TMP_Text effectText; // Card effect
+    public Canvas worldCanvas; // World space canvas
+    
+    [Header("Rare Card Effects")]
+    public ParticleSystem rareGlow; // Rare card effect
+    public Material rareMaterial; // Material override for rare
+    public Light rareLight; // Optional: Point light for rare
+    public Color rareGlowColor = new Color(0.5f, 0.2f, 1f); // Purple
     
     [Header("Animation")]
-    public bool startFlipped = false;
-    public float flipDuration = 0.5f;
+    public bool rotateModel = true;
+    public float rotationSpeed = 20f;
+    public bool floatAnimation = true;
+    public float floatHeight = 0.1f;
+    public float floatSpeed = 1f;
     
-    private Coroutine flipCoroutine;
+    private bool isRare = false;
+    private Vector3 startPosition;
+    private float floatTimer = 0f;
     
     void Start()
     {
-        if (startFlipped)
+        if (modelHolder != null)
         {
-            ShowFront();
+            startPosition = modelHolder.localPosition;
         }
         else
         {
-            ShowBack();
+            startPosition = transform.localPosition;
+        }
+    }
+    
+    void Update()
+    {
+        if (currentModel == null) return;
+        
+        // Rotate the card
+        if (rotateModel)
+        {
+            currentModel.transform.Rotate(Vector3.up, rotationSpeed * Time.deltaTime);
+        }
+        
+        // Float animation
+        if (floatAnimation)
+        {
+            floatTimer += Time.deltaTime * floatSpeed;
+            float yOffset = Mathf.Sin(floatTimer) * floatHeight;
+            
+            Transform targetTransform = modelHolder != null ? modelHolder : transform;
+            Vector3 newPos = startPosition;
+            newPos.y += yOffset;
+            targetTransform.localPosition = newPos;
         }
     }
     
     public void SetTarot(TarotCard tarot)
     {
-        cardNameText.text = tarot.name;
-        cardDescriptionText.text = tarot.description;
-    }
-    
-    public void FlipCard()
-    {
-        if (flipCoroutine != null)
-            StopCoroutine(flipCoroutine);
+        isRare = tarot.isRare;
         
-        flipCoroutine = StartCoroutine(FlipAnimation());
-    }
-    
-    System.Collections.IEnumerator FlipAnimation()
-    {
-        float elapsed = 0f;
-        Vector3 startScale = transform.localScale;
-        
-        // Shrink
-        while (elapsed < flipDuration / 2f)
+        // Clear old model
+        if (currentModel != null)
         {
-            float scale = Mathf.Lerp(1f, 0.1f, elapsed / (flipDuration / 2f));
-            transform.localScale = startScale * scale;
-            elapsed += Time.deltaTime;
-            yield return null;
+            Destroy(currentModel);
         }
         
-        // Flip sides
-        if (cardBack.gameObject.activeSelf)
-            ShowFront();
-        else
-            ShowBack();
-        
-        // Grow back
-        elapsed = 0f;
-        while (elapsed < flipDuration / 2f)
+        // Spawn new 3D model
+        if (tarot.modelPrefab != null)
         {
-            float scale = Mathf.Lerp(0.1f, 1f, elapsed / (flipDuration / 2f));
-            transform.localScale = startScale * scale;
-            elapsed += Time.deltaTime;
-            yield return null;
+            Transform spawnParent = modelHolder != null ? modelHolder : transform;
+            currentModel = Instantiate(tarot.modelPrefab, spawnParent.position, spawnParent.rotation, spawnParent);
+            
+            // Apply rare effects if needed
+            if (isRare)
+            {
+                ApplyRareEffects();
+            }
         }
         
-        transform.localScale = startScale;
+        // Set name text
+        if (nameText != null)
+        {
+            string displayName = isRare ? $"★ {tarot.cardName} ★" : tarot.cardName;
+            nameText.text = displayName;
+            
+            if (isRare)
+            {
+                nameText.color = rareGlowColor;
+                nameText.fontStyle = FontStyles.Bold;
+            }
+            else
+            {
+                nameText.color = Color.white;
+                nameText.fontStyle = FontStyles.Normal;
+            }
+        }
+        
+        // Set effect text
+        if (effectText != null)
+        {
+            effectText.text = tarot.effect;
+        }
     }
     
-    void ShowFront()
+    private void ApplyRareEffects()
     {
-        cardBack.gameObject.SetActive(false);
-        cardFront.gameObject.SetActive(true);
+        // Apply rare material
+        if (rareMaterial != null && currentModel != null)
+        {
+            Renderer[] renderers = currentModel.GetComponentsInChildren<Renderer>();
+            foreach (var renderer in renderers)
+            {
+                Material[] mats = renderer.materials;
+                for (int i = 0; i < mats.Length; i++)
+                {
+                    mats[i] = rareMaterial;
+                }
+                renderer.materials = mats;
+                
+                // Enable emission
+                if (renderer.material.HasProperty("_EmissionColor"))
+                {
+                    renderer.material.EnableKeyword("_EMISSION");
+                    renderer.material.SetColor("_EmissionColor", rareGlowColor * 3f);
+                }
+            }
+        }
+        
+        // Start particles
+        if (rareGlow != null)
+        {
+            rareGlow.Play();
+            
+            var main = rareGlow.main;
+            main.startColor = rareGlowColor;
+        }
+        
+        // Enable light
+        if (rareLight != null)
+        {
+            rareLight.enabled = true;
+            rareLight.color = rareGlowColor;
+        }
     }
     
-    void ShowBack()
+    void OnDestroy()
     {
-        cardBack.gameObject.SetActive(true);
-        cardFront.gameObject.SetActive(false);
+        if (currentModel != null)
+        {
+            Destroy(currentModel);
+        }
     }
 }
