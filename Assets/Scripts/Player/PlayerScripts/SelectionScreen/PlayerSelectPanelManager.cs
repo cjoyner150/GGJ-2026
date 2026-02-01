@@ -10,6 +10,11 @@ public class PlayerSelectPanelManager : MonoBehaviour
     [SerializeField] TextMeshProUGUI playerTitleTMP;
     [SerializeField] GameObject readyVisual;
     [SerializeField] Image image;
+    [SerializeField] RenderTexture[] renderTextures;
+    [SerializeField] Camera cam;
+    [SerializeField] RawImage rawIMG;
+    [SerializeField] SkinnedMeshRenderer playerMesh;
+
 
     private int playerIndex;
     private bool inputEnabled = false;
@@ -44,7 +49,11 @@ public class PlayerSelectPanelManager : MonoBehaviour
                 break;
         }
 
+        cam.targetTexture = renderTextures[playerIndex];
+        rawIMG.texture = cam.targetTexture;
+
         PlayerConfigManager.Instance.SetPlayerColor(playerIndex, col);
+        playerMesh.material.color = col;
         image.color = col;
 
         Invoke(nameof(EnableInput), .3f);
