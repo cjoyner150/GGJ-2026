@@ -3516,7 +3516,7 @@ MonoBehaviour:
   panelMoveDuration: 0.5
   floatingTextPrefab: {fileID: 8477299832255868993, guid: 795e59e26ce8be943a9af03abef7d509, type: 3}
   kickedTextPrefab: {fileID: 2671731861858418371, guid: 145ebb39483d7d148a6b3d5479c0bfee, type: 3}
-  potDisplayPosition: {fileID: 0}
+  potDisplayPosition: {fileID: 703600875}
   players:
   - {fileID: 813826816}
   - {fileID: 1565460290}

@@ -150,7 +150,7 @@ MonoBehaviour:
   Path: FMOD/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 639054834362338846
+  lastModified: 639054899372033795
   FileSizes: []
   Exists: 1
 --- !u!114 &-5360369996748889426
@@ -250,7 +250,7 @@ MonoBehaviour:
   Path: FMOD/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 639054834362349308
+  lastModified: 639054899372085368
   FileSizes:
   - Name: 
     Value: 1760
@@ -349,7 +349,7 @@ MonoBehaviour:
   StringsBanks:
   - {fileID: -4343147714829139624}
   cacheVersion: 131858
-  cacheTime: 639054837101180107
+  cacheTime: 639054899372370718
   SerializableEventsDict:
   - key: event:/Voice/VoiceFight
     index: 0
@@ -439,7 +439,7 @@ MonoBehaviour:
   Parameters: []
   MinDistance: 1
   MaxDistance: 20
-  Length: 64916
+  Length: 84480
 --- !u!114 &2994338234778971138
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -455,7 +455,7 @@ MonoBehaviour:
   Path: FMOD/Desktop/SFX.bank
   Name: SFX
   StudioPath: bank:/SFX
-  lastModified: 639054837101180107
+  lastModified: 639054899372370718
   FileSizes: []
   Exists: 1
 --- !u!114 &6071204493141923578
@@ -505,7 +505,7 @@ MonoBehaviour:
   Path: FMOD/Desktop/Music.bank
   Name: Music
   StudioPath: bank:/Music
-  lastModified: 639054834554377275
+  lastModified: 639054899372206775
   FileSizes: []
   Exists: 1
 --- !u!114 &7021433977946404265

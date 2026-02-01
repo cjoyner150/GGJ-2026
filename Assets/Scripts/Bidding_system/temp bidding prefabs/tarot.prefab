@@ -28,7 +28,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4536154438083535865}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 403, y: 85, z: 78}
   m_LocalScale: {x: 76.424, y: 76.424, z: 76.424}
   m_ConstrainProportionsScale: 0
@@ -127,7 +127,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MaskDisplay
   modelHolder: {fileID: 5820381653337284730}
-  nameText: {fileID: 0}
+  nameText: {fileID: 4221435784657266570}
   worldCanvas: {fileID: 0}
   blessedParticles: {fileID: 0}
   blessedMaterial: {fileID: 0}
