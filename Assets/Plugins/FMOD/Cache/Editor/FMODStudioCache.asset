@@ -418,7 +418,7 @@ MonoBehaviour:
   StringsBanks:
   - {fileID: -2365856062508699506}
   cacheVersion: 131858
-  cacheTime: 639055546550751191
+  cacheTime: 639055553928378897
   SerializableEventsDict:
   - key: event:/Music/AuctionMusic
     index: 0
@@ -527,7 +527,7 @@ MonoBehaviour:
   Path: FMOD/Desktop/SFX.bank
   Name: SFX
   StudioPath: bank:/SFX
-  lastModified: 639055546550751191
+  lastModified: 639055553928378897
   FileSizes: []
   Exists: 1
 --- !u!114 &1811805248483172961
