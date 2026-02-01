@@ -114,8 +114,8 @@ public class PlayerController : MonoBehaviour, IDamageable
             }
         }
 
-        // max implement explosion here
 
+        AudioManager.Instance?.playExplosion(transform.position);
         ExplosionFeedback?.PlayFeedbacks();
 
         Die();
