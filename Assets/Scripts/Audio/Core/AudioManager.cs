@@ -159,6 +159,7 @@ public class AudioManager : MonoBehaviour
     public void uiBet() => PlayUI(events.uiBet);
     public void uiTake() => PlayUI(events.uiTake);
     public void uiPass() => PlayUI(events.uiPass);
+    public void uiAppear() => PlayUI(events.uiAppear);
 
     // --------------------------------------------------
     // Music

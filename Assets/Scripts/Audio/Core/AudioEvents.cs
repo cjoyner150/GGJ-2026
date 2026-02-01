@@ -14,6 +14,7 @@ public class AudioEvents : ScriptableObject
     public EventReference uiBet;
     public EventReference uiTake;
     public EventReference uiPass;
+    public EventReference uiAppear;
 
     [Header("Player - Movement")]
     public EventReference playerFootstep;
