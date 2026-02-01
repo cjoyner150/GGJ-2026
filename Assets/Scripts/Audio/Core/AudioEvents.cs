@@ -13,6 +13,7 @@ public class AudioEvents : ScriptableObject
     public EventReference uiTickDown;
     public EventReference uiBet;
     public EventReference uiTake;
+    public EventReference uiPass;
 
     [Header("Player - Movement")]
     public EventReference playerFootstep;
