@@ -1,6 +1,7 @@
 using MoreMountains.Feedbacks;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using TMPro;
 using UnityEngine;
@@ -54,12 +55,17 @@ public class LevelManager : MonoBehaviour
 
         cfg.RoundsWon++;
 
+        AudioManager.Instance?.VoiceEndDelayed("Bee", 1.5f);
+
         winTMP.text = $"Player {playerIndex + 1} won the round! " +
             $"\nPlayer {playerIndex + 1} has {cfg.RoundsWon} wins.";
         roundWinTimeline.SetActive(true);
         gameplayCanvas.SetActive(false);
 
         playerWinRenderer.material.color = cfg.PlayerColor;
+
     }
+
+
 
 }
