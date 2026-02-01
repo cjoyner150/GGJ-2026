@@ -649,6 +649,33 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 0
+--- !u!114 &-2226805377419378567
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Parry
+  m_EditorClassIdentifier: FMODUnityEditor::FMODUnity.EditorEventRef
+  Path: event:/Parry
+  Guid:
+    Data1: 618950822
+    Data2: 1265947246
+    Data3: -330802015
+    Data4: 502662886
+  Banks:
+  - {fileID: 7687861419046678972}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
 --- !u!114 &-969556193717372446
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -764,13 +791,15 @@ MonoBehaviour:
   - {fileID: -7241665690799819934}
   - {fileID: -8473704328053404031}
   - {fileID: 1323269026846713666}
+  - {fileID: -2226805377419378567}
+  - {fileID: 1820537459492314288}
   EditorParameters: []
   MasterBanks:
   - {fileID: 6235351785932774160}
   StringsBanks:
   - {fileID: 8678301993411511312}
   cacheVersion: 131858
-  cacheTime: 639054890628114063
+  cacheTime: 639054970544208507
   SerializableEventsDict:
   - key: event:/Music
     index: 0
@@ -802,6 +831,10 @@ MonoBehaviour:
     index: 13
   - key: event:/UI/CardPickup
     index: 14
+  - key: event:/Parry
+    index: 15
+  - key: event:/Voice/LittleGuy
+    index: 16
 --- !u!114 &138740475311300494
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -933,6 +966,33 @@ MonoBehaviour:
     Data2: 1122290238
     Data3: -534630473
     Data4: -41129645
+  Banks:
+  - {fileID: 7687861419046678972}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
+--- !u!114 &1820537459492314288
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Voice/LittleGuy
+  m_EditorClassIdentifier: FMODUnityEditor::FMODUnity.EditorEventRef
+  Path: event:/Voice/LittleGuy
+  Guid:
+    Data1: -1595358786
+    Data2: 1278857311
+    Data3: 2042692227
+    Data4: -516573363
   Banks:
   - {fileID: 7687861419046678972}
   IsStream: 0
@@ -1515,7 +1575,7 @@ MonoBehaviour:
   Path: FMOD/Desktop/SFX.bank
   Name: SFX
   StudioPath: bank:/SFX
-  lastModified: 639054855897892051
+  lastModified: 639054970544208507
   FileSizes: []
   Exists: 1
 --- !u!114 &7971688256203239017
@@ -1674,10 +1734,10 @@ MonoBehaviour:
   Path: FMOD/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 639054824399144238
+  lastModified: 639054970544019695
   FileSizes:
   - Name: 
-    Value: 1760
+    Value: 1860
   Exists: 1
 --- !u!114 &9051714489620718951
 MonoBehaviour:
