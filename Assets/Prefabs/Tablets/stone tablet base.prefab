@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3114740876642431100}
   m_Layer: 0
-  m_Name: stone tablet
+  m_Name: stone tablet base
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
