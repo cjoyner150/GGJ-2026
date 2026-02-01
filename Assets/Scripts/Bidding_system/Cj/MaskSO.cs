@@ -8,4 +8,6 @@ public class MaskSO : ScriptableObject
     public GameObject maskPrefab;
     public string maskDescription;
     public int maskDoom;
+
+    public MaskObject.maskType type;
 }

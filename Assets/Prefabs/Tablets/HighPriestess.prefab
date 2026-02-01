@@ -10,7 +10,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2337958642287471302, guid: 6d2950c15af5bc246b51ff96dd0bd150, type: 3}
       propertyPath: m_Name
-      value: Wheel
+      value: HighPriestess
       objectReference: {fileID: 0}
     - target: {fileID: 3114740876642431100, guid: 6d2950c15af5bc246b51ff96dd0bd150, type: 3}
       propertyPath: m_LocalPosition.x
@@ -55,7 +55,7 @@ PrefabInstance:
     - target: {fileID: 5619365573037373997, guid: 6d2950c15af5bc246b51ff96dd0bd150, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 7d0aa755f9de74e46b51a893341d70d5, type: 2}
+      objectReference: {fileID: 2100000, guid: c470fb3bba4ef7e458af9454b1b61e0e, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

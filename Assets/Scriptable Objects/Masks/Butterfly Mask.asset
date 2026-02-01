@@ -16,3 +16,4 @@ MonoBehaviour:
   maskPrefab: {fileID: 2686955572923395045, guid: e6f2294f1f8b08a42b52072b61830777, type: 3}
   maskDescription: Take more knockback
   maskDoom: 1
+  type: 3
