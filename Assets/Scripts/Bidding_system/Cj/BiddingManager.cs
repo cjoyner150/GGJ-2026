@@ -24,7 +24,7 @@ public class BiddingManager : MonoBehaviour
     TurnContext lastTurn;
 
     WaitForSeconds maskEffectsTime = new WaitForSeconds(2f);
-    WaitForSeconds delayForStartMaskBiddingTime = new WaitForSeconds(2f);
+    WaitForSeconds delayForStartMaskBiddingTime = new WaitForSeconds(.5f);
     WaitForSeconds delayBetweenAuctionsTime = new WaitForSeconds(3f);
 
     public void Initialize(List<BiddingInputHandler> players)
