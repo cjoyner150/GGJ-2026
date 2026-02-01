@@ -32,8 +32,8 @@ MonoBehaviour:
   - sceneName: Gameplay Scene
     musicEvent:
       Guid:
-        Data1: 1926003601
-        Data2: 1094105851
-        Data3: 966440325
-        Data4: -1922380303
-      Path: event:/Music/AuctionMusic
+        Data1: 1903246144
+        Data2: 1213959557
+        Data3: -1487883392
+        Data4: -1093593035
+      Path: event:/Music/BrawlMusic
