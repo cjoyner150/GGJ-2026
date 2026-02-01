@@ -75,7 +75,7 @@ public class PlayerController : MonoBehaviour, IDamageable
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
-        modelTransform.localScale = new Vector3(ctx.scale, ctx.scale, ctx.scale);
+        //modelTransform.localScale = new Vector3(ctx.scale, ctx.scale, ctx.scale);
 
         if (ctx.man) Invoke(nameof(ManDie), 30f);
     }
