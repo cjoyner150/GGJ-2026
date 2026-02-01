@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f0aa373973284654aa0440b9908eb780, type: 3}
-  m_Name: Goddess Mask
+  m_Name: Butterfly Mask
   m_EditorClassIdentifier: Assembly-CSharp::MaskSO
-  maskName: The Goddess Mask
-  maskPrefab: {fileID: 2686955572923395045, guid: d9338477aa28bad498a7e1d507b12ff2, type: 3}
-  maskDescription: A blessing
-  maskDoom: 0
+  maskName: The Butterfly Mask
+  maskPrefab: {fileID: 2686955572923395045, guid: e6f2294f1f8b08a42b52072b61830777, type: 3}
+  maskDescription: Take more knockback
+  maskDoom: 1
