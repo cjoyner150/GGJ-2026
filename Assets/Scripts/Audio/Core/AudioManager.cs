@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using FMODUnity;
 using FMOD.Studio;
+using System.Collections;
 using STOP_MODE = FMOD.Studio.STOP_MODE;
 
 public class AudioManager : MonoBehaviour
@@ -97,10 +98,33 @@ public class AudioManager : MonoBehaviour
     // --------------------------------------------------
     // One-shots (generic)
     // --------------------------------------------------
+
     public void PlayUI(EventReference evt)
     {
         if (evt.IsNull) return;
         RuntimeManager.PlayOneShot(evt);
+    }
+
+    // Int Version
+    public void PlayUI(EventReference evt, string paramName, int paramValue)
+    {
+        if (evt.IsNull) return;
+
+        EventInstance inst = RuntimeManager.CreateInstance(evt);
+        inst.setParameterByName(paramName, paramValue);
+        inst.start();
+        inst.release();
+    }
+
+    // String Version
+    public void PlayUI(EventReference evt, string paramName, string label)
+    {
+        if (evt.IsNull) return;
+
+        EventInstance inst = RuntimeManager.CreateInstance(evt);
+        inst.setParameterByNameWithLabel(paramName, label);
+        inst.start();
+        inst.release();
     }
 
     public void PlayAt(EventReference evt, Vector3 position)
@@ -120,7 +144,7 @@ public class AudioManager : MonoBehaviour
     public void uiReady() => PlayUI(events.uiReady);
 
     // Voice
-    public void voiceEnd() => PlayUI(events.voiceEnd);
+    public void voiceEnd(string maskName) => PlayUI(events.voiceEnd, "Mask", maskName);
     public void voiceFight(Vector3 pos) => PlayAt(events.voiceFight, pos);
 
     // Gameplay
@@ -129,6 +153,7 @@ public class AudioManager : MonoBehaviour
     public void playAttack(Vector3 pos) => PlayAt(events.playerAttack, pos);
     public void playJump(Vector3 pos) => PlayAt(events.playerJump, pos);
     public void playDash(Vector3 pos) => PlayAt(events.playerDash, pos);
+    public void playParry(Vector3 pos) => PlayAt(events.playerParry, pos);
 
     // --------------------------------------------------
     // Music
@@ -180,7 +205,7 @@ public class AudioManager : MonoBehaviour
     // --------------------------------------------------
     public void StartAmbience()
     {
-        if (events.ambient.IsNull) return;
+        if (events == null || events.ambient.IsNull) return;
         if (ambientInstance.isValid()) return;
 
         ambientInstance = RuntimeManager.CreateInstance(events.ambient);
@@ -194,5 +219,21 @@ public class AudioManager : MonoBehaviour
         ambientInstance.stop(immediate ? STOP_MODE.IMMEDIATE : STOP_MODE.ALLOWFADEOUT);
         ambientInstance.release();
         ambientInstance.clearHandle();
+    }
+
+
+    // --------------------------------------------------
+    // Weird Scripts
+    // --------------------------------------------------
+
+    public void VoiceEndDelayed(string maskName, float delaySeconds = 3f)
+    {
+        StartCoroutine(VoiceEndDelayedRoutine(maskName, delaySeconds));
+    }
+
+    private IEnumerator VoiceEndDelayedRoutine(string maskName, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        voiceEnd(maskName);
     }
 }

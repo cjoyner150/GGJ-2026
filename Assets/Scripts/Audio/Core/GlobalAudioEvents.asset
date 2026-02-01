@@ -75,20 +75,27 @@ MonoBehaviour:
       Data3: 984830624
       Data4: -1765064311
     Path: event:/Dash
+  playerParry:
+    Guid:
+      Data1: 618950822
+      Data2: 1265947246
+      Data3: -330802015
+      Data4: 502662886
+    Path: event:/Parry
   music:
     Guid:
       Data1: 1926003601
       Data2: 1094105851
       Data3: 966440325
       Data4: -1922380303
-    Path: event:/Music
+    Path: event:/Music/AuctionMusic
   ambient:
     Guid:
-      Data1: -1273586950
-      Data2: 1122290238
-      Data3: -534630473
-      Data4: -41129645
-    Path: event:/UI/CardPickup
+      Data1: -720691853
+      Data2: 1319469409
+      Data3: -56214598
+      Data4: -1117744847
+    Path: event:/Ambience
   voiceEnd:
     Guid:
       Data1: 115588983
