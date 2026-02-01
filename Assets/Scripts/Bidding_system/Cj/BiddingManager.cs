@@ -48,7 +48,7 @@ public class BiddingManager : MonoBehaviour
         for (int i = 0; i < PlayerConfigManager.Instance.GetPlayerConfigs().Count; i++)
         {
             for (int j = 0; j < 2; j++)
-            { 
+            {
                 TarotSO so = tarotSOs[Random.Range(0, tarotSOs.Count)];
                 tarotQueue.Enqueue(new TarotObject(so));
                 tarotSOs.Remove(so);
@@ -109,7 +109,8 @@ public class BiddingManager : MonoBehaviour
                     yield return null;
                 }
 
-                if (lastTurn.passedTurn) {
+                if (lastTurn.passedTurn)
+                {
                     lastTurn.player.cfg.Acorns += pot;
                     lastTurn.player.cfg.Mask = currentMask;
                     currentPlayers.Remove(lastTurn.player);
@@ -129,7 +130,7 @@ public class BiddingManager : MonoBehaviour
 
         }
 
-        foreach(var player in players)
+        foreach (var player in players)
         {
             print(player.cfg.PlayerIndex + " " + player.cfg.Mask.name);
         }
@@ -195,7 +196,7 @@ public class BiddingManager : MonoBehaviour
 
             if (currentPlayers.Count < 2)
             {
-                while (tarotQueue.Count > 0) 
+                while (tarotQueue.Count > 0)
                 {
 
                     if (currentPlayers[0].cfg.Tarots == null) currentPlayers[0].cfg.Tarots = new List<TarotObject>();
@@ -270,6 +271,7 @@ public class BiddingManager : MonoBehaviour
     void ShowMask()
     {
         currentMask = maskQueue.Dequeue();
+        AudioManager.Instance?.uiAppear();
         showUI.UpdateMask(currentMask);
     }
 }

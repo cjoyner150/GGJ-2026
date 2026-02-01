@@ -21,7 +21,7 @@ MonoBehaviour:
         Data3: 938967221
         Data4: -1366345419
       Path: event:/Music/MenuMusic
-  - sceneName: Gameplay Scene
+  - sceneName: Bidding Scene
     musicEvent:
       Guid:
         Data1: 1926003601
@@ -29,3 +29,11 @@ MonoBehaviour:
         Data3: 966440325
         Data4: -1922380303
       Path: event:/Music/AuctionMusic
+  - sceneName: Gameplay Scene
+    musicEvent:
+      Guid:
+        Data1: 1903246144
+        Data2: 1213959557
+        Data3: -1487883392
+        Data4: -1093593035
+      Path: event:/Music/BrawlMusic

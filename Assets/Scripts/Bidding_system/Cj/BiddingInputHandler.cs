@@ -1,3 +1,4 @@
+using MoreMountains.Feedbacks;
 using System;
 using TMPro;
 using UnityEngine;
@@ -9,6 +10,12 @@ public class BiddingInputHandler : MonoBehaviour
     [SerializeField] TextMeshProUGUI bidNumberTMP;
     [SerializeField] TextMeshProUGUI acornsTMP;
     [SerializeField] GameObject turnIndicator;
+
+    public MMF_Player TicUpEffect;
+    public MMF_Player TicDownEffect;
+    public MMF_Player ShakeEffect;
+    public MMF_Player BMEffect;
+    public MMF_Player SMEffect;
 
     private BiddingManager manager;
     public PlayerConfig cfg;
@@ -65,6 +72,11 @@ public class BiddingInputHandler : MonoBehaviour
         {
             currentlyBidding += 10;
         }
+        {
+            TicDownEffect?.PlayFeedbacks();
+            AudioManager.Instance.uiTickDown();
+        }
+
     }
 
     private void OnIncreaseBid(InputAction.CallbackContext context)
@@ -76,17 +88,26 @@ public class BiddingInputHandler : MonoBehaviour
         {
             currentlyBidding -= 10;
         }
+        else
+        {
+            TicUpEffect?.PlayFeedbacks();
+            AudioManager.Instance.uiTickUp();
+        }
     }
 
     private void OnBid(InputAction.CallbackContext context)
     {
         canInputTimer = canInputCD;
+        SMEffect?.PlayFeedbacks();
+        AudioManager.Instance.uiBet();
         EndTurn(false, currentlyBidding);
     }
 
     private void OnTake(InputAction.CallbackContext context)
     {
         canInputTimer = canInputCD;
+        BMEffect?.PlayFeedbacks();
+        AudioManager.Instance.uiTake();
         EndTurn(true, currentlyBidding);
     }
 
@@ -94,6 +115,7 @@ public class BiddingInputHandler : MonoBehaviour
     {
         IsTurn = false;
         manager.SetTurnContext(new TurnContext(passedTurn, acornBidAmount, this));
+        ShakeEffect?.PlayFeedbacks();
     }
 
     public void OnTurnEnter(int reqAmount)
@@ -113,7 +135,7 @@ public class BiddingInputHandler : MonoBehaviour
         bidNumberTMP.text = $"{currentlyBidding}";
 
         turnIndicator.SetActive(IsTurn);
-        
+
     }
 
     private void Update()
@@ -131,7 +153,7 @@ public class TurnContext
     public int acornBidAmount;
     public BiddingInputHandler player;
 
-    public TurnContext(bool passedTurn, int acornBidAmount , BiddingInputHandler player)
+    public TurnContext(bool passedTurn, int acornBidAmount, BiddingInputHandler player)
     {
         this.passedTurn = passedTurn;
         this.acornBidAmount = acornBidAmount;
