@@ -148,4 +148,6 @@ public class PlayerConfig
     public Color PlayerColor { get; set; }
     public int RoundsWon { get; set; }
 
+    public int Acorns { get; set; }
+
 }
