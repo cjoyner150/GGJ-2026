@@ -370,12 +370,6 @@ public class BidChooser : MonoBehaviour
         currentPlayerIndex = index;
         Debug.Log($"Moved panel to Player {currentPlayerIndex}");
         
-        // Notify turn manager
-        if (turnManager != null)
-        {
-            turnManager.SetCurrentPlayerTurn(player.PlayerIndex);
-        }
-        
         UpdateUI();
     }
 

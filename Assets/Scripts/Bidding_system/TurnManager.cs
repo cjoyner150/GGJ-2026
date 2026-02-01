@@ -30,6 +30,8 @@ public class TurnManager : MonoBehaviour
         {
             playerInputMap[input.GetPlayerIndex()] = input;
         }
+
+
         
         Debug.Log($"TurnManager initialized with {players.Count} players");
     }
@@ -85,7 +87,7 @@ public class TurnManager : MonoBehaviour
     
     public void SetCurrentPlayerTurn(int playerIndex)
     {
-        if (!isBiddingActive) return;
+         if (!isBiddingActive) return;
         
         // Disable all players first
         foreach (var input in playerInputs)
