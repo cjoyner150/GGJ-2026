@@ -97,10 +97,27 @@ public class AudioManager : MonoBehaviour
     // --------------------------------------------------
     // One-shots (generic)
     // --------------------------------------------------
-    public void PlayUI(EventReference evt)
+
+    // Int Version
+    public void PlayUI(EventReference evt, string paramName, int paramValue)
     {
         if (evt.IsNull) return;
-        RuntimeManager.PlayOneShot(evt);
+
+        EventInstance inst = RuntimeManager.CreateInstance(evt);
+        inst.setParameterByName(paramName, paramValue);
+        inst.start();
+        inst.release();
+    }
+
+    // String Version
+    public void PlayUI(EventReference evt, string paramName, string label)
+    {
+        if (evt.IsNull) return;
+
+        EventInstance inst = RuntimeManager.CreateInstance(evt);
+        inst.setParameterByNameWithLabel(paramName, label);
+        inst.start();
+        inst.release();
     }
 
     public void PlayAt(EventReference evt, Vector3 position)
@@ -120,7 +137,7 @@ public class AudioManager : MonoBehaviour
     public void uiReady() => PlayUI(events.uiReady);
 
     // Voice
-    public void voiceEnd() => PlayUI(events.voiceEnd);
+    public void voiceEnd(string maskName) => PlayUI(events.voiceEnd, "Mask", maskName);
     public void voiceFight(Vector3 pos) => PlayAt(events.voiceFight, pos);
 
     // Gameplay
@@ -181,7 +198,7 @@ public class AudioManager : MonoBehaviour
     // --------------------------------------------------
     public void StartAmbience()
     {
-        if (events.ambient.IsNull) return;
+        if (events == null || events.ambient.IsNull) return;
         if (ambientInstance.isValid()) return;
 
         ambientInstance = RuntimeManager.CreateInstance(events.ambient);

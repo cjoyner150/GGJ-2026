@@ -1,6 +1,7 @@
 using MoreMountains.Feedbacks;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using TMPro;
 using UnityEngine;
@@ -60,6 +61,9 @@ public class LevelManager : MonoBehaviour
         gameplayCanvas.SetActive(false);
 
         playerWinRenderer.material.color = cfg.PlayerColor;
+
+        Debug.Log($"Player {playerIndex + 1} has the {cfg.mask.name} mask.");
+        AudioManager.Instance?.VoiceEnd(cfg.mask.name);
     }
 
 }

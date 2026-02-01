@@ -664,7 +664,7 @@ MonoBehaviour:
   Path: FMOD/Desktop/Music.bank
   Name: Music
   StudioPath: bank:/Music
-  lastModified: 639055350739752863
+  lastModified: 639055360810902366
   FileSizes: []
   Exists: 1
 --- !u!114 &-4223516967702252822
@@ -940,7 +940,7 @@ MonoBehaviour:
     Data3: -56214598
     Data4: -1117744847
   Banks:
-  - {fileID: 1263250490560962137}
+  - {fileID: 8779216243138544377}
   IsStream: 1
   Is3D: 0
   IsOneShot: 0
@@ -963,10 +963,10 @@ MonoBehaviour:
   Path: FMOD/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 639055350738862464
+  lastModified: 639055360658872484
   FileSizes:
   - Name: 
-    Value: 1964
+    Value: 2042
   Exists: 1
 --- !u!114 &-2226805377419378567
 MonoBehaviour:
@@ -1176,6 +1176,7 @@ MonoBehaviour:
   - {fileID: 6303499753598167238}
   - {fileID: -4270351757590650692}
   - {fileID: 1263250490560962137}
+  - {fileID: 8779216243138544377}
   EditorEvents:
   - {fileID: -6958191647841560821}
   - {fileID: -8103937903338206514}
@@ -1202,7 +1203,7 @@ MonoBehaviour:
   StringsBanks:
   - {fileID: -2365856062508699506}
   cacheVersion: 131858
-  cacheTime: 639055350743119582
+  cacheTime: 639055360812122845
   SerializableEventsDict:
   - key: event:/Music/AuctionMusic
     index: 0
@@ -1424,7 +1425,7 @@ MonoBehaviour:
   Path: FMOD/Desktop/SFX.bank
   Name: SFX
   StudioPath: bank:/SFX
-  lastModified: 639055350743119582
+  lastModified: 639055360811871745
   FileSizes: []
   Exists: 1
 --- !u!114 &1323269026846713666
@@ -2044,7 +2045,7 @@ MonoBehaviour:
   Path: FMOD/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 639055350738852461
+  lastModified: 639055360658862478
   FileSizes: []
   Exists: 1
 --- !u!114 &6373020963878915378
@@ -2451,6 +2452,24 @@ MonoBehaviour:
   FileSizes:
   - Name: 
     Value: 1964
+  Exists: 1
+--- !u!114 &8779216243138544377
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Ambience.bank
+  m_EditorClassIdentifier: FMODUnityEditor::FMODUnity.EditorBankRef
+  Path: FMOD/Desktop/Ambience.bank
+  Name: Ambience
+  StudioPath: bank:/Ambience
+  lastModified: 639055360812122845
+  FileSizes: []
   Exists: 1
 --- !u!114 &9051714489620718951
 MonoBehaviour:
