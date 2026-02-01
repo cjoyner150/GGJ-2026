@@ -108,7 +108,7 @@ public class PlayerInputHandler : MonoBehaviour
             switch (tarot.type)
             {
                 case TarotObject.cardType.Chariot:
-                    ctx.walkMoveSpeed *= 1.5f;
+                    ctx.walkMoveSpeed *= 1.25f;
                     break;
                 case TarotObject.cardType.Devil:
                     ctx.attackDamage *= 1.5f;
@@ -124,12 +124,12 @@ public class PlayerInputHandler : MonoBehaviour
                     ctx.jumps++;
                     break;
                 case TarotObject.cardType.Moon:
-                    ctx.groundDrag = 0;
+                    ctx.groundDrag = 1;
                     break;
                 case TarotObject.cardType.Star:
                     ctx.attackDamage *= 1.2f;
                     ctx.attackSpeed *= 1.2f;
-                    ctx.walkMoveSpeed *= 1.2f;
+                    ctx.walkMoveSpeed *= 1.1f;
                     ctx.maxHealth *= 1.2f;
                     ctx.currentHealth = ctx.maxHealth;
                     break;
@@ -141,7 +141,7 @@ public class PlayerInputHandler : MonoBehaviour
                         switch ((TarotObject.cardType)rand)
                         {
                             case TarotObject.cardType.Chariot:
-                                ctx.walkMoveSpeed *= 1.5f;
+                                ctx.walkMoveSpeed *= 1.25f;
                                 break;
                             case TarotObject.cardType.Devil:
                                 ctx.attackDamage *= 1.5f;
@@ -162,7 +162,7 @@ public class PlayerInputHandler : MonoBehaviour
                             case TarotObject.cardType.Star:
                                 ctx.attackDamage *= 1.2f;
                                 ctx.attackSpeed *= 1.2f;
-                                ctx.walkMoveSpeed *= 1.2f;
+                                ctx.walkMoveSpeed *= 1.1f;
                                 ctx.maxHealth *= 1.2f;
                                 ctx.currentHealth = ctx.maxHealth;
                                 break;
