@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Star Tarot
   m_EditorClassIdentifier: Assembly-CSharp::TarotSO
   tarotName: The Star
-  tarotPrefab: {fileID: 0}
+  tarotPrefab: {fileID: 1034757793665291975, guid: 93edfe6458875794c9e3cf3ea6f24fe1, type: 3}
   description: All stats increase
   UIAsset: {fileID: 21300000, guid: 28d0918138583524594c949cae14b828, type: 3}

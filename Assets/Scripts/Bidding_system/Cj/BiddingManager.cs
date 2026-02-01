@@ -196,7 +196,9 @@ public class BiddingManager : MonoBehaviour
             if (currentPlayers.Count < 2)
             {
                 while (tarotQueue.Count > 0) 
-                { 
+                {
+
+                    if (currentPlayers[0].cfg.Tarots == null) currentPlayers[0].cfg.Tarots = new List<TarotObject>();
                     currentPlayers[0].cfg.Tarots.Add(tarotQueue.Dequeue());
                     PlayGetTarotEffects();
                     yield return maskEffectsTime;

@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Devil Tarot
   m_EditorClassIdentifier: Assembly-CSharp::TarotSO
   tarotName: The Devil
-  tarotPrefab: {fileID: 0}
+  tarotPrefab: {fileID: 1034757793665291975, guid: 69324106a235b4a478ad2abeab9ba9a5, type: 3}
   description: Players gains a small amount of lifesteal
   UIAsset: {fileID: 21300000, guid: 47858dcb50ff2f8498672c82827dd063, type: 3}

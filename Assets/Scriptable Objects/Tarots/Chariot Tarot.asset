@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Chariot Tarot
   m_EditorClassIdentifier: Assembly-CSharp::TarotSO
   tarotName: The Chariot
-  tarotPrefab: {fileID: 0}
+  tarotPrefab: {fileID: 1034757793665291975, guid: d162d8bf44e1a5042ae4dbb5bfd1fec4, type: 3}
   description: Increases player speed
   UIAsset: {fileID: 21300000, guid: 5b00c70382acc794b8d6e4e0570bdfd7, type: 3}

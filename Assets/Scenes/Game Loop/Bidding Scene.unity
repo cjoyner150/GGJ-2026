@@ -1391,14 +1391,14 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 662fe15b2f5bb18409d797ff2ed3077f, type: 2}
   - {fileID: 11400000, guid: 04468c677d5401e449e37c0137836a96, type: 2}
   possibleTarotSOs:
-  - {fileID: 11400000, guid: 3e34bbfb96a31a24fb38202543dfea33, type: 2}
-  - {fileID: 11400000, guid: 3e34bbfb96a31a24fb38202543dfea33, type: 2}
-  - {fileID: 11400000, guid: 3e34bbfb96a31a24fb38202543dfea33, type: 2}
-  - {fileID: 11400000, guid: 3e34bbfb96a31a24fb38202543dfea33, type: 2}
-  - {fileID: 11400000, guid: 3e34bbfb96a31a24fb38202543dfea33, type: 2}
-  - {fileID: 11400000, guid: 3e34bbfb96a31a24fb38202543dfea33, type: 2}
-  - {fileID: 11400000, guid: 3e34bbfb96a31a24fb38202543dfea33, type: 2}
-  - {fileID: 11400000, guid: 3e34bbfb96a31a24fb38202543dfea33, type: 2}
+  - {fileID: 11400000, guid: 331cc3f777795df4abdd2efd9917f55e, type: 2}
+  - {fileID: 11400000, guid: 097819de813688948ba1191e6e8faf2c, type: 2}
+  - {fileID: 11400000, guid: 14480d9d189c5324588b9398dc7e2157, type: 2}
+  - {fileID: 11400000, guid: 3ec587f81782f354081a8d0fb3e78ccc, type: 2}
+  - {fileID: 11400000, guid: 4c17c71fb646b1b48a6ad267d49484a1, type: 2}
+  - {fileID: 11400000, guid: de15138105da20e479eb0ece3bd4b761, type: 2}
+  - {fileID: 11400000, guid: 5a7abef69e6e78844a046a4483913d68, type: 2}
+  - {fileID: 11400000, guid: 5b90b8180e307ac4685241fb3738e48d, type: 2}
   showUI: {fileID: 377409499}
 --- !u!1 &2087777162
 GameObject:

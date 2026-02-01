@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Empress Tarot
   m_EditorClassIdentifier: Assembly-CSharp::TarotSO
   tarotName: The Empress
-  tarotPrefab: {fileID: 0}
+  tarotPrefab: {fileID: 1034757793665291975, guid: 5bd3948879e3e5249b6735ddd7499570, type: 3}
   description: Increases player attack speed
   UIAsset: {fileID: 21300000, guid: 25b8dc66a1d14ab40afc4f7f9f9ef6c6, type: 3}
