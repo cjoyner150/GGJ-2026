@@ -2042,6 +2042,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LevelManager
   playerDiedEvent: {fileID: 11400000, guid: 46b6a4991943e254ab06b7cb9c79e860, type: 2}
   roundWonEvent: {fileID: 11400000, guid: c82cc70d2ea5721499da196274f85626, type: 2}
+  roundWinTimeline: {fileID: 1988297271}
+  winTMP: {fileID: 212186961}
   fader: {fileID: 971309185}
 --- !u!114 &971309185
 MonoBehaviour:
@@ -4359,7 +4361,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1988297272
 Transform:
   m_ObjectHideFlags: 0
