@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour, IDamageable
     [SerializeField] Transform modelTransform;
     [SerializeField] Transform attackLocation;
 
+
     public int playerIndex;
     private Rigidbody rb;
 
@@ -46,6 +47,17 @@ public class PlayerController : MonoBehaviour, IDamageable
     public MMF_Player SlashFeedbackV;
     public MMF_Player ParryFeedback;
 
+    [Header("Footsteps (Velocity Based)")]
+    [SerializeField] private float minStepSpeed = 0.6f;     // below this = no steps
+    [SerializeField] private float stepDistanceWalk = 1.7f; // meters per step at normal walk
+    [SerializeField] private float stepDistanceRun = 1.2f;  // meters per step when fast
+    [SerializeField] private float runSpeedThreshold = 5.0f; // tune to your game
+
+    private Vector3 _lastStepPos;
+    private float _stepDistAccum;
+    private bool _wasGrounded;
+
+
 
     public enum MoveState
     {
@@ -66,7 +78,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         modelTransform.localScale = new Vector3(ctx.scale, ctx.scale, ctx.scale);
 
     }
-    
+
     private void FixedUpdate()
     {
         MovePlayer();
@@ -85,7 +97,10 @@ public class PlayerController : MonoBehaviour, IDamageable
         HandleAnimations();
         LimitPlayerSpeed();
 
+
         rb.linearDamping = ctx.grounded ? ctx.groundDrag : 0;
+        HandleFootstepsVelocityBased();
+
 
         if (moveSpeed > desiredMoveSpeed)
         {
@@ -124,17 +139,18 @@ public class PlayerController : MonoBehaviour, IDamageable
 
             RaycastHit[] hits = Physics.SphereCastAll(attackLocation.position, .75f, modelTransform.forward, 1f);
 
-            foreach (RaycastHit hit in hits) {
+            foreach (RaycastHit hit in hits)
+            {
                 Collider col = hit.collider;
 
                 if (col == null) continue;
 
                 IDamageable damageable = col.GetComponent<IDamageable>();
 
-                if (damageable != null && (object)damageable != this) 
-                { 
-                    damageable.Hit(ctx.attackDamage, out IDamageable.HitCallbackContext callbackContext, modelTransform.position); 
-                    
+                if (damageable != null && (object)damageable != this)
+                {
+                    damageable.Hit(ctx.attackDamage, out IDamageable.HitCallbackContext callbackContext, modelTransform.position);
+
                     switch (callbackContext)
                     {
                         case IDamageable.HitCallbackContext.success:
@@ -169,8 +185,8 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     void HandleInput()
     {
-        if ( isJumping 
-            || isDashing 
+        if (isJumping
+            || isDashing
             || isAttacking
             || isTakingKnockback) return;
 
@@ -282,7 +298,7 @@ public class PlayerController : MonoBehaviour, IDamageable
                 isJumping = false;
             }
         }
-        
+
         if (dashTimer > 0)
         {
             dashTimer -= Time.deltaTime;
@@ -297,7 +313,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         if (dashCDTimer > 0)
         {
             dashCDTimer -= Time.deltaTime;
-            
+
             if (dashCDTimer <= 0)
             {
                 dashOnCD = false;
@@ -383,7 +399,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         attackOnCD = true;
         attackTimer = ctx.attackLength / ctx.attackSpeed;
         attackCDTimer = ctx.attackCD / ctx.attackSpeed;
-        
+
 
         if (ctx.grounded)
         {
@@ -417,7 +433,7 @@ public class PlayerController : MonoBehaviour, IDamageable
             ctx.invulnerable = true;
             invulnerableTimer = ctx.invulnerableTime;
         }
-        
+
         if (isAttacking)
         {
             callbackContext = IDamageable.HitCallbackContext.parried;
@@ -473,5 +489,60 @@ public class PlayerController : MonoBehaviour, IDamageable
 
         Destroy(gameObject);
     }
+
+    private void HandleFootstepsVelocityBased()
+    {
+        // Only footsteps while grounded and in a locomotion state
+        if (!ctx.grounded)
+        {
+            _stepDistAccum = 0f;
+            _wasGrounded = false;
+            return;
+        }
+
+        // Optional: block during dash/attack/knockback/jump states
+        if (isDashing || isAttacking || isTakingKnockback || isJumping)
+        {
+            _stepDistAccum = 0f;
+            _wasGrounded = true;
+            _lastStepPos = transform.position;
+            return;
+        }
+
+        // On landing, reset so you don't instantly step
+        if (!_wasGrounded)
+        {
+            _wasGrounded = true;
+            _lastStepPos = transform.position;
+            _stepDistAccum = 0f;
+            return;
+        }
+
+        // Horizontal speed only
+        Vector3 horizVel = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+        float speed = horizVel.magnitude;
+
+        if (speed < minStepSpeed)
+        {
+            _stepDistAccum = 0f;
+            _lastStepPos = transform.position;
+            return;
+        }
+
+        // Accumulate distance traveled along the ground
+        float delta = Vector3.Distance(transform.position, _lastStepPos);
+        _stepDistAccum += delta;
+        _lastStepPos = transform.position;
+
+        // Pick step distance based on speed (walk -> run)
+        float targetStepDist = (speed >= runSpeedThreshold) ? stepDistanceRun : stepDistanceWalk;
+
+        if (_stepDistAccum >= targetStepDist)
+        {
+            _stepDistAccum = 0f;
+            AudioManager.Instance?.playFootstep(transform.position);
+        }
+    }
+
 
 }
