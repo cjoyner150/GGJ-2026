@@ -377,6 +377,138 @@ public partial class @Player: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": true
                 }
             ]
+        },
+        {
+            ""name"": ""PlayerBidding"",
+            ""id"": ""184e8918-9872-4a68-921e-1d9b094b844e"",
+            ""actions"": [
+                {
+                    ""name"": ""Bid"",
+                    ""type"": ""Button"",
+                    ""id"": ""16df85a9-5e0c-4edb-bfde-7e8bd639345c"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""IncreaseBid"",
+                    ""type"": ""Button"",
+                    ""id"": ""0d9c9621-9059-4eea-b929-de79de5091d0"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""DecreaseBid"",
+                    ""type"": ""Button"",
+                    ""id"": ""5d39a0e5-9d1c-4e1f-b408-916628f62cb0"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Take"",
+                    ""type"": ""Button"",
+                    ""id"": ""cdd8acd0-752c-442b-9b7c-f6c53755407b"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""279c8bc9-1f52-49cf-b5ed-347ca0f4fa2e"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Bid"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""917ffdf1-8f11-48ba-b399-a2d8d7ce4680"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Bid"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""eddc330a-7978-4ef3-ad43-c6300076f4c4"",
+                    ""path"": ""<Keyboard>/upArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""IncreaseBid"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1a77aacb-8049-4d24-94c8-72781bf61ee2"",
+                    ""path"": ""<Gamepad>/dpad/up"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""IncreaseBid"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""cb247089-b459-4fb4-8a90-36edddd12d3d"",
+                    ""path"": ""<Gamepad>/dpad/down"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DecreaseBid"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""affc7f70-5f80-4436-850b-2a686130eb64"",
+                    ""path"": ""<Keyboard>/downArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DecreaseBid"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9929df9a-2a95-4523-947f-fe6e4cf57b2c"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Take"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9a99b170-9478-40f7-ac26-ed8ecd22d1f7"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Take"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -391,12 +523,19 @@ public partial class @Player: IInputActionCollection2, IDisposable
         m_PlayerUIMove = asset.FindActionMap("PlayerUIMove", throwIfNotFound: true);
         m_PlayerUIMove_Submit = m_PlayerUIMove.FindAction("Submit", throwIfNotFound: true);
         m_PlayerUIMove_Move = m_PlayerUIMove.FindAction("Move", throwIfNotFound: true);
+        // PlayerBidding
+        m_PlayerBidding = asset.FindActionMap("PlayerBidding", throwIfNotFound: true);
+        m_PlayerBidding_Bid = m_PlayerBidding.FindAction("Bid", throwIfNotFound: true);
+        m_PlayerBidding_IncreaseBid = m_PlayerBidding.FindAction("IncreaseBid", throwIfNotFound: true);
+        m_PlayerBidding_DecreaseBid = m_PlayerBidding.FindAction("DecreaseBid", throwIfNotFound: true);
+        m_PlayerBidding_Take = m_PlayerBidding.FindAction("Take", throwIfNotFound: true);
     }
 
     ~@Player()
     {
         UnityEngine.Debug.Assert(!m_PlayerCombat.enabled, "This will cause a leak and performance issues, Player.PlayerCombat.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_PlayerUIMove.enabled, "This will cause a leak and performance issues, Player.PlayerUIMove.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_PlayerBidding.enabled, "This will cause a leak and performance issues, Player.PlayerBidding.Disable() has not been called.");
     }
 
     /// <summary>
@@ -704,6 +843,135 @@ public partial class @Player: IInputActionCollection2, IDisposable
     /// Provides a new <see cref="PlayerUIMoveActions" /> instance referencing this action map.
     /// </summary>
     public PlayerUIMoveActions @PlayerUIMove => new PlayerUIMoveActions(this);
+
+    // PlayerBidding
+    private readonly InputActionMap m_PlayerBidding;
+    private List<IPlayerBiddingActions> m_PlayerBiddingActionsCallbackInterfaces = new List<IPlayerBiddingActions>();
+    private readonly InputAction m_PlayerBidding_Bid;
+    private readonly InputAction m_PlayerBidding_IncreaseBid;
+    private readonly InputAction m_PlayerBidding_DecreaseBid;
+    private readonly InputAction m_PlayerBidding_Take;
+    /// <summary>
+    /// Provides access to input actions defined in input action map "PlayerBidding".
+    /// </summary>
+    public struct PlayerBiddingActions
+    {
+        private @Player m_Wrapper;
+
+        /// <summary>
+        /// Construct a new instance of the input action map wrapper class.
+        /// </summary>
+        public PlayerBiddingActions(@Player wrapper) { m_Wrapper = wrapper; }
+        /// <summary>
+        /// Provides access to the underlying input action "PlayerBidding/Bid".
+        /// </summary>
+        public InputAction @Bid => m_Wrapper.m_PlayerBidding_Bid;
+        /// <summary>
+        /// Provides access to the underlying input action "PlayerBidding/IncreaseBid".
+        /// </summary>
+        public InputAction @IncreaseBid => m_Wrapper.m_PlayerBidding_IncreaseBid;
+        /// <summary>
+        /// Provides access to the underlying input action "PlayerBidding/DecreaseBid".
+        /// </summary>
+        public InputAction @DecreaseBid => m_Wrapper.m_PlayerBidding_DecreaseBid;
+        /// <summary>
+        /// Provides access to the underlying input action "PlayerBidding/Take".
+        /// </summary>
+        public InputAction @Take => m_Wrapper.m_PlayerBidding_Take;
+        /// <summary>
+        /// Provides access to the underlying input action map instance.
+        /// </summary>
+        public InputActionMap Get() { return m_Wrapper.m_PlayerBidding; }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Enable()" />
+        public void Enable() { Get().Enable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Disable()" />
+        public void Disable() { Get().Disable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
+        public bool enabled => Get().enabled;
+        /// <summary>
+        /// Implicitly converts an <see ref="PlayerBiddingActions" /> to an <see ref="InputActionMap" /> instance.
+        /// </summary>
+        public static implicit operator InputActionMap(PlayerBiddingActions set) { return set.Get(); }
+        /// <summary>
+        /// Adds <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <param name="instance">Callback instance.</param>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c> or <paramref name="instance"/> have already been added this method does nothing.
+        /// </remarks>
+        /// <seealso cref="PlayerBiddingActions" />
+        public void AddCallbacks(IPlayerBiddingActions instance)
+        {
+            if (instance == null || m_Wrapper.m_PlayerBiddingActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_PlayerBiddingActionsCallbackInterfaces.Add(instance);
+            @Bid.started += instance.OnBid;
+            @Bid.performed += instance.OnBid;
+            @Bid.canceled += instance.OnBid;
+            @IncreaseBid.started += instance.OnIncreaseBid;
+            @IncreaseBid.performed += instance.OnIncreaseBid;
+            @IncreaseBid.canceled += instance.OnIncreaseBid;
+            @DecreaseBid.started += instance.OnDecreaseBid;
+            @DecreaseBid.performed += instance.OnDecreaseBid;
+            @DecreaseBid.canceled += instance.OnDecreaseBid;
+            @Take.started += instance.OnTake;
+            @Take.performed += instance.OnTake;
+            @Take.canceled += instance.OnTake;
+        }
+
+        /// <summary>
+        /// Removes <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <remarks>
+        /// Calling this method when <paramref name="instance" /> have not previously been registered has no side-effects.
+        /// </remarks>
+        /// <seealso cref="PlayerBiddingActions" />
+        private void UnregisterCallbacks(IPlayerBiddingActions instance)
+        {
+            @Bid.started -= instance.OnBid;
+            @Bid.performed -= instance.OnBid;
+            @Bid.canceled -= instance.OnBid;
+            @IncreaseBid.started -= instance.OnIncreaseBid;
+            @IncreaseBid.performed -= instance.OnIncreaseBid;
+            @IncreaseBid.canceled -= instance.OnIncreaseBid;
+            @DecreaseBid.started -= instance.OnDecreaseBid;
+            @DecreaseBid.performed -= instance.OnDecreaseBid;
+            @DecreaseBid.canceled -= instance.OnDecreaseBid;
+            @Take.started -= instance.OnTake;
+            @Take.performed -= instance.OnTake;
+            @Take.canceled -= instance.OnTake;
+        }
+
+        /// <summary>
+        /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="PlayerBiddingActions.UnregisterCallbacks(IPlayerBiddingActions)" />.
+        /// </summary>
+        /// <seealso cref="PlayerBiddingActions.UnregisterCallbacks(IPlayerBiddingActions)" />
+        public void RemoveCallbacks(IPlayerBiddingActions instance)
+        {
+            if (m_Wrapper.m_PlayerBiddingActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        /// <summary>
+        /// Replaces all existing callback instances and previously registered input action callbacks associated with them with callbacks provided via <param cref="instance" />.
+        /// </summary>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c>, calling this method will only unregister all existing callbacks but not register any new callbacks.
+        /// </remarks>
+        /// <seealso cref="PlayerBiddingActions.AddCallbacks(IPlayerBiddingActions)" />
+        /// <seealso cref="PlayerBiddingActions.RemoveCallbacks(IPlayerBiddingActions)" />
+        /// <seealso cref="PlayerBiddingActions.UnregisterCallbacks(IPlayerBiddingActions)" />
+        public void SetCallbacks(IPlayerBiddingActions instance)
+        {
+            foreach (var item in m_Wrapper.m_PlayerBiddingActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_PlayerBiddingActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    /// <summary>
+    /// Provides a new <see cref="PlayerBiddingActions" /> instance referencing this action map.
+    /// </summary>
+    public PlayerBiddingActions @PlayerBidding => new PlayerBiddingActions(this);
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "PlayerCombat" which allows adding and removing callbacks.
     /// </summary>
@@ -761,5 +1029,41 @@ public partial class @Player: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnMove(InputAction.CallbackContext context);
+    }
+    /// <summary>
+    /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "PlayerBidding" which allows adding and removing callbacks.
+    /// </summary>
+    /// <seealso cref="PlayerBiddingActions.AddCallbacks(IPlayerBiddingActions)" />
+    /// <seealso cref="PlayerBiddingActions.RemoveCallbacks(IPlayerBiddingActions)" />
+    public interface IPlayerBiddingActions
+    {
+        /// <summary>
+        /// Method invoked when associated input action "Bid" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnBid(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "IncreaseBid" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnIncreaseBid(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "DecreaseBid" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnDecreaseBid(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Take" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnTake(InputAction.CallbackContext context);
     }
 }

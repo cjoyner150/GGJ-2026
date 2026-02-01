@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using static UnityEngine.Rendering.STP;
 
 public class PlayerBiddingInput : MonoBehaviour
 {
@@ -7,6 +8,7 @@ public class PlayerBiddingInput : MonoBehaviour
     [SerializeField] private PlayerGold playerGold;
     [SerializeField] private MaskBiddingController biddingController;
     [SerializeField] private BidChooser bidChooser;
+    TurnManager turnManager;
     
     [Header("Input Settings")]
     [SerializeField] private int bidIncrement = 10;
@@ -30,49 +32,34 @@ public class PlayerBiddingInput : MonoBehaviour
     
     private bool isMyTurn = false;
     private bool isBiddingPhaseActive = false;
+
+    private Player controls;
     
     private void Awake()
     {
         playerGold ??= GetComponent<PlayerGold>();
-        bidChooser ??= FindObjectOfType<BidChooser>(true);
-        biddingController ??= FindObjectOfType<MaskBiddingController>();
+        bidChooser ??= FindAnyObjectByType<BidChooser>();
+        biddingController ??= FindAnyObjectByType<MaskBiddingController>();
+        turnManager ??= FindAnyObjectByType<TurnManager>();
+
+        controls = new Player();
     }
     
     public void Initialize(PlayerConfig config)
     {
-        FindPlayerInput();
-        
-        if (playerInput != null)
-        {
-            playerIndex = config.PlayerIndex;
-            SetupInputActions();
-            isInitialized = true;
-            Debug.Log($"Player {playerIndex} bidding input initialized");
-        }
-        else
-        {
-            Debug.LogError($"Player {config.PlayerIndex} could not find PlayerInput!");
-        }
-    }
-    
-    public void InitializeWithPlayerInput(PlayerInput input, int index)
-    {
-        playerInput = input;
-        playerIndex = index;
-        SetupInputActions();
+        playerIndex = config.PlayerIndex;
+        playerInput = config.Input;
+        playerInput.SwitchCurrentActionMap("PlayerBidding");
+        playerInput.onActionTriggered += OnActionTriggered;
+
         isInitialized = true;
-        Debug.Log($"Player {playerIndex} bidding input initialized manually");
     }
 
-    private void FindPlayerInput()
+    private void OnDestroy()
     {
-        if (playerInput != null) return;
-        
-        playerInput = GetComponent<PlayerInput>() 
-                   ?? GetComponentInChildren<PlayerInput>() 
-                   ?? GetComponentInParent<PlayerInput>();
+        playerInput.onActionTriggered -= OnActionTriggered;
     }
-    
+
     public void SetBiddingPhase(bool isMask)
     {
         isMaskPhase = isMask;
@@ -105,25 +92,15 @@ public class PlayerBiddingInput : MonoBehaviour
     
     public void SetCanBid(bool value) => canBid = value;
     
-    private void SetupInputActions()
+    private void OnActionTriggered(InputAction.CallbackContext ctx)
     {
-        if (playerInput == null) return;
-        
-        moveAction = playerInput.actions["Move"];
-        confirmAction = playerInput.actions["Submit"];
-        cancelAction = playerInput.actions["Cancel"];
-        
-        if (moveAction != null)
-        {
-            moveAction.started += OnMoveStarted;
-            moveAction.canceled += OnMoveCanceled;
-        }
-        
-        if (confirmAction != null)
-            confirmAction.performed += OnConfirm;
-            
-        if (cancelAction != null)
-            cancelAction.performed += OnCancel;
+
+        if (ctx.action.name == controls.PlayerBidding.IncreaseBid.name) OnIncreaseBid(ctx);
+        if (ctx.action.name == controls.PlayerBidding.DecreaseBid.name) OnDecreaseBid(ctx);
+
+        if (ctx.action.name == controls.PlayerBidding.Bid.name) OnConfirm(ctx);
+        if (ctx.action.name == controls.PlayerBidding.Take.name) OnCancel(ctx);
+
     }
     
     private void Update()
@@ -159,34 +136,26 @@ public class PlayerBiddingInput : MonoBehaviour
         }
     }
     
-    private void OnMoveStarted(InputAction.CallbackContext context)
+    private void OnIncreaseBid(InputAction.CallbackContext context)
     {
         if (!IsActive()) return;
-            
-        Vector2 move = context.ReadValue<Vector2>();
+
+        AdjustBid(1);
         
-        if (Mathf.Abs(move.y) > 0.5f)
-        {
-            isVerticalHeld = true;
-            lastVerticalDirection = move.y > 0 ? 1 : -1;
-            verticalRepeatTimer = initialRepeatDelay;
-            AdjustBid(lastVerticalDirection);
-        }
     }
     
-    private void OnMoveCanceled(InputAction.CallbackContext context)
+    private void OnDecreaseBid(InputAction.CallbackContext context)
     {
-        isVerticalHeld = false;
-        lastVerticalDirection = 0;
+        AdjustBid(-1);
     }
     
     private void OnConfirm(InputAction.CallbackContext context)
     {
         if (!IsActive()) return;
         
-        if (isMaskPhase && biddingController != null && biddingController.IsMaskPhase)
+        if (isMaskPhase)
             PlaceMaskBid();
-        else if (!isMaskPhase && biddingController != null && biddingController.IsTarotPhase)
+        else if (!isMaskPhase)
             PlaceTarotBid();
     }
     
@@ -215,6 +184,7 @@ public class PlayerBiddingInput : MonoBehaviour
         
         canBid = false;
         isMyTurn = false; // End turn after bidding
+        turnManager.OnPlayerBidPlaced(playerIndex);
     }
     
     private void PlaceTarotBid()
@@ -333,17 +303,5 @@ public class PlayerBiddingInput : MonoBehaviour
         isMyTurn = false;
         isBiddingPhaseActive = false;
         ResetForNewRound();
-    }
-    
-    private void OnDestroy()
-    {
-        if (moveAction != null)
-        {
-            moveAction.started -= OnMoveStarted;
-            moveAction.canceled -= OnMoveCanceled;
-        }
-        
-        if (confirmAction != null) confirmAction.performed -= OnConfirm;
-        if (cancelAction != null) cancelAction.performed -= OnCancel;
     }
 }
