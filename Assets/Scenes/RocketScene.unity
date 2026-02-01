@@ -304,7 +304,6 @@ GameObject:
   m_Component:
   - component: {fileID: 197842459}
   - component: {fileID: 197842458}
-  - component: {fileID: 197842457}
   m_Layer: 0
   m_Name: Initilizer
   m_TagString: Untagged
@@ -312,24 +311,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &197842457
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 197842456}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2c2fa9cff1499e44ebfaef858cbf3fca, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerBiddingInput
-  playerGold: {fileID: 0}
-  biddingController: {fileID: 0}
-  bidChooser: {fileID: 0}
-  bidIncrement: 10
-  repeatDelay: 0.15
-  initialRepeatDelay: 0.3
 --- !u!114 &197842458
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -344,7 +325,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BiddingSystemInitializer
   biddingController: {fileID: 1645340218}
   bidChooser: {fileID: 1645340220}
-  turnManager: {fileID: 0}
+  turnManager: {fileID: 1645340221}
   playerContainer: {fileID: 152153708}
   autoFindPlayers: 1
   debugMode: 1
@@ -1106,6 +1087,57 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: -54}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &394522673
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 394522675}
+  - component: {fileID: 394522674}
+  m_Layer: 0
+  m_Name: Playerconfigmanager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &394522674
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 394522673}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68c610f89c42d4c4b913a319817b2aae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerConfigManager
+  minPlayers: 2
+  maxPlayers: 4
+  inputManager: {fileID: 0}
+  gameEnd: {fileID: 0}
+  gameplaySceneIndex: 1
+  singleplayer: 0
+  FadeEffect: {fileID: 0}
+--- !u!4 &394522675
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 394522673}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 853.6255, y: 477.3659, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &400681678
 GameObject:
   m_ObjectHideFlags: 0
@@ -3368,6 +3400,7 @@ GameObject:
   - component: {fileID: 1645340219}
   - component: {fileID: 1645340218}
   - component: {fileID: 1645340220}
+  - component: {fileID: 1645340221}
   m_Layer: 0
   m_Name: BiddingController
   m_TagString: Untagged
@@ -3493,7 +3526,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BidChooser
   controller: {fileID: 1645340218}
-  turnManager: {fileID: 0}
+  turnManager: {fileID: 1645340221}
   playerBidPanel: {fileID: 798209579}
   playerIndexText: {fileID: 1177078062}
   currentBidText: {fileID: 1652838686}
@@ -3528,6 +3561,20 @@ MonoBehaviour:
   - {fileID: 1565460290}
   - {fileID: 1398049564}
   - {fileID: 580062530}
+--- !u!114 &1645340221
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1645340217}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c36487dbce6b9ea4c87069681a6e93d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TurnManager
+  biddingController: {fileID: 1645340218}
+  bidChooser: {fileID: 1645340220}
 --- !u!1 &1652838684
 GameObject:
   m_ObjectHideFlags: 0
@@ -4543,3 +4590,4 @@ SceneRoots:
   - {fileID: 197842459}
   - {fileID: 152153708}
   - {fileID: 1656725864}
+  - {fileID: 394522675}
