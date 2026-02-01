@@ -14,6 +14,8 @@ public class PlayerContext
     public int jumps = 1;
     public LayerMask whatIsJumpableGround;
 
+    public float airMoveSpeed;
+
     public float dashLength;
     public float dashSpeed;
     public float dashCD;

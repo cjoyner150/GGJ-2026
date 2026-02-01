@@ -12,31 +12,94 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa2c8452d15c675458448e8048c8e2de, type: 3}
   m_Name: GlobalAudioEvents
   m_EditorClassIdentifier: Assembly-CSharp::AudioEvents
-  playerFootstep:
+  uiClick:
     Guid:
-      Data1: -1273586950
-      Data2: 1122290238
-      Data3: -534630473
-      Data4: -41129645
-    Path: event:/CardPickup
-  music:
-    Guid:
-      Data1: -1273586950
-      Data2: 1122290238
-      Data3: -534630473
-      Data4: -41129645
-    Path: event:/CardPickup
-  ambient:
-    Guid:
-      Data1: -1273586950
-      Data2: 1122290238
-      Data3: -534630473
-      Data4: -41129645
-    Path: event:/CardPickup
+      Data1: -91871210
+      Data2: 1261763300
+      Data3: -1436963935
+      Data4: 1843392099
+    Path: event:/UI/Click
   cardPickup:
     Guid:
       Data1: -1273586950
       Data2: 1122290238
       Data3: -534630473
       Data4: -41129645
-    Path: event:/CardPickup
+    Path: event:/UI/CardPickup
+  uiJoin:
+    Guid:
+      Data1: -1993097929
+      Data2: 1135685128
+      Data3: -1302958955
+      Data4: -1425376957
+    Path: event:/UI/Join
+  uiReady:
+    Guid:
+      Data1: -1350262647
+      Data2: 1286438834
+      Data3: 964280465
+      Data4: 1144550041
+    Path: event:/UI/Ready
+  playerFootstep:
+    Guid:
+      Data1: 283272385
+      Data2: 1143031463
+      Data3: 2075162812
+      Data4: -361281616
+    Path: event:/Footstep
+  playerPunch:
+    Guid:
+      Data1: 793057679
+      Data2: 1264255128
+      Data3: -1846793317
+      Data4: 352421475
+    Path: event:/Punch
+  playerAttack:
+    Guid:
+      Data1: 125035156
+      Data2: 1231612022
+      Data3: 931189888
+      Data4: -1742387375
+    Path: event:/Miss
+  playerJump:
+    Guid:
+      Data1: 1523175510
+      Data2: 1207299460
+      Data3: 404950672
+      Data4: 370211913
+    Path: event:/Jump
+  playerDash:
+    Guid:
+      Data1: 1871937660
+      Data2: 1321901934
+      Data3: 984830624
+      Data4: -1765064311
+    Path: event:/Dash
+  music:
+    Guid:
+      Data1: 1926003601
+      Data2: 1094105851
+      Data3: 966440325
+      Data4: -1922380303
+    Path: event:/Music
+  ambient:
+    Guid:
+      Data1: -1273586950
+      Data2: 1122290238
+      Data3: -534630473
+      Data4: -41129645
+    Path: event:/UI/CardPickup
+  voiceEnd:
+    Guid:
+      Data1: 115588983
+      Data2: 1225853293
+      Data3: -702583372
+      Data4: 378280162
+    Path: event:/Voice/VoiceEnd
+  voiceFight:
+    Guid:
+      Data1: 1736158261
+      Data2: 1112316139
+      Data3: -397390683
+      Data4: 1113639734
+    Path: event:/Voice/VoiceFight

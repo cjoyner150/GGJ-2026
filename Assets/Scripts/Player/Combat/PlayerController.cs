@@ -1,3 +1,4 @@
+using MoreMountains.Feedbacks;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -36,6 +37,16 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     int extraJumps;
 
+    [Header("Feedbacks")]
+    public MMF_Player JumpFeedback;
+    public MMF_Player LandingFeedback;
+    public MMF_Player DamageFeedback;
+    public MMF_Player DashFeedback;
+    public MMF_Player SlashFeedbackH;
+    public MMF_Player SlashFeedbackV;
+    public MMF_Player ParryFeedback;
+
+
     public enum MoveState
     {
         Idle,
@@ -69,22 +80,25 @@ public class PlayerController : MonoBehaviour, IDamageable
         HandleCooldowns();
         HandleState();
         HandleRotation();
+        HandleAnimations();
         LimitPlayerSpeed();
 
         rb.linearDamping = ctx.grounded ? ctx.groundDrag : 0;
 
         if (moveSpeed > desiredMoveSpeed)
         {
-            moveSpeed = Mathf.Lerp(moveSpeed, desiredMoveSpeed, Time.deltaTime * 2);
+            moveSpeed = Mathf.Lerp(moveSpeed, desiredMoveSpeed, Time.deltaTime * 4);
         }
         else moveSpeed = desiredMoveSpeed;
     }
 
     void HandleState()
     {
-        if (!ctx.grounded && !isJumping)
+        if (!ctx.grounded && !isJumping && !isAttacking && !isDashing)
         {
             if (currentState != MoveState.Air) EnterState(MoveState.Air);
+
+            desiredMoveSpeed = ctx.airMoveSpeed;
         }
         else if (isTakingKnockback)
         {
@@ -106,9 +120,13 @@ public class PlayerController : MonoBehaviour, IDamageable
 
             desiredMoveSpeed = ctx.attackMoveSpeed;
 
-            Collider[] cols = Physics.OverlapSphere(attackLocation.position, .5f);
+            RaycastHit[] hits = Physics.SphereCastAll(attackLocation.position, .75f, modelTransform.forward, 1f);
 
-            foreach (Collider col in cols) {
+            foreach (RaycastHit hit in hits) {
+                Collider col = hit.collider;
+
+                if (col == null) continue;
+
                 IDamageable damageable = col.GetComponent<IDamageable>();
 
                 if (damageable != null && (object)damageable != this) 
@@ -121,7 +139,11 @@ public class PlayerController : MonoBehaviour, IDamageable
                             print("success");
                             break;
                         case IDamageable.HitCallbackContext.parried:
-                            if (!isTakingKnockback) TakeKnockback(20, .5f, ((PlayerController)damageable).modelTransform.position);
+                            if (!isTakingKnockback)
+                            {
+                                TakeKnockback(20, .5f, ((PlayerController)damageable).modelTransform.position);
+                                ParryFeedback?.PlayFeedbacks();
+                            }
                             print("parried");
                             break;
                         case IDamageable.HitCallbackContext.invulnerable:
@@ -145,15 +167,15 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     void HandleInput()
     {
-        if ((!ctx.grounded && extraJumps < 1) 
-            || isJumping 
+        if ( isJumping 
             || isDashing 
             || isAttacking
             || isTakingKnockback) return;
 
-        if (ctx.jumpHasBeenPressed)
+        if (ctx.jumpHasBeenPressed && (ctx.grounded || extraJumps > 0))
         {
-            extraJumps--;
+            if (!ctx.grounded) extraJumps--;
+
             Jump();
             EnterState(MoveState.Air);
         }
@@ -204,6 +226,14 @@ public class PlayerController : MonoBehaviour, IDamageable
         }
     }
 
+    void HandleAnimations()
+    {
+        ctx.anim.SetBool("Grounded", ctx.grounded);
+        ctx.anim.SetBool("Dashing", isDashing);
+        ctx.anim.SetBool("Attacking", isAttacking);
+        ctx.anim.SetBool("Jumping", isJumping);
+    }
+
     void LimitPlayerSpeed()
     {
         switch (currentState)
@@ -213,6 +243,19 @@ public class PlayerController : MonoBehaviour, IDamageable
                 if (rb.linearVelocity.magnitude > moveSpeed)
                 {
                     rb.linearVelocity = rb.linearVelocity.normalized * moveSpeed;
+                }
+
+                break;
+
+            case MoveState.Air:
+
+                Vector3 vel = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
+
+                if (vel.magnitude > moveSpeed)
+                {
+                    vel = vel.normalized * moveSpeed;
+
+                    rb.linearVelocity = new Vector3(vel.x, rb.linearVelocity.y, vel.z);
                 }
 
                 break;
@@ -314,6 +357,9 @@ public class PlayerController : MonoBehaviour, IDamageable
         isJumping = true;
         rb.AddForce(ctx.jumpMultiplier * transform.up, ForceMode.Impulse);
         ctx.grounded = false;
+        if (AudioManager.Instance == null) return;
+        AudioManager.Instance.playJump(transform.position);
+        JumpFeedback?.PlayFeedbacks();
     }
 
     void Dash()
@@ -322,16 +368,30 @@ public class PlayerController : MonoBehaviour, IDamageable
         dashOnCD = true;
         dashTimer = ctx.dashLength;
         dashCDTimer = ctx.dashCD;
+        AudioManager.Instance?.playDash(transform.position);
+        DashFeedback?.PlayFeedbacks();
     }
+
     void Attack()
     {
         ctx.anim.SetFloat("Attack Speed", ctx.attackSpeed);
-        ctx.anim.SetTrigger("Attack");
 
         isAttacking = true;
         attackOnCD = true;
         attackTimer = ctx.attackLength / ctx.attackSpeed;
         attackCDTimer = ctx.attackCD / ctx.attackSpeed;
+        
+
+        if (ctx.grounded)
+        {
+            SlashFeedbackH?.PlayFeedbacks();
+        }
+        else
+        {
+            SlashFeedbackV?.PlayFeedbacks();
+        }
+        if (AudioManager.Instance == null) return;
+        AudioManager.Instance.playAttack(transform.position);
     }
 
     void TakeKnockback(float speed, float length, Vector3 from)
@@ -358,11 +418,20 @@ public class PlayerController : MonoBehaviour, IDamageable
         if (isAttacking)
         {
             callbackContext = IDamageable.HitCallbackContext.parried;
-            if (!isTakingKnockback) TakeKnockback(20, .5f, fromPosition);
+            if (!isTakingKnockback)
+            {
+                TakeKnockback(20, .5f, fromPosition);
+                ParryFeedback?.PlayFeedbacks();
+            }
             return;
         }
 
         callbackContext = IDamageable.HitCallbackContext.success;
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.playPunch(transform.position);
+            AudioManager.Instance.voiceFight(transform.position);
+        }
         ctx.currentHealth -= damage;
 
         if (ctx.currentHealth <= 0)
@@ -372,7 +441,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         }
 
         TakeKnockback(30, .5f, fromPosition);
-
+        DamageFeedback?.PlayFeedbacks();
     }
 
     void EnterState(MoveState moveState)
@@ -391,7 +460,7 @@ public class PlayerController : MonoBehaviour, IDamageable
     {
         Debug.DrawLine(transform.position + (transform.up * .25f), transform.position + (-transform.up * .5f), Color.green);
         Gizmos.color = Color.green;
-        Gizmos.DrawSphere(attackLocation.position, .5f);
+        Gizmos.DrawSphere(attackLocation.position, .75f);
     }
 
     private void Die()

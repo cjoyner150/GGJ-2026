@@ -5,10 +5,19 @@ using FMODUnity;
 public class AudioEvents : ScriptableObject
 {
     [Header("UI")]
-    // public EventReference uiClick;
+    public EventReference uiClick;
+    public EventReference cardPickup;
+    public EventReference uiJoin;
+    public EventReference uiReady;
 
     [Header("Player - Movement")]
     public EventReference playerFootstep;
+
+    [Header("Gameplay")]
+    public EventReference playerPunch;
+    public EventReference playerAttack;
+    public EventReference playerJump;
+    public EventReference playerDash;
 
     [Header("Music")]
     public EventReference music;
@@ -16,7 +25,8 @@ public class AudioEvents : ScriptableObject
     // [Header("Ambience")]
     public EventReference ambient;
 
-    [Header("Gameplay")]
-    public EventReference cardPickup;
+    [Header("Voices")]
+    public EventReference voiceEnd;
+    public EventReference voiceFight;
 
 }

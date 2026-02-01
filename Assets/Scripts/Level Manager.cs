@@ -1,11 +1,18 @@
+using MoreMountains.Feedbacks;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class LevelManager : MonoBehaviour
 {
     [SerializeField] IntEventSO playerDiedEvent;
     [SerializeField] IntEventSO roundWonEvent;
+
+    [SerializeField] GameObject roundWinTimeline;
+    [SerializeField] TextMeshProUGUI winTMP;
+
+    public MMF_Player fader;
 
     List<PlayerConfig> configs;
 
@@ -24,6 +31,7 @@ public class LevelManager : MonoBehaviour
     void Start()
     {
         configs = PlayerConfigManager.Instance.GetPlayerConfigs();
+        fader?.PlayFeedbacks();
     }
 
     void OnPlayerDied(int playerIndex)
@@ -38,7 +46,11 @@ public class LevelManager : MonoBehaviour
 
     void OnRoundWin(int playerIndex)
     {
-        print($"Player won: {playerIndex + 1}");
+        PlayerConfigManager.Instance.GetPlayerConfigs()[playerIndex].RoundsWon++;
+
+        winTMP.text = $"Player {playerIndex + 1} won the round! " +
+            $"\nPlayer {playerIndex + 1} has {PlayerConfigManager.Instance.GetPlayerConfigs()[playerIndex].RoundsWon} wins.";
+        roundWinTimeline.SetActive(true);
     }
 
 }

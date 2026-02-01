@@ -73,7 +73,7 @@ public class PlayerInputHandler : MonoBehaviour
 
     public void OnDash(InputAction.CallbackContext context)
     {
-        if (playerMover.currentState == PlayerController.MoveState.Idle || playerMover.currentState == PlayerController.MoveState.Walk)
+        if (playerMover.currentState == PlayerController.MoveState.Idle || playerMover.currentState == PlayerController.MoveState.Walk || playerMover.currentState == PlayerController.MoveState.Air)
         {
             ctx.dashHasBeenPressed = true;
         }
@@ -81,7 +81,7 @@ public class PlayerInputHandler : MonoBehaviour
 
     public void OnAttack(InputAction.CallbackContext context)
     {
-        if (playerMover.currentState == PlayerController.MoveState.Idle || playerMover.currentState == PlayerController.MoveState.Walk)
+        if (playerMover.currentState == PlayerController.MoveState.Idle || playerMover.currentState == PlayerController.MoveState.Walk || playerMover.currentState == PlayerController.MoveState.Air)
         {
             ctx.attackHasBeenPressed = true;
         }

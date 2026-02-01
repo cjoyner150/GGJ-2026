@@ -47,7 +47,7 @@ public class PlayerSelectPanelManager : MonoBehaviour
         PlayerConfigManager.Instance.SetPlayerColor(playerIndex, col);
         image.color = col;
 
-        Invoke(nameof(EnableInput), 1.5f);
+        Invoke(nameof(EnableInput), .3f);
     }
 
     private void EnableInput()
