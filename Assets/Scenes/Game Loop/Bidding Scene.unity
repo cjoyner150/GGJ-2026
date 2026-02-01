@@ -1399,7 +1399,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 3e34bbfb96a31a24fb38202543dfea33, type: 2}
   - {fileID: 11400000, guid: 3e34bbfb96a31a24fb38202543dfea33, type: 2}
   - {fileID: 11400000, guid: 3e34bbfb96a31a24fb38202543dfea33, type: 2}
-  showMask: {fileID: 377409499}
+  showUI: {fileID: 377409499}
 --- !u!1 &2087777162
 GameObject:
   m_ObjectHideFlags: 0

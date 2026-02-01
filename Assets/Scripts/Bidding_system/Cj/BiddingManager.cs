@@ -86,8 +86,17 @@ public class BiddingManager : MonoBehaviour
 
             int pot = 0;
 
+            if (currentPlayers.Count < 2)
+            {
+                currentPlayers[0].cfg.Mask = currentMask;
+                PlayGetMaskEffects();
+                yield return maskEffectsTime;
+                break;
+            }
+
             while (true) // Bidding on mask
             {
+
                 BiddingInputHandler player = currentPlayers[turnIndex];
                 player.OnTurnEnter(requiredAmount);
 
@@ -115,25 +124,27 @@ public class BiddingManager : MonoBehaviour
                 yield return null;
             }
 
-            if (currentPlayers.Count < 2)
-            {
-                break;
-            }
-
             yield return null;
 
+        }
+
+        foreach(var player in players)
+        {
+            print(player.cfg.PlayerIndex + " " + player.cfg.Mask.name);
         }
 
         PlayAuctionTransitionEffects();
         yield return delayBetweenAuctionsTime;
 
-        currentPlayers = players.ToArray().ToList();
+        currentPlayers = players.ToList();
 
         PlayTarotStartEffects();
         yield return delayForStartMaskBiddingTime;
 
         while (true) // Tarot loop
         {
+            List<BiddingInputHandler> playersInBid = currentPlayers.ToList();
+
             maxTurnIndex = currentPlayers.Count - 1;
             turnIndex = 0;
             int requiredAmount = 10;
@@ -142,7 +153,10 @@ public class BiddingManager : MonoBehaviour
 
             while (true) // Bidding on tarot
             {
-                BiddingInputHandler player = currentPlayers[turnIndex];
+                BiddingInputHandler player = playersInBid[turnIndex];
+
+                if (player.cfg.Tarots == null) player.cfg.Tarots = new List<TarotObject>();
+
                 player.OnTurnEnter(requiredAmount);
 
                 turnIndex++;
@@ -155,15 +169,23 @@ public class BiddingManager : MonoBehaviour
 
                 if (lastTurn.passedTurn)
                 {
-                    currentPlayers.Remove(lastTurn.player);
+                    playersInBid.Remove(lastTurn.player);
+                    turnIndex--;
+                    maxTurnIndex--;
                 }
 
                 lastTurn.player.cfg.Acorns -= lastTurn.acornBidAmount;
                 requiredAmount = lastTurn.acornBidAmount;
 
-                if (currentPlayers.Count < 2)
+                if (playersInBid.Count < 2)
                 {
                     lastTurn.player.cfg.Tarots.Add(currentTarot);
+                    if (lastTurn.player.cfg.Tarots.Count == 2)
+                    {
+                        currentPlayers.Remove(lastTurn.player);
+                    }
+                    PlayGetTarotEffects();
+                    yield return maskEffectsTime;
                     break;
                 }
 
@@ -172,12 +194,21 @@ public class BiddingManager : MonoBehaviour
 
             if (currentPlayers.Count < 2)
             {
+                while (tarotQueue.Count > 0) 
+                { 
+                    currentPlayers[0].cfg.Tarots.Add(tarotQueue.Dequeue());
+                    PlayGetTarotEffects();
+                    yield return maskEffectsTime;
+                }
+
                 break;
             }
 
             yield return null;
 
         }
+
+        PlayEndAuctionEffects();
     }
 
 
@@ -204,6 +235,21 @@ public class BiddingManager : MonoBehaviour
     public void PlayGetTarotEffects()
     {
 
+    }
+
+    public void PlayEndAuctionEffects()
+    {
+        foreach (var player in players)
+        {
+            string tarotString = "";
+
+            foreach (var tarot in player.cfg.Tarots)
+            {
+                tarotString += $"{tarot.name}, ";
+            }
+
+            print($"player {player.playerIndex + 1} has {player.cfg.Mask.name} and " + tarotString);
+        }
     }
 
     public void SetTurnContext(TurnContext turnContext)
