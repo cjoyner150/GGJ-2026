@@ -9,8 +9,8 @@ EditorBuildSettings:
     path: Assets/Scenes/Game Loop/Main Menu.unity
     guid: fa65a4eb8ca0ccf489000df45a4d22ee
   - enabled: 1
-    path: Assets/Scenes/RocketScene.unity
-    guid: 73007b162706559408a54eab9e956829
+    path: Assets/Scenes/Game Loop/Bidding Scene.unity
+    guid: abb0242f05a46644b96f5b986aeba4dd
   - enabled: 1
     path: Assets/Scenes/Game Loop/Gameplay Scene.unity
     guid: 5a319872fa5218c4589801f446438837

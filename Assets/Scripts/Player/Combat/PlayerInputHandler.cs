@@ -36,7 +36,7 @@ public class PlayerInputHandler : MonoBehaviour
     public void InitializePlayer(PlayerConfig cfg)
     {
         config = cfg;
-
+        cfg.Input.SwitchCurrentActionMap("PlayerCombat");
         config.Input.onActionTriggered += OnActionTriggered;
 
         playerMover.playerIndex = config.PlayerIndex;
