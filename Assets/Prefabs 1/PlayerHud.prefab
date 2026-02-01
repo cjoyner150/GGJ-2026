@@ -931,7 +931,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 400, y: 1}
+  m_SizeDelta: {x: 400, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2770787847834541610
 MonoBehaviour:
@@ -947,3 +947,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHUD
   acornsTMP: {fileID: 7918190841133631666}
   healthBar: {fileID: 9011517882463416097}
+  headIMG: {fileID: 0}
+  bear: {fileID: 0}
+  bee: {fileID: 0}
+  butterfly: {fileID: 0}
+  crow: {fileID: 0}
+  man: {fileID: 0}
+  goddess: {fileID: 0}
+  rabbit: {fileID: 0}
+  snake: {fileID: 0}
+  turtle: {fileID: 0}
