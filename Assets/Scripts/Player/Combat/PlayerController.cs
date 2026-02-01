@@ -232,6 +232,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         ctx.anim.SetBool("Dashing", isDashing);
         ctx.anim.SetBool("Attacking", isAttacking);
         ctx.anim.SetBool("Jumping", isJumping);
+        ctx.anim.SetBool("Walking", currentState == MoveState.Walk);
     }
 
     void LimitPlayerSpeed()

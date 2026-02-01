@@ -8,6 +8,7 @@ public class PlayerInputHandler : MonoBehaviour
 {
     [SerializeField] PlayerContext ctx;
     [SerializeField] float delayInputForSeconds;
+    [SerializeField] SkinnedMeshRenderer skinnedMeshRenderer;
 
     PlayerController playerMover;
     PlayerConfig config;
@@ -42,7 +43,7 @@ public class PlayerInputHandler : MonoBehaviour
         playerMover.ctx = ctx;
         ctx.currentHealth = ctx.maxHealth;
 
-        GetComponentInChildren<MeshRenderer>().material.color = config.PlayerColor;
+        skinnedMeshRenderer.material.color = config.PlayerColor;
     }
 
     public void OnActionTriggered(InputAction.CallbackContext context)
