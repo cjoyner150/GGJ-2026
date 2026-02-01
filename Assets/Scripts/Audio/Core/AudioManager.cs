@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using FMODUnity;
 using FMOD.Studio;
+using System.Collections;
 using STOP_MODE = FMOD.Studio.STOP_MODE;
 
 public class AudioManager : MonoBehaviour
@@ -97,6 +98,12 @@ public class AudioManager : MonoBehaviour
     // --------------------------------------------------
     // One-shots (generic)
     // --------------------------------------------------
+
+    public void PlayUI(EventReference evt)
+    {
+        if (evt.IsNull) return;
+        RuntimeManager.PlayOneShot(evt);
+    }
 
     // Int Version
     public void PlayUI(EventReference evt, string paramName, int paramValue)
@@ -212,5 +219,21 @@ public class AudioManager : MonoBehaviour
         ambientInstance.stop(immediate ? STOP_MODE.IMMEDIATE : STOP_MODE.ALLOWFADEOUT);
         ambientInstance.release();
         ambientInstance.clearHandle();
+    }
+
+
+    // --------------------------------------------------
+    // Weird Scripts
+    // --------------------------------------------------
+
+    public void VoiceEndDelayed(string maskName, float delaySeconds = 3f)
+    {
+        StartCoroutine(VoiceEndDelayedRoutine(maskName, delaySeconds));
+    }
+
+    private IEnumerator VoiceEndDelayedRoutine(string maskName, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        voiceEnd(maskName);
     }
 }

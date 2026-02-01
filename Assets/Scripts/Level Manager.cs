@@ -55,6 +55,8 @@ public class LevelManager : MonoBehaviour
 
         cfg.RoundsWon++;
 
+        AudioManager.Instance?.VoiceEndDelayed("Bee", 1.5f);
+
         winTMP.text = $"Player {playerIndex + 1} won the round! " +
             $"\nPlayer {playerIndex + 1} has {cfg.RoundsWon} wins.";
         roundWinTimeline.SetActive(true);
@@ -62,8 +64,8 @@ public class LevelManager : MonoBehaviour
 
         playerWinRenderer.material.color = cfg.PlayerColor;
 
-        Debug.Log($"Player {playerIndex + 1} has the {cfg.mask.name} mask.");
-        AudioManager.Instance?.VoiceEnd(cfg.mask.name);
     }
+
+
 
 }
