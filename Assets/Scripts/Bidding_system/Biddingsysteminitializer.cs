@@ -11,8 +11,9 @@ public class BiddingSystemInitializer : MonoBehaviour
     
     [Header("Turn Management")]
     [SerializeField] private TurnManager turnManager;
-    
+
     [Header("Player Setup")]
+    [SerializeField] private GameObject biddingPlayerPrefab;
     [SerializeField] private Transform playerContainer;
     [SerializeField] private bool autoFindPlayers = true;
     
