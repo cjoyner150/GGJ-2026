@@ -1,3 +1,4 @@
+using MoreMountains.Feedbacks;
 using System;
 using TMPro;
 using UnityEngine;
@@ -9,6 +10,12 @@ public class BiddingInputHandler : MonoBehaviour
     [SerializeField] TextMeshProUGUI bidNumberTMP;
     [SerializeField] TextMeshProUGUI acornsTMP;
     [SerializeField] GameObject turnIndicator;
+
+    public MMF_Player TicUpEffect;
+    public MMF_Player TicDownEffect;
+    public MMF_Player ShakeEffect;
+    public MMF_Player BMEffect;
+    public MMF_Player SMEffect;
 
     private BiddingManager manager;
     public PlayerConfig cfg;
@@ -65,6 +72,10 @@ public class BiddingInputHandler : MonoBehaviour
         {
             currentlyBidding += 10;
         }
+        {
+            TicDownEffect?.PlayFeedbacks();
+        }
+
     }
 
     private void OnIncreaseBid(InputAction.CallbackContext context)
@@ -76,17 +87,23 @@ public class BiddingInputHandler : MonoBehaviour
         {
             currentlyBidding -= 10;
         }
+        else
+        {
+            TicUpEffect?.PlayFeedbacks();
+        }
     }
 
     private void OnBid(InputAction.CallbackContext context)
     {
         canInputTimer = canInputCD;
+        SMEffect?.PlayFeedbacks();
         EndTurn(false, currentlyBidding);
     }
 
     private void OnTake(InputAction.CallbackContext context)
     {
         canInputTimer = canInputCD;
+        BMEffect?.PlayFeedbacks();
         EndTurn(true, currentlyBidding);
     }
 
@@ -94,6 +111,7 @@ public class BiddingInputHandler : MonoBehaviour
     {
         IsTurn = false;
         manager.SetTurnContext(new TurnContext(passedTurn, acornBidAmount, this));
+        ShakeEffect?.PlayFeedbacks();
     }
 
     public void OnTurnEnter(int reqAmount)
