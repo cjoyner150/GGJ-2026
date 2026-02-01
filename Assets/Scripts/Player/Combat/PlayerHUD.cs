@@ -19,6 +19,9 @@ public class PlayerHUD : MonoBehaviour
     [SerializeField] Sprite snake;
     [SerializeField] Sprite turtle;
 
+    [SerializeField] Image img1;
+    [SerializeField] Image img2;
+
     PlayerContext ctx;
 
     public void InitHUD(PlayerConfig cfg, PlayerContext ctx)
@@ -60,6 +63,17 @@ public class PlayerHUD : MonoBehaviour
         }
 
         headIMG.color = cfg.PlayerColor;
+
+        if (cfg.Tarots.Count > 0)
+        {
+            img1.sprite = cfg.Tarots[0].UIAsset;
+
+            if (cfg.Tarots.Count > 1)
+            {
+                img2.sprite = cfg.Tarots[1].UIAsset;
+            }
+            else Destroy(img2);
+        }
     }
 
     public void Update()
