@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using FMODUnity;
 using FMOD.Studio;
 using STOP_MODE = FMOD.Studio.STOP_MODE;
@@ -10,9 +11,18 @@ public class AudioManager : MonoBehaviour
     [Header("References")]
     [SerializeField] private AudioEvents events;
 
+    [Header("Music Switching")]
+    [SerializeField] private SceneMusicTable sceneMusicTable;
+    [SerializeField] private bool switchMusicOnSceneLoad = true;
+
     private EventInstance musicInstance;
     private EventInstance ambientInstance;
 
+    private EventReference currentMusicEvent;
+
+    // --------------------------------------------------
+    // Lifecycle
+    // --------------------------------------------------
     private void Awake()
     {
         // Singleton
@@ -26,6 +36,16 @@ public class AudioManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
     private void Start()
     {
         if (events == null)
@@ -35,7 +55,11 @@ public class AudioManager : MonoBehaviour
         }
 
         // StartAmbience();
-        StartMusic();
+
+        // If you're switching by scene, let OnSceneLoaded handle it.
+        // Otherwise fall back to your default events.music.
+        if (!switchMusicOnSceneLoad)
+            StartMusic();
     }
 
     private void OnDestroy()
@@ -48,9 +72,31 @@ public class AudioManager : MonoBehaviour
         Instance = null;
     }
 
-    // ---------------------------
-    // One-shots
-    // ---------------------------
+    // --------------------------------------------------
+    // Scene switching
+    // --------------------------------------------------
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (!switchMusicOnSceneLoad) return;
+        if (sceneMusicTable == null) return;
+
+        if (sceneMusicTable.TryGet(scene.name, out var musicEvent) && !musicEvent.IsNull)
+        {
+            StartMusic(musicEvent);
+        }
+        else
+        {
+            // Optional fallback: if no mapping found, play default music (events.music)
+            // StartMusic();
+
+            // Or stop music if unmapped:
+            // StopMusic(immediate: false);
+        }
+    }
+
+    // --------------------------------------------------
+    // One-shots (generic)
+    // --------------------------------------------------
     public void PlayUI(EventReference evt)
     {
         if (evt.IsNull) return;
@@ -63,7 +109,9 @@ public class AudioManager : MonoBehaviour
         RuntimeManager.PlayOneShot(evt, position);
     }
 
-    // Wrapper using AudioEvents
+    // --------------------------------------------------
+    // One-shots (AudioEvents wrappers)
+    // --------------------------------------------------
 
     // UI
     public void cardPickup() => PlayUI(events.cardPickup);
@@ -82,19 +130,38 @@ public class AudioManager : MonoBehaviour
     public void playJump(Vector3 pos) => PlayAt(events.playerJump, pos);
     public void playDash(Vector3 pos) => PlayAt(events.playerDash, pos);
 
-
-
-    // ---------------------------
+    // --------------------------------------------------
     // Music
-    // ---------------------------
+    // --------------------------------------------------
+
+    // Your original default music start (uses events.music)
     public void StartMusic()
     {
         if (events.music.IsNull) return;
 
-        if (musicInstance.isValid()) return;
+        // If already playing that same default event, do nothing
+        if (musicInstance.isValid() && currentMusicEvent.Guid == events.music.Guid)
+            return;
 
-        musicInstance = RuntimeManager.CreateInstance(events.music);
+        StartMusic(events.music);
+    }
+
+    // New overload: start/switch to a specific event
+    public void StartMusic(EventReference musicEvent)
+    {
+        if (musicEvent.IsNull) return;
+
+        // If same event already playing, do nothing
+        if (musicInstance.isValid() && currentMusicEvent.Guid == musicEvent.Guid)
+            return;
+
+        // Stop previous (fade out)
+        StopMusic(immediate: false);
+
+        musicInstance = RuntimeManager.CreateInstance(musicEvent);
         musicInstance.start();
+
+        currentMusicEvent = musicEvent;
     }
 
     public void StopMusic(bool immediate = false)
@@ -104,11 +171,13 @@ public class AudioManager : MonoBehaviour
         musicInstance.stop(immediate ? STOP_MODE.IMMEDIATE : STOP_MODE.ALLOWFADEOUT);
         musicInstance.release();
         musicInstance.clearHandle();
+
+        currentMusicEvent = default;
     }
 
-    // ---------------------------
+    // --------------------------------------------------
     // Ambience
-    // ---------------------------
+    // --------------------------------------------------
     public void StartAmbience()
     {
         if (events.ambient.IsNull) return;

@@ -523,6 +523,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AudioManager
   events: {fileID: 11400000, guid: d5f45042c2e41904dbefc7b71e54138f, type: 2}
+  sceneMusicTable: {fileID: 11400000, guid: 54cb0675b227c0f4383224fba591a2ef, type: 2}
+  switchMusicOnSceneLoad: 1
 --- !u!4 &670078665
 Transform:
   m_ObjectHideFlags: 0
