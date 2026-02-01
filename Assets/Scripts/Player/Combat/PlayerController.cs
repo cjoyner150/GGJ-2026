@@ -44,6 +44,7 @@ public class PlayerController : MonoBehaviour, IDamageable
     public MMF_Player DashFeedback;
     public MMF_Player SlashFeedbackH;
     public MMF_Player SlashFeedbackV;
+    public MMF_Player ParryFeedback;
 
 
     public enum MoveState
@@ -138,7 +139,11 @@ public class PlayerController : MonoBehaviour, IDamageable
                             print("success");
                             break;
                         case IDamageable.HitCallbackContext.parried:
-                            if (!isTakingKnockback) TakeKnockback(20, .5f, ((PlayerController)damageable).modelTransform.position);
+                            if (!isTakingKnockback)
+                            {
+                                TakeKnockback(20, .5f, ((PlayerController)damageable).modelTransform.position);
+                                ParryFeedback?.PlayFeedbacks();
+                            }
                             print("parried");
                             break;
                         case IDamageable.HitCallbackContext.invulnerable:
@@ -376,8 +381,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         attackOnCD = true;
         attackTimer = ctx.attackLength / ctx.attackSpeed;
         attackCDTimer = ctx.attackCD / ctx.attackSpeed;
-        if (AudioManager.Instance == null) return;
-        AudioManager.Instance.playAttack(transform.position);
+        
 
         if (ctx.grounded)
         {
@@ -387,8 +391,9 @@ public class PlayerController : MonoBehaviour, IDamageable
         {
             SlashFeedbackV?.PlayFeedbacks();
         }
-
-        }
+        if (AudioManager.Instance == null) return;
+        AudioManager.Instance.playAttack(transform.position);
+    }
 
     void TakeKnockback(float speed, float length, Vector3 from)
     {
@@ -414,7 +419,11 @@ public class PlayerController : MonoBehaviour, IDamageable
         if (isAttacking)
         {
             callbackContext = IDamageable.HitCallbackContext.parried;
-            if (!isTakingKnockback) TakeKnockback(20, .5f, fromPosition);
+            if (!isTakingKnockback)
+            {
+                TakeKnockback(20, .5f, fromPosition);
+                ParryFeedback?.PlayFeedbacks();
+            }
             return;
         }
 
