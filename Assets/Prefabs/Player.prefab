@@ -168,6 +168,10 @@ MonoBehaviour:
   SlashFeedbackH: {fileID: 1198845817745528407}
   SlashFeedbackV: {fileID: 5065799236077336945}
   ParryFeedback: {fileID: 5583011094781767428}
+  minStepSpeed: 0.6
+  stepDistanceWalk: 1.7
+  stepDistanceRun: 2.6
+  runSpeedThreshold: 5
   currentState: 0
 --- !u!114 &5623207455888612827
 MonoBehaviour:
