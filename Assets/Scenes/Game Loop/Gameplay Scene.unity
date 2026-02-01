@@ -1887,6 +1887,7 @@ MonoBehaviour:
   winTMP: {fileID: 212186961}
   gameplayCanvas: {fileID: 441467663}
   playerWinRenderer: {fileID: 1695320310}
+  roundEndingEvent: {fileID: 11400000, guid: 1efd40c7142cb634c8a5561c3955a621, type: 2}
   fader: {fileID: 971309185}
 --- !u!114 &971309185
 MonoBehaviour:

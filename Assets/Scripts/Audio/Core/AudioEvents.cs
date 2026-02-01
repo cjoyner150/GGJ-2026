@@ -25,6 +25,7 @@ public class AudioEvents : ScriptableObject
     public EventReference playerJump;
     public EventReference playerDash;
     public EventReference playerParry;
+    public EventReference playerExplosion;
 
     [Header("Music")]
     public EventReference music;
