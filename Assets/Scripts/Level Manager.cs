@@ -17,6 +17,8 @@ public class LevelManager : MonoBehaviour
     [SerializeField] GameObject gameplayCanvas;
     [SerializeField] SkinnedMeshRenderer playerWinRenderer;
 
+    [SerializeField] VoidEventSO roundEndingEvent;
+
     public MMF_Player fader;
 
     List<PlayerConfig> configs;
@@ -63,9 +65,10 @@ public class LevelManager : MonoBehaviour
         gameplayCanvas.SetActive(false);
 
         playerWinRenderer.material.color = cfg.PlayerColor;
-
+        Invoke("RoundEndMethod", 10f);
     }
-
-
-
+    private void RoundEndMethod()
+    {
+        roundEndingEvent.RaiseEvent();
+    }
 }
