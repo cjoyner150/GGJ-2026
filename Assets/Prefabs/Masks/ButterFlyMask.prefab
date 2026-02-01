@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1898450222922423433}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Feedbacks
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -41,7 +41,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3315260066234020191}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: ButterFlyMask
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -56,14 +56,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2686955572923395045}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2534334967723687535}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!1 &5395977858812224880
 GameObject:
   m_ObjectHideFlags: 0
@@ -74,7 +74,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4713583038959438547}
   - component: {fileID: 4083555361584536119}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Stop Particle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -285,7 +285,7 @@ GameObject:
   - component: {fileID: 3637125167908052223}
   - component: {fileID: 1818827888458544413}
   - component: {fileID: 3728907088468641829}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: GGJ26_BearMask
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -703,7 +703,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4399246746406332839}
   - component: {fileID: 1364741362040664732}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Bidding Move
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1145,7 +1145,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5509762448595362625}
   - component: {fileID: 3440080092673499202}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Move and Shrink
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1737,6 +1737,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Appear Poof
       objectReference: {fileID: 0}
+    - target: {fileID: 451632614410866318, guid: 13a86ff38ce7e15498eb9d71c465c4e4, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 621557686662339656, guid: 13a86ff38ce7e15498eb9d71c465c4e4, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 6392295316051952698, guid: 13a86ff38ce7e15498eb9d71c465c4e4, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.4
@@ -1768,6 +1776,10 @@ PrefabInstance:
     - target: {fileID: 6589128825666176971, guid: 13a86ff38ce7e15498eb9d71c465c4e4, type: 3}
       propertyPath: m_ConstrainProportionsScale
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8808205709897223109, guid: 13a86ff38ce7e15498eb9d71c465c4e4, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 9123346507711186956, guid: 13a86ff38ce7e15498eb9d71c465c4e4, type: 3}
       propertyPath: m_LocalScale.x
@@ -1839,6 +1851,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2534334967723687535}
     m_Modifications:
+    - target: {fileID: 927233006646767715, guid: cc75c011fccc94140b167d3483eb6818, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 6606651887754444126, guid: cc75c011fccc94140b167d3483eb6818, type: 3}
       propertyPath: m_LocalScale.x
       value: 1
@@ -1906,6 +1922,10 @@ PrefabInstance:
     - target: {fileID: 7200641001495316597, guid: cc75c011fccc94140b167d3483eb6818, type: 3}
       propertyPath: m_Name
       value: CurseAura
+      objectReference: {fileID: 0}
+    - target: {fileID: 7200641001495316597, guid: cc75c011fccc94140b167d3483eb6818, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 7200641001495316597, guid: cc75c011fccc94140b167d3483eb6818, type: 3}
       propertyPath: m_IsActive

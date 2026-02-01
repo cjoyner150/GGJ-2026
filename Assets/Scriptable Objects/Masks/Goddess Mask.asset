@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Goddess Mask
   m_EditorClassIdentifier: Assembly-CSharp::MaskSO
   maskName: The Goddess Mask
-  maskPrefab: {fileID: 5647146635714644397, guid: 8926978ed2ad9914fa4e4bd7725250f4, type: 3}
+  maskPrefab: {fileID: 2686955572923395045, guid: d9338477aa28bad498a7e1d507b12ff2, type: 3}
   maskDescription: A blessing
   maskDoom: 0

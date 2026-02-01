@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Turtle Mask
   m_EditorClassIdentifier: Assembly-CSharp::MaskSO
   maskName: The Turtle Mask
-  maskPrefab: {fileID: 5647146635714644397, guid: 2edaf68bb739c714396117616bee05ca, type: 3}
+  maskPrefab: {fileID: 2686955572923395045, guid: 3173f40f28a2f7e44964ac6a9d02a0d6, type: 3}
   maskDescription: Significantly cuts movement speed
   maskDoom: 3
