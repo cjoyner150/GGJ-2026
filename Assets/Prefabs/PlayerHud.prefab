@@ -1110,6 +1110,8 @@ MonoBehaviour:
   rabbit: {fileID: 21300000, guid: 8d4c8d45101b2714b91e9fea5fe5bb00, type: 3}
   snake: {fileID: 21300000, guid: 0c0e6bc4d3bace549b2312f3ee223420, type: 3}
   turtle: {fileID: 21300000, guid: 7a2ca9377c804f7439eca7b1f6841d7d, type: 3}
+  img1: {fileID: 2394818686540194211}
+  img2: {fileID: 795393123139873893}
 --- !u!1 &8274004785533729318
 GameObject:
   m_ObjectHideFlags: 0
