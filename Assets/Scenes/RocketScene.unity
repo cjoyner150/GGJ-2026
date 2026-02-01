@@ -1097,6 +1097,7 @@ GameObject:
   m_Component:
   - component: {fileID: 394522675}
   - component: {fileID: 394522674}
+  - component: {fileID: 394522676}
   m_Layer: 0
   m_Name: Playerconfigmanager
   m_TagString: Untagged
@@ -1118,10 +1119,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerConfigManager
   minPlayers: 2
   maxPlayers: 4
-  inputManager: {fileID: 0}
+  inputManager: {fileID: 394522676}
   gameEnd: {fileID: 0}
   gameplaySceneIndex: 1
-  singleplayer: 0
+  singleplayer: 1
   FadeEffect: {fileID: 0}
 --- !u!4 &394522675
 Transform:
@@ -1138,6 +1139,50 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &394522676
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 394522673}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 621567455fd1c4ceb811cc8a00b6a1a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.PlayerInputManager
+  m_NotificationBehavior: 0
+  m_MaxPlayerCount: -1
+  m_AllowJoining: 1
+  m_JoinBehavior: 0
+  m_PlayerJoinedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_PlayerLeftEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_JoinAction:
+    m_UseReference: 0
+    m_Action:
+      m_Name: 
+      m_Type: 0
+      m_ExpectedControlType: 
+      m_Id: 436e87c7-d402-4c1c-a0ba-1af1b1ea1516
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings: []
+      m_Flags: 0
+    m_Reference: {fileID: 0}
+  m_PlayerPrefab: {fileID: 0}
+  m_SplitScreen: 0
+  m_MaintainAspectRatioInSplitScreen: 0
+  m_FixedNumberOfSplitScreens: -1
+  m_SplitScreenRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
 --- !u!1 &400681678
 GameObject:
   m_ObjectHideFlags: 0
@@ -1399,6 +1444,7 @@ GameObject:
   m_Component:
   - component: {fileID: 580062531}
   - component: {fileID: 580062530}
+  - component: {fileID: 580062532}
   m_Layer: 0
   m_Name: Player (3)
   m_TagString: Untagged
@@ -1435,6 +1481,24 @@ Transform:
   m_Children: []
   m_Father: {fileID: 152153708}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &580062532
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 580062529}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c2fa9cff1499e44ebfaef858cbf3fca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerBiddingInput
+  playerGold: {fileID: 580062530}
+  biddingController: {fileID: 1645340218}
+  bidChooser: {fileID: 1645340220}
+  bidIncrement: 10
+  repeatDelay: 0.15
+  initialRepeatDelay: 0.3
 --- !u!1 &703600874
 GameObject:
   m_ObjectHideFlags: 0
@@ -1605,6 +1669,7 @@ GameObject:
   m_Component:
   - component: {fileID: 813826817}
   - component: {fileID: 813826816}
+  - component: {fileID: 813826818}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -1641,6 +1706,24 @@ Transform:
   m_Children: []
   m_Father: {fileID: 152153708}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &813826818
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 813826815}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c2fa9cff1499e44ebfaef858cbf3fca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerBiddingInput
+  playerGold: {fileID: 813826816}
+  biddingController: {fileID: 1645340218}
+  bidChooser: {fileID: 1645340220}
+  bidIncrement: 10
+  repeatDelay: 0.15
+  initialRepeatDelay: 0.3
 --- !u!1 &888180210
 GameObject:
   m_ObjectHideFlags: 0
@@ -2970,6 +3053,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1398049565}
   - component: {fileID: 1398049564}
+  - component: {fileID: 1398049566}
   m_Layer: 0
   m_Name: Player (2)
   m_TagString: Untagged
@@ -3006,6 +3090,24 @@ Transform:
   m_Children: []
   m_Father: {fileID: 152153708}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1398049566
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1398049563}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c2fa9cff1499e44ebfaef858cbf3fca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerBiddingInput
+  playerGold: {fileID: 1398049564}
+  biddingController: {fileID: 1645340218}
+  bidChooser: {fileID: 1645340220}
+  bidIncrement: 10
+  repeatDelay: 0.15
+  initialRepeatDelay: 0.3
 --- !u!1 &1466118865
 GameObject:
   m_ObjectHideFlags: 0
@@ -3318,6 +3420,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1565460291}
   - component: {fileID: 1565460290}
+  - component: {fileID: 1565460292}
   m_Layer: 0
   m_Name: Player (1)
   m_TagString: Untagged
@@ -3354,6 +3457,24 @@ Transform:
   m_Children: []
   m_Father: {fileID: 152153708}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1565460292
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1565460289}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c2fa9cff1499e44ebfaef858cbf3fca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerBiddingInput
+  playerGold: {fileID: 1565460290}
+  biddingController: {fileID: 1645340218}
+  bidChooser: {fileID: 1645340220}
+  bidIncrement: 10
+  repeatDelay: 0.15
+  initialRepeatDelay: 0.3
 --- !u!1 &1585542258
 GameObject:
   m_ObjectHideFlags: 0
