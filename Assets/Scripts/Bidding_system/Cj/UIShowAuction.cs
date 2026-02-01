@@ -1,11 +1,14 @@
 using TMPro;
 using UnityEngine;
 
-public class UIShowMask : MonoBehaviour
+public class UIShowAuction : MonoBehaviour
 {
+    [Header("Mask")]
     [SerializeField] TextMeshProUGUI nameTMP;
     [SerializeField] TextMeshProUGUI descriptionTMP;
     [SerializeField] TextMeshProUGUI maskDoomTMP;
+
+    [Header("Cam")]
     [SerializeField] Transform spawnLocation;
 
     GameObject currentMaskObj;
@@ -19,5 +22,10 @@ public class UIShowMask : MonoBehaviour
         nameTMP.text = mask.name;
         descriptionTMP.text = mask.maskDescription;
         maskDoomTMP.text = $"DOOM: {mask.maskDoom}";
+    }
+
+    public void UpdateTarot(TarotObject tarot)
+    {
+
     }
 }
