@@ -948,6 +948,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHUD
   acornsTMP: {fileID: 7918190841133631666}
   healthBar: {fileID: 9011517882463416097}
+  headIMG: {fileID: 7558622049245168566}
+  bear: {fileID: 21300000, guid: 1bc9865b637568f4b9b8ec5ecc2d4d22, type: 3}
+  bee: {fileID: 21300000, guid: 693baf36886121b44b31f11537d34572, type: 3}
+  butterfly: {fileID: 21300000, guid: 2306de1cbc345864ca77edff2ae6328a, type: 3}
+  crow: {fileID: 21300000, guid: 2123414975a6f6249867a9ffcacde531, type: 3}
+  man: {fileID: 21300000, guid: 61c2be9e1e837f641949a20f36c99658, type: 3}
+  goddess: {fileID: 21300000, guid: 6e093007aac67c8419763ef8eb2b5b59, type: 3}
+  rabbit: {fileID: 21300000, guid: 8d4c8d45101b2714b91e9fea5fe5bb00, type: 3}
+  snake: {fileID: 21300000, guid: 0c0e6bc4d3bace549b2312f3ee223420, type: 3}
+  turtle: {fileID: 21300000, guid: 7a2ca9377c804f7439eca7b1f6841d7d, type: 3}
 --- !u!1 &8274004785533729318
 GameObject:
   m_ObjectHideFlags: 0
