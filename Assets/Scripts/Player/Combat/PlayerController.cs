@@ -116,6 +116,8 @@ public class PlayerController : MonoBehaviour, IDamageable
 
         // max implement explosion here
 
+        ExplosionFeedback?.PlayFeedbacks();
+
         Die();
     }
 
