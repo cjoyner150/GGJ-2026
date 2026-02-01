@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06e7f1133f130f24895256d3b948566b, type: 3}
+  m_Name: Magician Tarot
+  m_EditorClassIdentifier: Assembly-CSharp::TarotSO
+  tarotName: The Magician
+  tarotPrefab: {fileID: 1034757793665291975, guid: b9f3e2a7456fc6948a776781605e200f, type: 3}
+  description: Player gets an additional jump
+  UIAsset: {fileID: 21300000, guid: 875a1d5fdf5484942a4f1c8ac442fad9, type: 3}

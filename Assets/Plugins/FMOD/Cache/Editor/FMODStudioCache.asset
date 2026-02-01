@@ -664,7 +664,7 @@ MonoBehaviour:
   Path: FMOD/Desktop/Music.bank
   Name: Music
   StudioPath: bank:/Music
-  lastModified: 639055422777154772
+  lastModified: 639055490476543663
   FileSizes: []
   Exists: 1
 --- !u!114 &-4223516967702252822
@@ -963,7 +963,7 @@ MonoBehaviour:
   Path: FMOD/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 639055422776944755
+  lastModified: 639055490476200314
   FileSizes:
   - Name: 
     Value: 2036
@@ -1203,7 +1203,7 @@ MonoBehaviour:
   StringsBanks:
   - {fileID: -2365856062508699506}
   cacheVersion: 131858
-  cacheTime: 639055422777328492
+  cacheTime: 639055490479342956
   SerializableEventsDict:
   - key: event:/Music/AuctionMusic
     index: 0
@@ -1425,7 +1425,7 @@ MonoBehaviour:
   Path: FMOD/Desktop/SFX.bank
   Name: SFX
   StudioPath: bank:/SFX
-  lastModified: 639055422777328492
+  lastModified: 639055490478951419
   FileSizes: []
   Exists: 1
 --- !u!114 &1323269026846713666
@@ -1766,7 +1766,7 @@ MonoBehaviour:
   Banks:
   - {fileID: 1263250490560962137}
   IsStream: 0
-  Is3D: 0
+  Is3D: 1
   IsOneShot: 1
   Parameters: []
   MinDistance: 1
@@ -2045,7 +2045,7 @@ MonoBehaviour:
   Path: FMOD/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 639055422776931816
+  lastModified: 639055490476191249
   FileSizes: []
   Exists: 1
 --- !u!114 &6373020963878915378
@@ -2468,7 +2468,7 @@ MonoBehaviour:
   Path: FMOD/Desktop/Ambience.bank
   Name: Ambience
   StudioPath: bank:/Ambience
-  lastModified: 639055422776931816
+  lastModified: 639055490479342956
   FileSizes: []
   Exists: 1
 --- !u!114 &9051714489620718951

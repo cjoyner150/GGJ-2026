@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIShowAuction : MonoBehaviour
 {
@@ -11,14 +12,14 @@ public class UIShowAuction : MonoBehaviour
     [Header("Cam")]
     [SerializeField] Transform spawnLocation;
 
-    GameObject currentMaskObj;
+    GameObject currentObj;
 
     public void UpdateMask(MaskObject mask)
     {
-        if (currentMaskObj != null) Destroy(currentMaskObj);
+        if (currentObj != null) Destroy(currentObj);
 
-        currentMaskObj = Instantiate(mask.maskPrefab, spawnLocation);
-        currentMaskObj.layer = 7;
+        currentObj = Instantiate(mask.maskPrefab, spawnLocation);
+        currentObj.layer = 7;
         nameTMP.text = mask.name;
         descriptionTMP.text = mask.maskDescription;
         maskDoomTMP.text = $"DOOM: {mask.maskDoom}";
@@ -26,6 +27,14 @@ public class UIShowAuction : MonoBehaviour
 
     public void UpdateTarot(TarotObject tarot)
     {
+        spawnLocation.rotation = Quaternion.identity;
 
+        if (currentObj != null) Destroy(currentObj);
+
+        currentObj = Instantiate(tarot.tarotPrefab, spawnLocation);
+        currentObj.layer = 7;
+        nameTMP.text = tarot.name;
+        descriptionTMP.text = tarot.description;
+        maskDoomTMP.text = "";
     }
 }
