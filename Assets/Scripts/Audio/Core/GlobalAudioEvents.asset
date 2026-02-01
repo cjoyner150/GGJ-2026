@@ -70,11 +70,11 @@ MonoBehaviour:
     Path: event:/Jump
   playerDash:
     Guid:
-      Data1: 0
-      Data2: 0
-      Data3: 0
-      Data4: 0
-    Path: 
+      Data1: 1871937660
+      Data2: 1321901934
+      Data3: 984830624
+      Data4: -1765064311
+    Path: event:/Dash
   music:
     Guid:
       Data1: 1926003601

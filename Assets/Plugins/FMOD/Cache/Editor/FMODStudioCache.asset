@@ -349,7 +349,7 @@ MonoBehaviour:
   StringsBanks:
   - {fileID: -4343147714829139624}
   cacheVersion: 131858
-  cacheTime: 639054834555311966
+  cacheTime: 639054837101180107
   SerializableEventsDict:
   - key: event:/Voice/VoiceFight
     index: 0
@@ -455,7 +455,7 @@ MonoBehaviour:
   Path: FMOD/Desktop/SFX.bank
   Name: SFX
   StudioPath: bank:/SFX
-  lastModified: 639054834555311966
+  lastModified: 639054837101180107
   FileSizes: []
   Exists: 1
 --- !u!114 &6071204493141923578
