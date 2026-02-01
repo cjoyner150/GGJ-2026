@@ -46,6 +46,7 @@ public class PlayerController : MonoBehaviour, IDamageable
     public MMF_Player SlashFeedbackH;
     public MMF_Player SlashFeedbackV;
     public MMF_Player ParryFeedback;
+    public MMF_Player ExplosionFeedback;
 
     [Header("Footsteps (Velocity Based)")]
     [SerializeField] private float minStepSpeed = 0.6f;     // below this = no steps
