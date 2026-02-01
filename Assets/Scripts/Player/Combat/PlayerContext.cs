@@ -26,6 +26,8 @@ public class PlayerContext
     public float attackDamage;
     public float attackSpeed;
 
+    public float scale;
+
     [Header("References")]
     public Animator anim;
 

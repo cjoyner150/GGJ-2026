@@ -63,6 +63,8 @@ public class PlayerController : MonoBehaviour, IDamageable
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
+        modelTransform.localScale = new Vector3(ctx.scale, ctx.scale, ctx.scale);
+
     }
     
     private void FixedUpdate()

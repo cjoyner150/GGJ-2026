@@ -44,6 +44,7 @@ GameObject:
   - component: {fileID: 1669602434419556885}
   - component: {fileID: 6558358289595904245}
   - component: {fileID: 5623207455888612827}
+  - component: {fileID: 1154467564127603247}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -148,6 +149,7 @@ MonoBehaviour:
     attackMoveSpeed: 0
     attackDamage: 0
     attackSpeed: 0
+    scale: 0
     anim: {fileID: 0}
     moveDirection: {x: 0, y: 0, z: 0}
     jumpHasBeenPressed: 0
@@ -200,6 +202,7 @@ MonoBehaviour:
     attackMoveSpeed: 1
     attackDamage: 10
     attackSpeed: 1.2
+    scale: 0
     anim: {fileID: 3645445398476296485}
     moveDirection: {x: 0, y: 0, z: 0}
     jumpHasBeenPressed: 0
@@ -211,6 +214,47 @@ MonoBehaviour:
     invulnerableTime: 1
   delayInputForSeconds: 1
   skinnedMeshRenderer: {fileID: 589058349508935041}
+--- !u!114 &1154467564127603247
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1454249107705364219}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3cd999c4f6dc2c4f9a2af3c7fd66649, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerInput_Handler
+  Player:
+    walkMoveSpeed: 0
+    walkForce: 10
+    grounded: 0
+    groundDrag: 0
+    jumpMultiplier: 10
+    jumps: 1
+    whatIsJumpableGround:
+      serializedVersion: 2
+      m_Bits: 0
+    airMoveSpeed: 0
+    dashLength: 0
+    dashSpeed: 0
+    dashCD: 0
+    attackLength: 0
+    attackCD: 0
+    attackMoveSpeed: 0
+    attackDamage: 0
+    attackSpeed: 0
+    scale: 0
+    anim: {fileID: 0}
+    moveDirection: {x: 0, y: 0, z: 0}
+    jumpHasBeenPressed: 0
+    dashHasBeenPressed: 0
+    attackHasBeenPressed: 0
+    maxHealth: 0
+    currentHealth: 0
+    invulnerable: 0
+    invulnerableTime: 0
 --- !u!1 &2473779049145692099
 GameObject:
   m_ObjectHideFlags: 0
