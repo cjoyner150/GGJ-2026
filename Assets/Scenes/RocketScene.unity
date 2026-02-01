@@ -306,7 +306,7 @@ GameObject:
   - component: {fileID: 197842458}
   - component: {fileID: 197842457}
   m_Layer: 0
-  m_Name: Inizilizer
+  m_Name: Initilizer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -344,6 +344,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BiddingSystemInitializer
   biddingController: {fileID: 1645340218}
   bidChooser: {fileID: 1645340220}
+  turnManager: {fileID: 0}
   playerContainer: {fileID: 152153708}
   autoFindPlayers: 1
   debugMode: 1
@@ -702,8 +703,7 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1466118866}
+  m_Children: []
   m_Father: {fileID: 1047849353}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -1387,6 +1387,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerGold
   Gold: 100
+  startingGold: 100
 --- !u!4 &580062531
 Transform:
   m_ObjectHideFlags: 0
@@ -1592,6 +1593,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerGold
   Gold: 100
+  startingGold: 100
 --- !u!4 &813826817
 Transform:
   m_ObjectHideFlags: 0
@@ -2215,6 +2217,7 @@ RectTransform:
   - {fileID: 943602814}
   - {fileID: 1535354730}
   - {fileID: 915496980}
+  - {fileID: 1466118866}
   - {fileID: 292968733}
   - {fileID: 347531739}
   - {fileID: 1770364720}
@@ -2955,6 +2958,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerGold
   Gold: 100
+  startingGold: 100
 --- !u!4 &1398049565
 Transform:
   m_ObjectHideFlags: 0
@@ -2999,7 +3003,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 215448463}
-  m_Father: {fileID: 292968733}
+  m_Father: {fileID: 1047849353}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -3302,6 +3306,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerGold
   Gold: 100
+  startingGold: 100
 --- !u!4 &1565460291
 Transform:
   m_ObjectHideFlags: 0
@@ -3487,7 +3492,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5831fb3fc7a8c2d45a83dffaf84d70b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BidChooser
-  controller: {fileID: 0}
+  controller: {fileID: 1645340218}
+  turnManager: {fileID: 0}
   playerBidPanel: {fileID: 798209579}
   playerIndexText: {fileID: 1177078062}
   currentBidText: {fileID: 1652838686}
@@ -3495,7 +3501,7 @@ MonoBehaviour:
   potText: {fileID: 209486355}
   minimumBidText: {fileID: 1392676456}
   playerColorIndicator: {fileID: 437043694}
-  phaseIndicator: {fileID: 0}
+  phaseIndicator: {fileID: 1466118865}
   playerPositions:
   - {fileID: 1261128126}
   - {fileID: 2033947223}

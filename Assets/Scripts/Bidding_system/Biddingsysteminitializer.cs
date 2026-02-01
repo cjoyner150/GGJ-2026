@@ -9,6 +9,9 @@ public class BiddingSystemInitializer : MonoBehaviour
     [SerializeField] private MaskBiddingController biddingController;
     [SerializeField] private BidChooser bidChooser;
     
+    [Header("Turn Management")]
+    [SerializeField] private TurnManager turnManager;
+    
     [Header("Player Setup")]
     [SerializeField] private Transform playerContainer;
     [SerializeField] private bool autoFindPlayers = true;
@@ -17,7 +20,7 @@ public class BiddingSystemInitializer : MonoBehaviour
     [SerializeField] private bool debugMode = true;
     
     private List<PlayerGold> players = new List<PlayerGold>();
-    private List<PlayerBiddingInput> inputs = new List<PlayerBiddingInput>();
+    private List<PlayerBiddingInput> playerInputs = new List<PlayerBiddingInput>();
 
     private void Start()
     {
@@ -51,8 +54,12 @@ public class BiddingSystemInitializer : MonoBehaviour
 
     private bool ValidateReferences()
     {
+        // Find MaskBiddingController
         if (biddingController == null)
+        {
             biddingController = FindObjectOfType<MaskBiddingController>();
+            if (debugMode) Debug.Log($"Found controller: {biddingController != null}");
+        }
             
         if (biddingController == null)
         {
@@ -60,11 +67,26 @@ public class BiddingSystemInitializer : MonoBehaviour
             return false;
         }
 
+        // Find BidChooser
         if (bidChooser == null)
         {
-            bidChooser = FindObjectOfType<BidChooser>();
-            if (debugMode && bidChooser == null)
-                Debug.LogWarning("No BidChooser found (optional)");
+            bidChooser = FindObjectOfType<BidChooser>(true);
+            if (debugMode) Debug.Log($"Found bid chooser: {bidChooser != null}");
+        }
+
+        // Create or find TurnManager
+        if (turnManager == null)
+        {
+            turnManager = FindObjectOfType<TurnManager>();
+            if (turnManager == null)
+            {
+                if (debugMode) Debug.Log("Creating new TurnManager");
+                GameObject turnManagerObj = new GameObject("TurnManager");
+                turnManager = turnManagerObj.AddComponent<TurnManager>();
+                
+                // Parent it to this object for organization
+                turnManagerObj.transform.SetParent(transform);
+            }
         }
 
         return true;
@@ -73,7 +95,7 @@ public class BiddingSystemInitializer : MonoBehaviour
     private void FindPlayers()
     {
         players.Clear();
-        inputs.Clear();
+        playerInputs.Clear();
 
         PlayerGold[] foundPlayers = autoFindPlayers 
             ? FindObjectsOfType<PlayerGold>()
@@ -85,89 +107,224 @@ public class BiddingSystemInitializer : MonoBehaviour
         {
             players.Add(player);
             
-            // Get or add input component
+            // Get or add PlayerBiddingInput component
             var input = player.GetComponent<PlayerBiddingInput>() 
                      ?? player.gameObject.AddComponent<PlayerBiddingInput>();
-            inputs.Add(input);
+            playerInputs.Add(input);
+            
+            if (debugMode) Debug.Log($"  Added Player {player.PlayerIndex}: {player.name}");
         }
 
         // Sort by player index
         players.Sort((a, b) => a.PlayerIndex.CompareTo(b.PlayerIndex));
-        
-        if (debugMode)
-            players.ForEach(p => Debug.Log($"  Player {p.PlayerIndex} ({p.name})"));
+        playerInputs.Sort((a, b) => a.GetPlayerIndex().CompareTo(b.GetPlayerIndex()));
     }
 
     private void SetupSystem()
     {
-        // Setup controller
+        // Setup MaskBiddingController with players
         biddingController.players = new List<PlayerGold>(players);
         
-        // Setup inputs
+        // Setup TurnManager
+        turnManager.Initialize(players, playerInputs, biddingController, bidChooser);
+        
+        // Setup PlayerInputs
         var configs = PlayerConfigManager.Instance?.GetPlayerConfigs().ToArray();
-        for (int i = 0; i < inputs.Count; i++)
+        
+        for (int i = 0; i < players.Count; i++)
         {
-            var input = inputs[i];
             var player = players[i];
+            var input = playerInputs[i];
+            
+            if (debugMode) Debug.Log($"Setting up Player {player.PlayerIndex}");
 
+            // Set references
             input.SetBiddingController(biddingController);
             if (bidChooser != null) input.SetBidChooser(bidChooser);
-
-            // Initialize with config or fallback to PlayerInput
+            
+            // Initialize with PlayerConfig or fallback
             if (configs != null && i < configs.Length)
             {
+                if (debugMode) Debug.Log($"  Initializing with PlayerConfig {configs[i].PlayerIndex}");
                 input.Initialize(configs[i]);
             }
             else
             {
+                // Fallback: try to find PlayerInput component
                 var playerInput = player.GetComponent<PlayerInput>() 
                                ?? player.GetComponentInChildren<PlayerInput>();
                 
                 if (playerInput != null)
+                {
+                    if (debugMode) Debug.Log($"  Initializing with PlayerInput");
                     input.InitializeWithPlayerInput(playerInput, player.PlayerIndex);
+                }
                 else
-                    Debug.LogWarning($"No PlayerInput for Player {player.PlayerIndex}");
+                {
+                    Debug.LogWarning($"No PlayerInput found for Player {player.PlayerIndex}");
+                    // Still initialize but without input
+                    input.InitializeWithPlayerInput(null, player.PlayerIndex);
+                }
             }
+            
+            // Register with TurnManager
+            turnManager.RegisterPlayer(input, player.PlayerIndex);
         }
 
-        // Setup bid chooser
+        // Setup BidChooser
         if (bidChooser != null)
         {
             bidChooser.players = new List<PlayerGold>(players);
+            bidChooser.turnManager = turnManager; // Connect turn manager
+            
+            // If bid chooser has UI button callbacks, they'll work alongside controller input
             bidChooser.Initialize();
+            
+            if (debugMode) Debug.Log("BidChooser initialized");
         }
+        
+        // Setup event connections between BidChooser and TurnManager
+        if (bidChooser != null && turnManager != null)
+        {
+            // BidChooser will call turnManager when it moves to a player
+            // This is handled in MovePanelToPlayer method
+        }
+        
+        // Initialize all players to not their turn
+        foreach (var input in playerInputs)
+        {
+            input.SetIsMyTurn(false);
+            input.SetBiddingPhaseActive(false);
+        }
+        
+        if (debugMode) Debug.Log($"System setup complete with {players.Count} players");
     }
 
     public void RegisterPlayer(PlayerGold player, PlayerBiddingInput input = null)
     {
-        if (players.Contains(player)) return;
+        if (players.Contains(player)) 
+        {
+            if (debugMode) Debug.Log($"Player {player.PlayerIndex} already registered");
+            return;
+        }
 
         players.Add(player);
         
         input = input ?? player.GetComponent<PlayerBiddingInput>() 
                      ?? player.gameObject.AddComponent<PlayerBiddingInput>();
-        inputs.Add(input);
+        playerInputs.Add(input);
         
         // Update references
         biddingController.players = new List<PlayerGold>(players);
-        if (bidChooser != null) bidChooser.players = new List<PlayerGold>(players);
+        if (bidChooser != null) 
+        {
+            bidChooser.players = new List<PlayerGold>(players);
+        }
+        
+        // Register with TurnManager
+        if (turnManager != null)
+        {
+            turnManager.RegisterPlayer(input, player.PlayerIndex);
+        }
         
         if (debugMode) Debug.Log($"Registered Player {player.PlayerIndex}");
     }
 
+    public void UnregisterPlayer(PlayerGold player)
+    {
+        if (!players.Contains(player)) return;
+        
+        int index = players.IndexOf(player);
+        players.Remove(player);
+        
+        if (index < playerInputs.Count)
+        {
+            playerInputs.RemoveAt(index);
+        }
+        
+        // Update references
+        biddingController.players = new List<PlayerGold>(players);
+        if (bidChooser != null) 
+        {
+            bidChooser.players = new List<PlayerGold>(players);
+        }
+        
+        if (debugMode) Debug.Log($"Unregistered Player {player.PlayerIndex}");
+    }
+
     public void StartMaskPhase()
     {
+        if (debugMode) Debug.Log("Starting Mask Phase");
+        
         biddingController?.BeginMaskPhase();
-        inputs.ForEach(i => i.SetBiddingPhase(true));
-        if (debugMode) Debug.Log("Started Mask Phase");
+        
+        // Tell TurnManager to start mask phase
+        if (turnManager != null)
+        {
+            turnManager.StartMaskPhase();
+        }
+        else
+        {
+            // Fallback: enable all inputs if no turn manager
+            foreach (var input in playerInputs)
+            {
+                input.SetBiddingPhase(true);
+            }
+        }
     }
 
     public void StartTarotPhase()
     {
+        if (debugMode) Debug.Log("Starting Tarot Phase");
+        
         biddingController?.BeginTarotPhase();
-        inputs.ForEach(i => i.SetBiddingPhase(false));
-        if (debugMode) Debug.Log("Started Tarot Phase");
+        
+        // Tell TurnManager to start tarot phase
+        if (turnManager != null)
+        {
+            turnManager.StartTarotPhase();
+        }
+        else
+        {
+            // Fallback: enable all inputs if no turn manager
+            foreach (var input in playerInputs)
+            {
+                input.SetBiddingPhase(false);
+            }
+        }
     }
+
+    public void EnableAllPlayersInput()
+    {
+        if (debugMode) Debug.Log("Enabling all player inputs");
+        
+        if (turnManager != null)
+        {
+            turnManager.EnableAllPlayers();
+        }
+        else
+        {
+            foreach (var input in playerInputs)
+            {
+                input.SetIsMyTurn(true);
+                input.SetBiddingPhaseActive(true);
+            }
+        }
+    }
+
+    public void EnableTurnBasedInput()
+    {
+        if (debugMode) Debug.Log("Enabling turn-based input");
+        
+        if (turnManager != null)
+        {
+            turnManager.EnableTurnBased();
+        }
+    }
+
+    public List<PlayerGold> GetPlayers() => new List<PlayerGold>(players);
+    public List<PlayerBiddingInput> GetPlayerInputs() => new List<PlayerBiddingInput>(playerInputs);
+    public TurnManager GetTurnManager() => turnManager;
 
     [ContextMenu("Test Initialize")]
     private void TestInitialize() => Initialize();
@@ -177,4 +334,10 @@ public class BiddingSystemInitializer : MonoBehaviour
 
     [ContextMenu("Test Start Tarot Phase")]
     private void TestStartTarotPhase() => StartTarotPhase();
+
+    [ContextMenu("Test Enable All Players")]
+    private void TestEnableAllPlayers() => EnableAllPlayersInput();
+
+    [ContextMenu("Test Enable Turn Based")]
+    private void TestEnableTurnBased() => EnableTurnBasedInput();
 }
