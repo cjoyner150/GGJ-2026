@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 
 public class PlayerInputHandler : MonoBehaviour
 {
-    [SerializeField] PlayerContext ctx;
+    public PlayerContext ctx;
     [SerializeField] float delayInputForSeconds;
     [SerializeField] SkinnedMeshRenderer skinnedMeshRenderer;
 

@@ -10,6 +10,9 @@ public class BidChooser : MonoBehaviour
     [Header("Controller")]
     public MaskBiddingController controller;
 
+    [Header("Turn Management")]
+    public TurnManager turnManager;
+
     [Header("UI Elements")]
     public RectTransform playerBidPanel;
     public TMP_Text playerIndexText;
@@ -345,7 +348,7 @@ public class BidChooser : MonoBehaviour
         UpdateUI();
     }
 
-    void MovePanelToPlayer(int index)
+    public void MovePanelToPlayer(int index)
     {
         if (index < 0 || index >= players.Count)
         {
@@ -366,6 +369,12 @@ public class BidChooser : MonoBehaviour
 
         currentPlayerIndex = index;
         Debug.Log($"Moved panel to Player {currentPlayerIndex}");
+        
+        // Notify turn manager
+        if (turnManager != null)
+        {
+            turnManager.SetCurrentPlayerTurn(player.PlayerIndex);
+        }
         
         UpdateUI();
     }
@@ -444,6 +453,15 @@ public class BidChooser : MonoBehaviour
             }
             
             ShowFloatingText($"{currentBidAmount}G", player.PlayerColor, currentBidAmount > currentMinimumBid);
+            
+            if (turnManager != null)
+            {
+                var playerInput = FindPlayerInput(player.PlayerIndex);
+                if (playerInput != null)
+                {
+                    playerInput.SetIsMyTurn(false);
+                }
+            }
         }
         else
         {
@@ -451,6 +469,21 @@ public class BidChooser : MonoBehaviour
         }
     }
 
+    private PlayerBiddingInput FindPlayerInput(int playerIndex)
+    {
+        if (turnManager != null)
+        {
+            return turnManager.GetPlayerInput(playerIndex);
+        }
+        
+        PlayerBiddingInput[] allInputs = FindObjectsOfType<PlayerBiddingInput>();
+        foreach (var input in allInputs)
+        {
+            if (input.GetPlayerIndex() == playerIndex)
+                return input;
+        }
+        return null;
+    }
     void ShowRaiseNotification(int amount, Color color)
     {
         if (!floatingTextPrefab) return;

@@ -28,6 +28,9 @@ public class PlayerBiddingInput : MonoBehaviour
     private int currentBidAmount = 10;
     private bool isMaskPhase = false;
     
+    private bool isMyTurn = false;
+    private bool isBiddingPhaseActive = false;
+    
     private void Awake()
     {
         playerGold ??= GetComponent<PlayerGold>();
@@ -79,6 +82,27 @@ public class PlayerBiddingInput : MonoBehaviour
         Debug.Log($"Player {playerIndex}: {(isMask ? "Mask" : "Tarot")} phase, starting bid: {currentBidAmount}");
     }
     
+    public void SetIsMyTurn(bool value) 
+    {
+        isMyTurn = value;
+        if (isMyTurn)
+        {
+            Debug.Log($"Player {playerIndex} - IT'S YOUR TURN!");
+            currentBidAmount = biddingController?.CurrentBidAmount ?? 10;
+            SyncBidChooser();
+        }
+        else
+        {
+            Debug.Log($"Player {playerIndex} - waiting...");
+        }
+    }
+    
+    public void SetBiddingPhaseActive(bool active)
+    {
+        isBiddingPhaseActive = active;
+        Debug.Log($"Player {playerIndex} - bidding phase: {active}");
+    }
+    
     public void SetCanBid(bool value) => canBid = value;
     
     private void SetupInputActions()
@@ -110,9 +134,8 @@ public class PlayerBiddingInput : MonoBehaviour
         EnforceMinimumBid();
     }
     
-    private bool IsActive() => isInitialized && canBid && 
-                               (biddingController?.IsMaskPhase == true || 
-                                biddingController?.IsTarotPhase == true);
+    // FIXED: Only one IsActive method
+    private bool IsActive() => isInitialized && canBid && isMyTurn && isBiddingPhaseActive;
     
     private void EnforceMinimumBid()
     {
@@ -161,9 +184,9 @@ public class PlayerBiddingInput : MonoBehaviour
     {
         if (!IsActive()) return;
         
-        if (isMaskPhase && biddingController.IsMaskPhase)
+        if (isMaskPhase && biddingController != null && biddingController.IsMaskPhase)
             PlaceMaskBid();
-        else if (!isMaskPhase && biddingController.IsTarotPhase)
+        else if (!isMaskPhase && biddingController != null && biddingController.IsTarotPhase)
             PlaceTarotBid();
     }
     
@@ -171,9 +194,9 @@ public class PlayerBiddingInput : MonoBehaviour
     {
         if (!IsActive()) return;
         
-        if (isMaskPhase && biddingController.IsMaskPhase)
+        if (isMaskPhase && biddingController != null && biddingController.IsMaskPhase)
             TakeMaskWithoutBid();
-        else if (!isMaskPhase && biddingController.IsTarotPhase)
+        else if (!isMaskPhase && biddingController != null && biddingController.IsTarotPhase)
             PassOnCurrentTarot();
     }
     
@@ -191,6 +214,7 @@ public class PlayerBiddingInput : MonoBehaviour
         Debug.Log($"Player {playerIndex} bid {currentBidAmount} to AVOID mask{(raising ? " (RAISING!)" : "")}");
         
         canBid = false;
+        isMyTurn = false; // End turn after bidding
     }
     
     private void PlaceTarotBid()
@@ -207,6 +231,7 @@ public class PlayerBiddingInput : MonoBehaviour
         Debug.Log($"Player {playerIndex} bid {currentBidAmount} to WIN tarot{(raising ? " (RAISING!)" : "")}");
         
         canBid = false;
+        isMyTurn = false; // End turn after bidding
     }
     
     private bool ValidateBid()
@@ -231,6 +256,7 @@ public class PlayerBiddingInput : MonoBehaviour
         Debug.Log($"Player {playerIndex} taking mask without bidding");
         biddingController?.TakeMaskWithoutBid(playerIndex);
         canBid = false;
+        isMyTurn = false; // End turn
     }
     
     private void PassOnCurrentTarot()
@@ -238,6 +264,7 @@ public class PlayerBiddingInput : MonoBehaviour
         Debug.Log($"Player {playerIndex} passing on tarot (kicked from round)");
         biddingController?.PassOnCurrentItem(playerIndex);
         canBid = false;
+        isMyTurn = false; // End turn
     }
     
     private void AdjustBid(int direction)
@@ -290,9 +317,21 @@ public class PlayerBiddingInput : MonoBehaviour
         Debug.Log($"Player {playerIndex} reset for new round, bid: {currentBidAmount}");
     }
     
+    // NEW: Reset for new item (mask or tarot)
+    public void ResetForNewItem()
+    {
+        isMyTurn = false;
+        canBid = true;
+        currentBidAmount = biddingController?.CurrentBidAmount ?? 10;
+        
+        Debug.Log($"Player {playerIndex} reset for new item");
+    }
+    
     public void ResetInput()
     {
         isMaskPhase = false;
+        isMyTurn = false;
+        isBiddingPhaseActive = false;
         ResetForNewRound();
     }
     
