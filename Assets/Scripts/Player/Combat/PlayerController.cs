@@ -363,8 +363,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         dashOnCD = true;
         dashTimer = ctx.dashLength;
         dashCDTimer = ctx.dashCD;
-        if (AudioManager.Instance == null) return;
-        AudioManager.Instance.playDash(transform.position);
+        AudioManager.Instance?.playDash(transform.position);
         DashFeedback?.PlayFeedbacks();
     }
 

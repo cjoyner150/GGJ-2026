@@ -856,7 +856,9 @@ PrefabInstance:
       propertyPath: m_Name
       value: RenderSetup
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 1911557615113655283, guid: 8f684b4a842309d4d8d5b3b3c989de03, type: 3}
+    - {fileID: 7189946874356343372, guid: 8f684b4a842309d4d8d5b3b3c989de03, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

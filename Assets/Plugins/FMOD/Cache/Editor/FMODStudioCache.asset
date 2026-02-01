@@ -75,11 +75,11 @@ MonoBehaviour:
   Banks:
   - {fileID: 2994338234778971138}
   IsStream: 0
-  Is3D: 0
+  Is3D: 1
   IsOneShot: 1
   Parameters: []
   MinDistance: 1
-  MaxDistance: 20
+  MaxDistance: 250
   Length: 0
 --- !u!114 &-7047167297889707253
 MonoBehaviour:
@@ -133,7 +133,7 @@ MonoBehaviour:
   IsOneShot: 1
   Parameters: []
   MinDistance: 1
-  MaxDistance: 20
+  MaxDistance: 200
   Length: 0
 --- !u!114 &-5708216347997346315
 MonoBehaviour:
@@ -150,7 +150,7 @@ MonoBehaviour:
   Path: FMOD/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 639054813610257715
+  lastModified: 639054834362338846
   FileSizes: []
   Exists: 1
 --- !u!114 &-5360369996748889426
@@ -250,7 +250,7 @@ MonoBehaviour:
   Path: FMOD/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 639054813610262863
+  lastModified: 639054834362349308
   FileSizes:
   - Name: 
     Value: 1760
@@ -349,7 +349,7 @@ MonoBehaviour:
   StringsBanks:
   - {fileID: -4343147714829139624}
   cacheVersion: 131858
-  cacheTime: 639054813611299393
+  cacheTime: 639054834555311966
   SerializableEventsDict:
   - key: event:/Voice/VoiceFight
     index: 0
@@ -455,7 +455,7 @@ MonoBehaviour:
   Path: FMOD/Desktop/SFX.bank
   Name: SFX
   StudioPath: bank:/SFX
-  lastModified: 639054813611299393
+  lastModified: 639054834555311966
   FileSizes: []
   Exists: 1
 --- !u!114 &6071204493141923578
@@ -505,7 +505,7 @@ MonoBehaviour:
   Path: FMOD/Desktop/Music.bank
   Name: Music
   StudioPath: bank:/Music
-  lastModified: 639054773754750809
+  lastModified: 639054834554377275
   FileSizes: []
   Exists: 1
 --- !u!114 &7021433977946404265
