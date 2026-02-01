@@ -154,6 +154,7 @@ public class AudioManager : MonoBehaviour
     public void playJump(Vector3 pos) => PlayAt(events.playerJump, pos);
     public void playDash(Vector3 pos) => PlayAt(events.playerDash, pos);
     public void playParry(Vector3 pos) => PlayAt(events.playerParry, pos);
+    public void playExplosion(Vector3 pos) => PlayAt(events.playerExplosion, pos);
     public void uiTickUp() => PlayUI(events.uiTickUp);
     public void uiTickDown() => PlayUI(events.uiTickDown);
     public void uiBet() => PlayUI(events.uiBet);
