@@ -76,15 +76,6 @@ public class GameManager : MonoBehaviour
     {
         var players = PlayerConfigManager.GetPlayerConfigs();
 
-        foreach (var player in players)
-        {
-            if (player.RoundsWon >= 2)
-            {
-                EndGame();
-                return;
-            }
- 
-        }
         LoadBiddingScene();
 
     }
