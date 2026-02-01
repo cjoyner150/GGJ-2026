@@ -33,19 +33,19 @@ public class PlayerSelectPanelManager : MonoBehaviour
         switch (playerIndex)
         {
             case 0:
-                col = new Color(91, 128, 103);
+                col = new Color(107f/255f, 128f / 255f, 103f / 255f);
                 break;
-            case 1: 
-                col = new Color(179, 55, 44);
+            case 1:
+                col = new Color(179f / 255f, 55f / 255f, 44f / 255f);
                 break;
-            case 2: 
-                col = new Color(115, 67, 102);
+            case 2:
+                col = new Color(115f / 255f, 67f / 255f, 102f / 255f);
                 break;
             case 3:
-                col = new Color(244, 150, 68);
+                col = new Color(244f / 255f, 150f / 255f, 68f / 255f);
                 break;
             default:
-                col = Color.white;
+                col = Color.red;
                 break;
         }
 
