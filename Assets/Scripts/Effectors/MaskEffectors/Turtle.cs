@@ -1,19 +1,17 @@
 using UnityEngine;
 
-public class Butterfly : Effector
+public class Turtle : Effector
 {
-    public Butterfly()
+    public Turtle()
     {
-        //Take more knockback
-        //added +20 knockback, modify as needed
+        //cutting movement speed to 10%
         modifiers.Add(
             new BasicStatModifier(
-                StatType.Knockback,
+                StatType.MoveSpeed,
                 duration: float.PositiveInfinity,
-                operation: value => value + 20
+                operation: value => (int)(value * 0.1f)
                 )
             );
-
     }
 
     public override void OnUpdate(float deltaTime)

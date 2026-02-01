@@ -10,4 +10,5 @@ public class BaseStats : ScriptableObject
     public int attackSpeed = 50;
     public int moveSpeed = 85;
     public int scale = 100;
+    public int knockback = 40;
 }

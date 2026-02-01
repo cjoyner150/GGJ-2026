@@ -1,7 +1,7 @@
 using UnityEngine;
 
 //defining all stats in an enum
-public enum StatType {Health, Power, AttackSpeed, MoveSpeed, Scale}
+public enum StatType {Health, Power, AttackSpeed, MoveSpeed, Scale, Knockback}
 public class Stats
 {
     readonly BaseStats baseStats;
@@ -65,6 +65,17 @@ public class Stats
         }
     }
 
+    public int Knockback
+    {
+        get
+        {
+            //return value with modifiers applied
+            var q = new Query(StatType.Knockback, baseStats.knockback);
+            mediator.PerformQuery(sender: this, q);
+            return q.Value;
+        }
+    }
+
     public Stats(StatsMediator mediator, BaseStats baseStats)
     {
         this.mediator = mediator;
@@ -72,6 +83,6 @@ public class Stats
     }
 
     //debugging
-    public override string ToString() => $"Health: {Health}, Power: {Power}, AttackSpeed: {AttackSpeed}, MoveSpeed: {MoveSpeed}, Scale: {Scale}";
+    public override string ToString() => $"Health: {Health}, Power: {Power}, AttackSpeed: {AttackSpeed}, MoveSpeed: {MoveSpeed}, Scale: {Scale}, Knockback: {Knockback}";
 
 }

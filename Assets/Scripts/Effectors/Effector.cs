@@ -9,9 +9,7 @@ public abstract class Effector
     //stat system reads this
     public IReadOnlyList<StatModifier> Modifiers => modifiers;
 
-    public virtual void OnUpdate(float deltaTime)
-    {
+    public virtual void OnUpdate(float deltaTime) { }
 
-    }
-
+    public virtual void OnApply(PlayerContext context) { }
 }
