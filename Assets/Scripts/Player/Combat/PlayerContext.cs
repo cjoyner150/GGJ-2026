@@ -10,6 +10,7 @@ public class PlayerContext
     public bool grounded;
     public float groundDrag;
 
+    public float knockbackMultiplier = 1;
     public float jumpMultiplier = 10f;
     public int jumps = 1;
     public LayerMask whatIsJumpableGround;
@@ -27,6 +28,8 @@ public class PlayerContext
     public float attackSpeed;
 
     public float scale;
+
+    public bool man;
 
     [Header("References")]
     public Animator anim;

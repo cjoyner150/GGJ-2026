@@ -27,7 +27,6 @@ public class PlayerInitializer : MonoBehaviour
 
             playerHUD.GetComponent<PlayerHUD>().InitHUD(configs[i], inp.ctx);
 
-            player.GetComponent<PlayerStatManager>().Initialize(configs[i]);
         }
 
     }

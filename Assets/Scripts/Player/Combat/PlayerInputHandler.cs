@@ -2,10 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
 public class PlayerInputHandler : MonoBehaviour
 {
+    static UnityEvent<int> beeEvent = new UnityEvent<int>();
+
     public PlayerContext ctx;
     [SerializeField] float delayInputForSeconds;
     [SerializeField] SkinnedMeshRenderer skinnedMeshRenderer;
@@ -16,6 +19,27 @@ public class PlayerInputHandler : MonoBehaviour
     private Player controls;
 
     bool canInput = false;
+
+    private void OnEnable()
+    {
+        beeEvent.AddListener(OnBeeEvent);
+    }
+
+    private void OnDisable()
+    {
+        beeEvent.RemoveListener(OnBeeEvent);
+    }
+
+    private void OnBeeEvent(int playerIndex)
+    {
+        if (config.PlayerIndex != playerIndex)
+        {
+            ctx.maxHealth *= 1.2f;
+            ctx.attackDamage *= 1.2f;
+        }
+    }
+
+    void RaiseBeeEvent() => beeEvent.Invoke(config.PlayerIndex);
 
     private void Awake()
     {
@@ -44,6 +68,112 @@ public class PlayerInputHandler : MonoBehaviour
         ctx.currentHealth = ctx.maxHealth;
 
         skinnedMeshRenderer.material.color = config.PlayerColor;
+
+        switch (cfg.Mask.type)
+        {
+            case MaskObject.maskType.Bear:
+                ctx.scale *= 1.5f;
+                ctx.walkMoveSpeed *= 0.75f;
+                break;
+            case MaskObject.maskType.Bee:
+                Invoke(nameof(RaiseBeeEvent), 1f);
+                break;
+            case MaskObject.maskType.Butterfly:
+                ctx.knockbackMultiplier *= 2f;
+                break;
+            case MaskObject.maskType.Crow:
+                config.Tarots.RemoveAt(Random.Range(0, config.Tarots.Count));
+                break;
+            case MaskObject.maskType.Man:
+                ctx.man = true;
+                break;
+            case MaskObject.maskType.Goddess:
+                break;
+            case MaskObject.maskType.Rabbit:
+                ctx.scale *= .5f;
+                ctx.maxHealth *= .5f;
+                ctx.currentHealth = ctx.maxHealth;
+                break;
+            case MaskObject.maskType.Snake:
+                ctx.jumps = 0;
+                break;
+            case MaskObject.maskType.Turtle:
+                ctx.walkMoveSpeed *= .1f;
+                break;
+
+        }
+
+        foreach (var tarot in cfg.Tarots)
+        {
+            switch (tarot.type)
+            {
+                case TarotObject.cardType.Chariot:
+                    ctx.walkMoveSpeed *= 1.5f;
+                    break;
+                case TarotObject.cardType.Devil:
+                    ctx.attackDamage *= 1.5f;
+                    break;
+                case TarotObject.cardType.Empress:
+                    ctx.attackSpeed *= 1.5f;
+                    break;
+                case TarotObject.cardType.HighPriestess:
+                    ctx.maxHealth *= 1.5f;
+                    ctx.currentHealth = ctx.maxHealth;
+                    break;
+                case TarotObject.cardType.Magician:
+                    ctx.jumps++;
+                    break;
+                case TarotObject.cardType.Moon:
+                    ctx.groundDrag = 0;
+                    break;
+                case TarotObject.cardType.Star:
+                    ctx.attackDamage *= 1.2f;
+                    ctx.attackSpeed *= 1.2f;
+                    ctx.walkMoveSpeed *= 1.2f;
+                    ctx.maxHealth *= 1.2f;
+                    ctx.currentHealth = ctx.maxHealth;
+                    break;
+                case TarotObject.cardType.Wheel:
+                    
+                    for (int i = 0; i < 2; i++)
+                    {
+                        int rand = Random.Range(0, 7);
+                        switch ((TarotObject.cardType)rand)
+                        {
+                            case TarotObject.cardType.Chariot:
+                                ctx.walkMoveSpeed *= 1.5f;
+                                break;
+                            case TarotObject.cardType.Devil:
+                                ctx.attackDamage *= 1.5f;
+                                break;
+                            case TarotObject.cardType.Empress:
+                                ctx.attackSpeed *= 1.5f;
+                                break;
+                            case TarotObject.cardType.HighPriestess:
+                                ctx.maxHealth *= 1.5f;
+                                ctx.currentHealth = ctx.maxHealth;
+                                break;
+                            case TarotObject.cardType.Magician:
+                                ctx.jumps++;
+                                break;
+                            case TarotObject.cardType.Moon:
+                                ctx.groundDrag = 0;
+                                break;
+                            case TarotObject.cardType.Star:
+                                ctx.attackDamage *= 1.2f;
+                                ctx.attackSpeed *= 1.2f;
+                                ctx.walkMoveSpeed *= 1.2f;
+                                ctx.maxHealth *= 1.2f;
+                                ctx.currentHealth = ctx.maxHealth;
+                                break;
+
+                        }
+
+                    }
+
+                    break;
+            }
+        }
     }
 
     public void OnActionTriggered(InputAction.CallbackContext context)
