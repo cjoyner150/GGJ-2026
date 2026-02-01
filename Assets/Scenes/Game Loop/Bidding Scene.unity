@@ -1058,13 +1058,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1394414049}
   serializedVersion: 2
-  m_LocalRotation: {x: -9.822544e-10, y: 0.98236877, z: -0.18695377, w: 0}
+  m_LocalRotation: {x: -0.09366536, y: 0.0000000018626454, z: -1.5279512e-10, w: 0.99560374}
   m_LocalPosition: {x: -0, y: 0, z: 2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1088214867}
-  m_LocalEulerAnglesHint: {x: 21.55, y: 180, z: 0}
+  m_LocalEulerAnglesHint: {x: -10.749, y: 0, z: 0}
 --- !u!1 &1637104448
 GameObject:
   m_ObjectHideFlags: 0
@@ -1382,13 +1382,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BiddingManager
   goddessMaskSO: {fileID: 11400000, guid: 664c4d0413696ea43a94ab8e5c99d610, type: 2}
   possibleMaskSOs:
+  - {fileID: 11400000, guid: 5776001ec0d0c7e42b2e4bcc0cbb373f, type: 2}
+  - {fileID: 11400000, guid: d79ee78482d190d4397fb3e8ed64f6eb, type: 2}
+  - {fileID: 11400000, guid: c6f5239e5692d794e884cf2da0735c19, type: 2}
+  - {fileID: 11400000, guid: c277a275bde83c44e966b9e36a07b14e, type: 2}
+  - {fileID: 11400000, guid: 8912812ef11941a4d9040786f2eccb6b, type: 2}
   - {fileID: 11400000, guid: e16092b98e6dc474587cbcf02ac32a29, type: 2}
-  - {fileID: 11400000, guid: 04468c677d5401e449e37c0137836a96, type: 2}
-  - {fileID: 11400000, guid: e16092b98e6dc474587cbcf02ac32a29, type: 2}
-  - {fileID: 11400000, guid: 04468c677d5401e449e37c0137836a96, type: 2}
-  - {fileID: 11400000, guid: e16092b98e6dc474587cbcf02ac32a29, type: 2}
-  - {fileID: 11400000, guid: 04468c677d5401e449e37c0137836a96, type: 2}
-  - {fileID: 11400000, guid: e16092b98e6dc474587cbcf02ac32a29, type: 2}
+  - {fileID: 11400000, guid: 662fe15b2f5bb18409d797ff2ed3077f, type: 2}
   - {fileID: 11400000, guid: 04468c677d5401e449e37c0137836a96, type: 2}
   possibleTarotSOs:
   - {fileID: 11400000, guid: 3e34bbfb96a31a24fb38202543dfea33, type: 2}

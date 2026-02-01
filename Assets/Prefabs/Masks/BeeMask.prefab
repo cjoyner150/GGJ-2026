@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8897263228809207886}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: BeeMask
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -41,7 +41,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6242770586233225173}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Feedbacks
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -74,7 +74,7 @@ GameObject:
   m_Component:
   - component: {fileID: 299093816934588336}
   - component: {fileID: 7244902002470618164}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Move and Shrink
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -664,7 +664,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2530417597404581782}
   - component: {fileID: 3426532416861573208}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Stop Particle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -873,7 +873,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6076391590356221501}
   - component: {fileID: 6770309540147850226}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Bidding Move
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1317,7 +1317,7 @@ GameObject:
   - component: {fileID: 2156973320931119096}
   - component: {fileID: 1713283843905261363}
   - component: {fileID: 5059743578821521675}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: GGJ26_BearMask
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1733,6 +1733,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6974920625731250717}
     m_Modifications:
+    - target: {fileID: 927233006646767715, guid: cc75c011fccc94140b167d3483eb6818, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 6606651887754444126, guid: cc75c011fccc94140b167d3483eb6818, type: 3}
       propertyPath: m_LocalScale.x
       value: 1
@@ -1802,6 +1806,10 @@ PrefabInstance:
       value: CurseAura
       objectReference: {fileID: 0}
     - target: {fileID: 7200641001495316597, guid: cc75c011fccc94140b167d3483eb6818, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7200641001495316597, guid: cc75c011fccc94140b167d3483eb6818, type: 3}
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
@@ -1856,6 +1864,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Appear Poof
       objectReference: {fileID: 0}
+    - target: {fileID: 451632614410866318, guid: 13a86ff38ce7e15498eb9d71c465c4e4, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 621557686662339656, guid: 13a86ff38ce7e15498eb9d71c465c4e4, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 6392295316051952698, guid: 13a86ff38ce7e15498eb9d71c465c4e4, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.4
@@ -1887,6 +1903,10 @@ PrefabInstance:
     - target: {fileID: 6589128825666176971, guid: 13a86ff38ce7e15498eb9d71c465c4e4, type: 3}
       propertyPath: m_ConstrainProportionsScale
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8808205709897223109, guid: 13a86ff38ce7e15498eb9d71c465c4e4, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 9123346507711186956, guid: 13a86ff38ce7e15498eb9d71c465c4e4, type: 3}
       propertyPath: m_LocalScale.x

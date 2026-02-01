@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Bear Mask
   m_EditorClassIdentifier: Assembly-CSharp::MaskSO
   maskName: The Bear Mask
-  maskPrefab: {fileID: 0}
+  maskPrefab: {fileID: 2686955572923395045, guid: c2e80670212696140af3bbcb5ab1c17c, type: 3}
   maskDescription: Increases player size but slows down
   maskDoom: 1

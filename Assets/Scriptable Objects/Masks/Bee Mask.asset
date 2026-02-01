@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Bee Mask
   m_EditorClassIdentifier: Assembly-CSharp::MaskSO
   maskName: The Bee Mask
-  maskPrefab: {fileID: 0}
+  maskPrefab: {fileID: 1676501669943858497, guid: 825940ae1deb2ee4cb87358702746425, type: 3}
   maskDescription: All other players gets stat buffs
   maskDoom: 2

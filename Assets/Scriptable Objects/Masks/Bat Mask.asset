@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Bat Mask
   m_EditorClassIdentifier: Assembly-CSharp::MaskSO
   maskName: The Bat Mask
-  maskPrefab: {fileID: 0}
+  maskPrefab: {fileID: 2686955572923395045, guid: 37fce9a7afa61f640a892f21493e7301, type: 3}
   maskDescription: Reverse player's controls
   maskDoom: 2
