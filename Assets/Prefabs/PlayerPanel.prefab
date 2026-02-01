@@ -395,6 +395,14 @@ MonoBehaviour:
   playerTitleTMP: {fileID: 5974672189369229646}
   readyVisual: {fileID: 1794448997380444941}
   image: {fileID: 2345551479642269365}
+  renderTextures:
+  - {fileID: 8400000, guid: 7d7a684971ac53847b8d8a07e6c66c87, type: 2}
+  - {fileID: 8400000, guid: 1398a79fdb70ba3438f3c56d996278ac, type: 2}
+  - {fileID: 8400000, guid: bdad862a93d544e489ca78cff8a4b3a8, type: 2}
+  - {fileID: 8400000, guid: 77a40b34aca0cf542adfd6524c207b68, type: 2}
+  cam: {fileID: 6199563841487026424}
+  rawIMG: {fileID: 5611051754194756621}
+  playerMesh: {fileID: 717919622221799867}
 --- !u!1 &3671279667585431247
 GameObject:
   m_ObjectHideFlags: 0
@@ -674,15 +682,15 @@ MonoBehaviour:
       m_Calls: []
   m_text: Player X
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 1493c7a4844a61343a5ab8b8232bc7d1, type: 2}
+  m_sharedMaterial: {fileID: 3086538305463101287, guid: 1493c7a4844a61343a5ab8b8232bc7d1, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4284506208
+  m_fontColor: {r: 0.3764706, g: 0.3764706, b: 0.3764706, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -863,6 +871,16 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8f684b4a842309d4d8d5b3b3c989de03, type: 3}
+--- !u!137 &717919622221799867 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 6197063851290253102, guid: 8f684b4a842309d4d8d5b3b3c989de03, type: 3}
+  m_PrefabInstance: {fileID: 6914983293037442709}
+  m_PrefabAsset: {fileID: 0}
+--- !u!20 &6199563841487026424 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 720491129529781869, guid: 8f684b4a842309d4d8d5b3b3c989de03, type: 3}
+  m_PrefabInstance: {fileID: 6914983293037442709}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &7858231436593794619 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3672966359697520814, guid: 8f684b4a842309d4d8d5b3b3c989de03, type: 3}
